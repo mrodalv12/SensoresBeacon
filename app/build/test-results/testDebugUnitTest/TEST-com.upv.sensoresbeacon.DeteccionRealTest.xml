@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.upv.sensoresbeacon.DeteccionRealTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-09-29T17:46:18.835Z" hostname="wifialur47-87.wi-fi.upv.es" time="0.234">
+  <properties/>
+  <testcase name="unAnuncioQueNoEsDelFabricanteNoSeCuenta" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.034"/>
+  <testcase name="elAnuncioRepetidoSiSeDescarta" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.101"/>
+  <testcase name="elCompanyIdSeLeeComoApple" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="laMismaEmisoraEmiteCO2YTemperatura" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.008"/>
+  <testcase name="losDatosDeManufacturerCuentanEnElAdvertisementCorrecto" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.0"/>
+  <testcase name="elAnuncioDelEmisorSeReconoceComoApple" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="unAnuncioNoRelacionadoNoSeConfundeConUnIBeacon" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="unAnuncioDeAppleQueNoEsBeaconNoSeConfunde" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="elTipoVaEnElByteAltoYElContadorEnElBajo" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="cadaIteracionDelContadorDaUnaMedicionNueva" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.0"/>
+  <testcase name="seEncuentraLaPosicionDeLosDatosDeApple" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.0"/>
+  <testcase name="dosMedicionesDistintasDeLaMismaPlacaNoSeDescartan" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.0"/>
+  <testcase name="elMajorYElMinorSeLeenLittleEndian" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.0"/>
+  <testcase name="detectaElAnuncioDelEmisorYLocalizaLaTrama" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.001"/>
+  <testcase name="laTramaEmiteLaUuidEsperada" classname="com.upv.sensoresbeacon.DeteccionRealTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

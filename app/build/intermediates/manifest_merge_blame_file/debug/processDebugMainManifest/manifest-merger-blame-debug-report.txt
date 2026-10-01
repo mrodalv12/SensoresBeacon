@@ -1,0 +1,166 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.upv.sensoresbeacon"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission
+11-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:5:5-6:38
+12        android:name="android.permission.BLUETOOTH"
+12-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:5:22-65
+13        android:maxSdkVersion="30" />
+13-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:6:9-35
+14    <uses-permission
+14-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:7:5-8:38
+15        android:name="android.permission.BLUETOOTH_ADMIN"
+15-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:7:22-71
+16        android:maxSdkVersion="30" />
+16-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:8:9-35
+17    <uses-permission
+17-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:9:5-10:38
+18        android:name="android.permission.ACCESS_FINE_LOCATION"
+18-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:9:22-76
+19        android:maxSdkVersion="30" />
+19-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:10:9-35
+20    <uses-permission
+20-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:12:5-14:31
+21        android:name="android.permission.BLUETOOTH_SCAN"
+21-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:12:22-70
+22        android:usesPermissionFlags="neverForLocation" />
+22-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:13:9-55
+23    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+23-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:15:5-76
+23-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:15:22-73
+24    <uses-permission android:name="android.permission.INTERNET" />
+24-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:17:5-67
+24-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:17:22-64
+25
+26    <uses-feature
+26-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:19:5-21:35
+27        android:name="android.hardware.bluetooth_le"
+27-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:20:9-53
+28        android:required="true" />
+28-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:21:9-32
+29
+30    <permission
+30-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+31        android:name="com.upv.sensoresbeacon.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+31-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+32        android:protectionLevel="signature" />
+32-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+33
+34    <uses-permission android:name="com.upv.sensoresbeacon.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+34-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+34-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+35
+36    <application
+36-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:23:5-40:19
+37        android:allowBackup="true"
+37-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:24:9-35
+38        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+38-->[androidx.core:core:1.13.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/acfc8a4e1e8e0738e7091c705f4d761a/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+39        android:debuggable="true"
+40        android:extractNativeLibs="false"
+41        android:icon="@android:drawable/sym_def_app_icon"
+41-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:25:9-58
+42        android:label="@string/app_name"
+42-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:26:9-41
+43        android:supportsRtl="true"
+43-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:27:9-35
+44        android:testOnly="true"
+45        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+45-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:28:9-70
+46        android:usesCleartextTraffic="true" >
+46-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:29:9-44
+47        <activity
+47-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:31:9-39:20
+48            android:name="com.upv.sensoresbeacon.MainActivity"
+48-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:32:13-41
+49            android:exported="true"
+49-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:33:13-36
+50            android:label="@string/app_name" >
+50-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:34:13-45
+51            <intent-filter>
+51-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:35:13-38:29
+52                <action android:name="android.intent.action.MAIN" />
+52-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:36:17-69
+52-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:36:25-66
+53
+54                <category android:name="android.intent.category.LAUNCHER" />
+54-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:37:17-77
+54-->/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:37:27-74
+55            </intent-filter>
+56        </activity>
+57
+58        <provider
+58-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+59            android:name="androidx.startup.InitializationProvider"
+59-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+60            android:authorities="com.upv.sensoresbeacon.androidx-startup"
+60-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+61            android:exported="false" >
+61-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+62            <meta-data
+62-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+63                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+63-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+64                android:value="androidx.startup" />
+64-->[androidx.emoji2:emoji2:1.3.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/0f1d412bd42c36159820192e6c175c48/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+65            <meta-data
+65-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f4a4e5a603bbf1f1c29c2857c2fb7305/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
+66                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+66-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f4a4e5a603bbf1f1c29c2857c2fb7305/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
+67                android:value="androidx.startup" />
+67-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f4a4e5a603bbf1f1c29c2857c2fb7305/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
+68            <meta-data
+68-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+69                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+69-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+70                android:value="androidx.startup" />
+70-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+71        </provider>
+72
+73        <receiver
+73-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+74            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+74-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+75            android:directBootAware="false"
+75-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+76            android:enabled="true"
+76-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+77            android:exported="true"
+77-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+78            android:permission="android.permission.DUMP" >
+78-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+79            <intent-filter>
+79-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+80                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+80-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+80-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+81            </intent-filter>
+82            <intent-filter>
+82-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+83                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+83-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+83-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+84            </intent-filter>
+85            <intent-filter>
+85-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+86                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+86-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+86-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+87            </intent-filter>
+88            <intent-filter>
+88-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+89                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/rodolfo/.gradle/caches/8.14.3/transforms/f2c6690e363d90bc16a9d1f3b55ee0e7/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+90            </intent-filter>
+91        </receiver>
+92    </application>
+93
+94</manifest>

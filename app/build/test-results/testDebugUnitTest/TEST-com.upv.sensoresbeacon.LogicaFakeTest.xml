@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.upv.sensoresbeacon.LogicaFakeTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-09-29T17:46:19.219Z" hostname="wifialur47-87.wi-fi.upv.es" time="0.165">
+  <properties/>
+  <testcase name="nombreEmisoraYNulosSeNormalizanACadenaVacia" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.002"/>
+  <testcase name="guardarMedicionConservaLaMedicionEnLaLogica" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.0"/>
+  <testcase name="elFlujoCompletoDesdeLaTramaEnviaLaMedicion" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="elCuerpoJsonContieneTodosLosDatosDelBeacon" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="guardarMedicionHaceUnaUnicaPeticionPost" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="seGuardaLaUltimaPeticionRealizada" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="txPowerNegativoSeEnviaConSigno" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="losNumerosDelBeaconSeEnvianComoEnterosYNoComoText" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.001"/>
+  <testcase name="unaMedicionNulaNoProvocaUnaExcepcion" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.002"/>
+  <testcase name="unErrorDelServidorNoPropagaUnaExcepcion" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.002"/>
+  <testcase name="elCuerpoJsonContieneElTipoYElValorDeLaMedicion" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.144"/>
+  <testcase name="losCamposDe16BitsNoSeTruncan" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.002"/>
+  <testcase name="guardarMedicionApuntaALaRutaDeMediciones" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.0"/>
+  <testcase name="unMedidorDesconocidoSeEnviaComoDesconocido" classname="com.upv.sensoresbeacon.LogicaFakeTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

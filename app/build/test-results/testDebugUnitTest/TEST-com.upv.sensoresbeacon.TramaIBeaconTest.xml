@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.upv.sensoresbeacon.TramaIBeaconTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-09-29T17:46:19.581Z" hostname="wifialur47-87.wi-fi.upv.es" time="0.051">
+  <properties/>
+  <testcase name="detectaLaTramaDesnudaDelLaboratorio" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.004"/>
+  <testcase name="esTramaIBeaconRechazaAnunciosDemasiadoCortos" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="esTramaIBeaconRechazaAnunciosQueNoSonDeBluetooth" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.005"/>
+  <testcase name="extraeLosCamposDelAnuncioRealDeAndroid" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="extraeLosCamposDeLaTramaDesnudaDelLaboratorio" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="esTramaIBeaconRechazaAnunciosSinLaMarca02_15" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.0"/>
+  <testcase name="detectaElAnuncioRealDeAndroid" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="constructorRechazaAnunciosSinTramaIBeacon" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="losSettersDeBytesDevuelvenCopiasDefensivas" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.0"/>
+  <testcase name="majorSeInterpretaComoEnteroSinSignoDe16Bits" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.0"/>
+  <testcase name="funcionaConTramasDeOtrosEmisoresDistintosDeApple" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="localizaLaTramaEnLasPosicionesEsperadas" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.001"/>
+  <testcase name="elAnuncioYLaTramaDesnudaProducenLosMismosCampos" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.015"/>
+  <testcase name="constructorDescomponeLosCabeceros" classname="com.upv.sensoresbeacon.TramaIBeaconTest" time="0.014"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

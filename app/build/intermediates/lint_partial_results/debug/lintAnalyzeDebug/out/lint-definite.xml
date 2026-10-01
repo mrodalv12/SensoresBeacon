@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.11.2" type="incidents">
+
+    <incident
+        id="DefaultLocale"
+        severity="warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="361"
+            column="73"
+            startOffset="12084"
+            endLine="361"
+            endColumn="84"
+            endOffset="12095"/>
+    </incident>
+
+    <incident
+        id="DefaultLocale"
+        severity="warning"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/Utilidades.java"
+            line="160"
+            column="69"
+            startOffset="4413"
+            endLine="160"
+            endColumn="80"
+            endOffset="4424"/>
+    </incident>
+
+    <incident
+        id="OldTargetApi"
+        severity="warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details.">
+        <fix-replace
+            description="Update targetSdkVersion to 36"
+            oldString="34"
+            replacement="36"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="12"
+            column="9"
+            startOffset="207"
+            endLine="12"
+            endColumn="21"
+            endOffset="219"/>
+    </incident>
+
+    <incident
+        id="RedundantLabel"
+        severity="warning"
+        message="Redundant label can be removed">
+        <fix-attribute
+            description="Delete label"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="label"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="34"
+            column="13"
+            startOffset="1305"
+            endLine="34"
+            endColumn="45"
+            endOffset="1337"/>
+    </incident>
+
+    <incident
+        id="AndroidGradlePluginVersion"
+        severity="warning"
+        message="A newer version of Gradle than 8.14.3 is available: 8.14.5">
+        <fix-replace
+            description="Update to 8.14.5"
+            oldString="8.14.3"
+            replacement="8.14.5"
+            priority="0"/>
+        <location
+            file="$HOME/Desktop/proyecto/gradle/wrapper/gradle-wrapper.properties"
+            line="3"
+            column="17"
+            startOffset="81"
+            endLine="3"
+            endColumn="81"
+            endOffset="145"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of `compileSdkVersion` than 34 is available: 36">
+        <fix-replace
+            description="Set compileSdkVersion to 36"
+            oldString="34"
+            replacement="36"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="7"
+            column="5"
+            startOffset="99"
+            endLine="7"
+            endColumn="18"
+            endOffset="112"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.json:json than 20231013 is available: 20260814">
+        <fix-replace
+            description="Change to 20260814"
+            family="Update versions"
+            oldString="20231013"
+            replacement="20260814"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="42"
+            column="24"
+            startOffset="959"
+            endLine="42"
+            endColumn="48"
+            endOffset="983"/>
+    </incident>
+
+    <incident
+        id="SetTextI18n"
+        severity="warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="730"
+            column="40"
+            startOffset="26586"
+            endLine="732"
+            endColumn="59"
+            endOffset="26720"/>
+    </incident>
+
+    <incident
+        id="SetTextI18n"
+        severity="warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="730"
+            column="40"
+            startOffset="26586"
+            endLine="730"
+            endColumn="52"
+            endOffset="26598"/>
+    </incident>
+
+    <incident
+        id="SetTextI18n"
+        severity="warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="731"
+            column="31"
+            startOffset="26637"
+            endLine="731"
+            endColumn="47"
+            endOffset="26653"/>
+    </incident>
+
+    <incident
+        id="SetTextI18n"
+        severity="warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="732"
+            column="31"
+            startOffset="26692"
+            endLine="732"
+            endColumn="51"
+            endOffset="26712"/>
+    </incident>
+
+    <incident
+        id="SetTextI18n"
+        severity="warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders.">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/upv/sensoresbeacon/MainActivity.java"
+            line="784"
+            column="35"
+            startOffset="28700"
+            endLine="784"
+            endColumn="65"
+            endOffset="28730"/>
+    </incident>
+
+</incidents>

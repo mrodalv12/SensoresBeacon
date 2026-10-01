@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.upv.sensoresbeacon.PeticionarioRESTTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-09-29T17:46:19.470Z" hostname="wifialur47-87.wi-fi.upv.es" time="0.045">
+  <properties/>
+  <testcase name="comoFueRechazaLosErrores" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.002"/>
+  <testcase name="elPeticionarioExponeElCodigoYElCuerpoRecibidos" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.002"/>
+  <testcase name="unaPeticionSinTransporteDevuelveLaRespuestaVacia" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.003"/>
+  <testcase name="unCuerpoNuloEnElPeticionarioSeNormalizaACadenaVacia" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.001"/>
+  <testcase name="unCuerpoNuloSeNormalizaACadenaVacia" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.005"/>
+  <testcase name="unaRespuestaSinCodigoNoEsExitosa" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.001"/>
+  <testcase name="comoFueAceptaLaFamilia2xxY3xx" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.011"/>
+  <testcase name="comoFueReflejaElCodigoRecibido" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.0"/>
+  <testcase name="crearPOSTConstruyeUnaPeticionConElMetodoYLaRutaCorrectos" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.001"/>
+  <testcase name="hacerPeticionarioRESTDelegaEnElTransporte" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.001"/>
+  <testcase name="elConstructorPorDefectoUsaElTransporteReal" classname="com.upv.sensoresbeacon.PeticionarioRESTTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

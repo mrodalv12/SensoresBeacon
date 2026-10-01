@@ -1,0 +1,118 @@
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:361: Warning: Implicitly using the default locale is a common source of bugs: Use toUpperCase(Locale) instead. For strings meant to be internal use Locale.ROOT, otherwise Locale.getDefault(). [DefaultLocale]
+        return texto.replace("-", "").replace(":", "").replace(" ", "").toUpperCase();
+                                                                        ~~~~~~~~~~~
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/Utilidades.java:160: Warning: Implicitly using the default locale is a common source of bugs: Use toUpperCase(Locale) instead. For strings meant to be internal use Locale.ROOT, otherwise Locale.getDefault(). [DefaultLocale]
+        return uuid == null ? "" : uuid.toString().replace("-", "").toUpperCase();
+                                                                    ~~~~~~~~~~~
+
+   Explanation for issues of type "DefaultLocale":
+   Calling String#toLowerCase() or #toUpperCase() without specifying an
+   explicit locale is a common source of bugs. The reason for that is that
+   those methods will use the current locale on the user's device, and even
+   though the code appears to work correctly when you are developing the app,
+   it will fail in some locales. For example, in the Turkish locale, the
+   uppercase replacement for i is not I.
+
+   If you want the methods to just perform ASCII replacement, for example to
+   convert an enum name, call String#toUpperCase(Locale.ROOT) instead. If you
+   really want to use the current locale, call
+   String#toUpperCase(Locale.getDefault()) instead.
+
+   https://developer.android.com/reference/java/util/Locale.html#default_locale
+
+/Users/rodolfo/Desktop/proyecto/app/build.gradle:12: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk 34
+        ~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application or sdk runs on a version of Android that is more
+   recent than your targetSdkVersion specifies that it has been tested with,
+   various compatibility modes kick in. This ensures that your application
+   continues to work, but it may look out of place. For example, if the
+   targetSdkVersion is less than 14, your app may get an option button in the
+   UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+/Users/rodolfo/Desktop/proyecto/app/src/main/AndroidManifest.xml:34: Warning: Redundant label can be removed [RedundantLabel]
+            android:label="@string/app_name">
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "RedundantLabel":
+   When an activity does not have a label attribute, it will use the one from
+   the application tag. Since the application has already specified the same
+   label, the label on this activity can be omitted.
+
+/Users/rodolfo/Desktop/proyecto/gradle/wrapper/gradle-wrapper.properties:3: Warning: A newer version of Gradle than 8.14.3 is available: 8.14.5 [AndroidGradlePluginVersion]
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "AndroidGradlePluginVersion":
+   This detector looks for usage of the Android Gradle Plugin where the
+   version you are using is not the current stable release. Using older
+   versions is fine, and there are cases where you deliberately want to stick
+   with an older version. However, you may simply not be aware that a more
+   recent version is available, and that is what this lint check helps find.
+
+/Users/rodolfo/Desktop/proyecto/app/build.gradle:7: Warning: A newer version of compileSdkVersion than 34 is available: 36 [GradleDependency]
+    compileSdk 34
+    ~~~~~~~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+/Users/rodolfo/Desktop/proyecto/app/build.gradle:42: Warning: A newer version of org.json:json than 20231013 is available: 20260814 [NewerVersionAvailable]
+    testImplementation 'org.json:json:20231013'
+                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NewerVersionAvailable":
+   This detector checks with a central repository to see if there are newer
+   versions available for the dependencies used by this project. This is
+   similar to the GradleDependency check, which checks for newer versions
+   available in the Android SDK tools and libraries, but this works with any
+   MavenCentral dependency, and connects to the library every time, which
+   makes it more flexible but also much slower.
+
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:730: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    tvContador.setText("iBeacons: " + total
+                                       ^
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:730: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    tvContador.setText("iBeacons: " + total
+                                       ~~~~~~~~~~~~
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:731: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                            + "   |   Apple: " + apple
+                              ~~~~~~~~~~~~~~~~
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:732: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                            + "   |   otros BLE: " + otros);
+                              ~~~~~~~~~~~~~~~~~~~~
+/Users/rodolfo/Desktop/proyecto/app/src/main/java/com/upv/sensoresbeacon/MainActivity.java:784: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    tvLog.setText(texto + "\n" + tvLog.getText());
+                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+0 errors, 12 warnings

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.upv.sensoresbeacon.MedicionTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-09-29T17:46:19.428Z" hostname="wifialur47-87.wi-fi.upv.es" time="0.03">
+  <properties/>
+  <testcase name="elContadorDelMajorNoAfectaAlTipo" classname="com.upv.sensoresbeacon.MedicionTest" time="0.018"/>
+  <testcase name="desdeTramaConRuidoDaElValor" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="cadaTipoProduceUnaMedicionDistinta" classname="com.upv.sensoresbeacon.MedicionTest" time="0.001"/>
+  <testcase name="toStringIncluyeElTipoYElValor" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="asignarTipoGuardaElResultadoEnLaVariable" classname="com.upv.sensoresbeacon.MedicionTest" time="0.001"/>
+  <testcase name="laEnumeracionMantieneLosCodigosDelEnunciado" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="desdeTramaConCo2YCO2DaElValorEnPpm" classname="com.upv.sensoresbeacon.MedicionTest" time="0.001"/>
+  <testcase name="elConstructorVacioDejaLaMedicionSinAsignar" classname="com.upv.sensoresbeacon.MedicionTest" time="0.001"/>
+  <testcase name="asignarTipoDevuelveDesconocidoParaCodigosNoRegistrados" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="desdeTramaConUnTipoDesconocidoQuedaComoDesconocido" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="desdeTramaTomaElTipoDelByteAltoDelMajorYElValorDelMinor" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="existeIndicaSiElCodigoPerteneceALaEnumeracion" classname="com.upv.sensoresbeacon.MedicionTest" time="0.0"/>
+  <testcase name="setValorActualizaElValorDeLaMedicion" classname="com.upv.sensoresbeacon.MedicionTest" time="0.002"/>
+  <testcase name="asignarTipoReconoceLosTresTiposDeMedicion" classname="com.upv.sensoresbeacon.MedicionTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
