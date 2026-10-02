@@ -1,0 +1,10 @@
+# --- Android / Gradle ---
+app/build/
+build/
+.gradle/
+
+# --- IDE ---
+.idea/
+
+# --- Sistema ---
+.DS_Store
