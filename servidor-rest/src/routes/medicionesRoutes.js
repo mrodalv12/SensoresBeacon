@@ -109,10 +109,15 @@ function handlePostMediciones(req, res) {
             };
 
             // Llamada a la Lógica de Negocio (única responsabilidad del servidor REST)
-            const resultado = LogicaNegocioMediciones.guardarMedicion(datosMedicion);
-
-            res.writeHead(HTTP_CREATED, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ status: 'ok', resultado }));
+            LogicaNegocioMediciones.guardarMedicion(datosMedicion)
+                .then(resultado => {
+                    res.writeHead(HTTP_CREATED, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'ok', resultado }));
+                })
+                .catch(error => {
+                    res.writeHead(HTTP_INTERNAL_SERVER_ERROR, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Error interno del servidor' }));
+                });
 
         } catch (error) {
             res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
@@ -131,22 +136,21 @@ function handlePostMediciones(req, res) {
  */
 function handleGetMediciones(req, res) {
     try {
-        const mediciones = LogicaNegocioMediciones.obtenerMedicion() || [];
-
-        // Tomar últimas 10 mediciones [Tipo]
-        const ultimasDiez = Array.isArray(mediciones) 
-            ? mediciones.slice(-10) 
-            : [];
-
-        // Mapear a formato requerido: fecha_y_hora, tipo, valor
-        const respuesta = ultimasDiez.map(m => ({
-            fecha_y_hora: m.fecha_y_hora || m.fechaYHora || m.fecha || new Date().toISOString(),
-            tipo: m.tipo || (m.medicion && m.medicion.tipo) || '',
-            valor: m.valor || (m.medicion && m.medicion.valor) || 0
-        }));
-
-        res.writeHead(HTTP_OK, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(respuesta));
+        LogicaNegocioMediciones.obtenerMedicion()
+            .then(mediciones => {
+                const ultimasDiez = Array.isArray(mediciones) ? mediciones.slice(-10) : [];
+                const respuesta = ultimasDiez.map(m => ({
+                    fecha_y_hora: m.fecha_y_hora || m.fechaYHora || m.fecha || new Date().toISOString(),
+                    tipo: m.tipo || (m.medicion && m.medicion.tipo) || '',
+                    valor: m.valor || (m.medicion && m.medicion.valor) || 0
+                }));
+                res.writeHead(HTTP_OK, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(respuesta));
+            })
+            .catch(error => {
+                res.writeHead(HTTP_INTERNAL_SERVER_ERROR, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Error interno del servidor' }));
+            });
 
     } catch (error) {
         res.writeHead(HTTP_INTERNAL_SERVER_ERROR, { 'Content-Type': 'application/json' });

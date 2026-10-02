@@ -1,0 +1,10 @@
+{
+  "name": "logica-negocio",
+  "version": "1.0.0",
+  "description": "Lógica de Negocio - separada de servidor REST y BD",
+  "main": "src/logicaNegocio.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "type": "commonjs"
+}

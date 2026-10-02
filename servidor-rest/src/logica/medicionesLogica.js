@@ -1,27 +1,37 @@
 /**
- * Capa de Lógica de Negocio - Stubs.
+ * Capa de Lógica de Negocio - Conectada a Base de Datos
  * 
- * NOTA: No contiene acceso a datos ni lógica de negocio completa.
- * Únicamente define las firmas necesarias para que el Servidor REST las invoque,
- * conforme a lo solicitado.
+ * Diseño según reglas del PDF "Logical_Design_RE_Rules_v3.pdf"
+ * Tipos de datos abstractos utilizados: N, Z, R, Text, [Tipo]
  */
+
+const { LogicaNegocioSQLitePyAsync } = require('../../../logica-negocio/src/logicaNegocioSqlitePyAsync');
+const repo = require('../../../logica-negocio/src/repositorioSqlitePythonAsync');
+
+const logica = new LogicaNegocioSQLitePyAsync(repo);
+
 class LogicaNegocioMediciones {
     /**
-     * guardarMedicion() - Stub
-     * @param {Object} datos - Datos de la medición y beacon
+     * guardarMedicion() 
      */
-    static guardarMedicion(datos) {
-        // Stub: En implementación posterior se añadirá lógica de negocio
-        return { ok: true, datos };
+    static async guardarMedicion(datos) {
+        const beacon = datos && datos.beacon || {};
+        const medicion = datos && datos.medicion || {};
+        
+        return await logica.guardarMedicion(
+            medicion,
+            beacon.uuid,
+            beacon.minor,
+            beacon.major,
+            beacon.txPower
+        );
     }
 
     /**
-     * obtenerMedicion() - Stub
-     * @returns {Array<Object>} Lista de mediciones
+     * obtenerMedicion() 
      */
-    static obtenerMedicion() {
-        // Stub: Devuelve array vacío; en implementación posterior con BD
-        return [];
+    static async obtenerMedicion() {
+        return await logica.obtenerMedicion();
     }
 }
 
