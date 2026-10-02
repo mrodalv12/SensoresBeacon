@@ -1,0 +1,11 @@
+{
+  "name": "servidor-rest",
+  "version": "1.0.0",
+  "description": "Servidor REST para mediciones (ejercicio)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "type": "commonjs"
+}
