@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Sensores Beacon</string>
-    <string name="boton_buscar_nuestro">Buscar por UUID</string>
-    <string name="boton_buscar_todos">Buscar todos los iBeacons</string>
-    <string name="boton_detener">Detener busqueda</string>
-    <string name="contador_inicial">iBeacons encontrados: 0</string>
-    <string name="etiqueta_log">Registro (LogCat):</string>
-</resources>
