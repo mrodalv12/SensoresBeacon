@@ -1,0 +1,13 @@
+# --- SQLite ---
+# Base binaria: cambia en cada escritura, genera diffs ilegibles y conflictos.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# --- Herramientas ---
+# Config local de DB Browser for SQLite (ajustes de ventana y columnas).
+*.sqbpro
+
+# --- Sistema ---
+.DS_Store
