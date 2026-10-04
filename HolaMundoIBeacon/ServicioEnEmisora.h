@@ -5,9 +5,11 @@
 //              convertir nombres (string) a UUID de 16 bytes en orden little-endian.
 //              Permite configurar propiedades, permisos y tamanyo de datos de cada
 //              caracteristica, ademas de escribir/notificar datos y activar el servicio.
-//Copyright: 
-//Fecha de modificacion: 15-09-26
-//Autor: 
+//Copyright:
+//Fecha de creacion: 2019-07-19
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
 //Aportacion: limpieza y mas comentarios
 //=============================================================================================
 

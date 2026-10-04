@@ -1,11 +1,13 @@
 //=============================================================================================
-//Nombre: HolaMundoBeacon
-//Descripcion: Este es el codigo principal que utiliza a las clases Emisora, Led, 
-//              medidor, publicador y puerto serie, para enviar las medidas de 
-//                sensores por Ibeacons Bluetooth
-//Copyright: yo y el profe jordi
-//Fecha de modificacion: 15-09-26.   fecha de creacion: 2019
-//Autor: profe jordi bataller
+//Nombre: HolaMundoIBeacon.ino
+//Descripcion: Programa principal: inicializa la placa y la emisora BLE y, en cada
+//              iteracion del loop(), publica la medicion de CO2 y la de temperatura
+//              como dos anuncios iBeacon distintos.
+//Copyright:
+//Fecha de creacion: 2019-07-05
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
 //Aportacion: limpieza y mas comentarios
 //=============================================================================================
 
@@ -142,6 +144,7 @@ namespace Loop {
 
 //...................................
 
+// loop(): ejecuta una serie de instrucciones en bucle (diseno commented-out arriba).
 void loop () {
 
   using namespace Loop;

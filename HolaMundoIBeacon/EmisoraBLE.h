@@ -1,10 +1,13 @@
 //=============================================================================================
-//Nombre: EmisoraBLE
-//Descripcion: Es una clase que controla la emision de los IBeacons Bluetooth
-//							gestiona conexion/desconexion y emision de datos
-//Copyright: yo y el profe jordi
-//Fecha de modificacion: 15-09-26.   fecha de creacion: 2019
-//Autor: profe jordi bataller
+//Nombre: EmisoraBLE.h
+//Descripcion: Clase que controla el hardware Bluetooth de la placa: enciende la
+//              emision BLE, emite anuncios iBeacon (con UUID/major/minor fijo
+//              o con 21 bytes libres) y gestiona un servicio BLE propio.
+//Copyright:
+//Fecha de creacion: 2019-07-05
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
 //Aportacion: limpieza y mas comentarios
 //=============================================================================================
 

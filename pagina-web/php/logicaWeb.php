@@ -1,4 +1,17 @@
 <?php
+
+//==============================================================================================
+//Nombre: logicaWeb.php
+//Descripcion: Logica de negocio web en PHP: pide las mediciones al servidor REST por
+//              HTTP y devuelve las ultimas 10.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Lógica de Negocio Web (PHP)
  * 
@@ -16,6 +29,9 @@
  *   - Array<{ fecha_y_hora: Text, tipo: Text, valor: R }>
  * 
  * Interacción (--x): Realiza petición HTTP GET asíncrona hacia REST /mediciones (cliente HTTP)
+ *
+ * Pide las mediciones al servidor REST por HTTP y devuelve las ultimas 10;
+ * si el servidor no responde o devuelve un error, devuelve una lista vacia.
  */
 function obtenerMedicion() {
     $url = 'http://localhost:8080/mediciones';

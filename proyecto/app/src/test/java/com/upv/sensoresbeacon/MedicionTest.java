@@ -6,11 +6,23 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+//==============================================================================================
+//Nombre: MedicionTest.java
+//Descripcion: Pruebas de la clase Medicion y de la enumeracion MedicionesID.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Pruebas de la clase Medicion y de la enumeracion MedicionesID.
  */
 public class MedicionTest {
 
+    // asignarTipo(): los codigos 11, 12 y 13 se traducen a co2, temperatura y ruido.
     @Test
     public void asignarTipoReconoceLosTresTiposDeMedicion() {
         Medicion medicion = new Medicion();
@@ -19,6 +31,7 @@ public class MedicionTest {
         assertEquals("ruido", medicion.asignarTipo(13));
     }
 
+    // asignarTipo(): ademas de devolver el tipo, lo deja guardado en la medicion.
     @Test
     public void asignarTipoGuardaElResultadoEnLaVariable() {
         Medicion medicion = new Medicion(2450);
@@ -27,6 +40,7 @@ public class MedicionTest {
         assertEquals(2450.0, medicion.getValor(), 0.0001);
     }
 
+    // asignarTipo(): un codigo fuera de la enumeracion devuelve tipo desconocido.
     @Test
     public void asignarTipoDevuelveDesconocidoParaCodigosNoRegistrados() {
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, new Medicion().asignarTipo(99));
@@ -34,6 +48,7 @@ public class MedicionTest {
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, new Medicion().asignarTipo(-1));
     }
 
+    // MedicionesID: conserva los codigos 11, 12 y 13, y son los tres unicos.
     @Test
     public void laEnumeracionMantieneLosCodigosDelEnunciado() {
         assertEquals(11, MedicionesID.co2.getCodigo());
@@ -42,6 +57,7 @@ public class MedicionTest {
         assertEquals(3, MedicionesID.values().length);
     }
 
+    // existe(): dice si un codigo corresponde a un tipo de medicion registrado.
     @Test
     public void existeIndicaSiElCodigoPerteneceALaEnumeracion() {
         assertTrue(MedicionesID.existe(11));
@@ -49,6 +65,7 @@ public class MedicionTest {
         assertTrue(!MedicionesID.existe(14));
     }
 
+    // desdeTrama(): el byte alto del major da el tipo y el minor da el valor.
     @Test
     public void desdeTramaTomaElTipoDelByteAltoDelMajorYElValorDelMinor() {
         // major = (TEMPERATURA << 8) + 3, segun codifica el emisor
@@ -59,6 +76,7 @@ public class MedicionTest {
         assertEquals(23.0, medicion.getValor(), 0.0001);
     }
 
+    // desdeTrama(): con major de CO2 el valor devuelto es el minor, en ppm.
     @Test
     public void desdeTramaConCo2YCO2DaElValorEnPpm() {
         TramaIBeacon trama = new TramaIBeacon(
@@ -68,6 +86,7 @@ public class MedicionTest {
         assertEquals(812.0, medicion.getValor(), 0.0001);
     }
 
+    // desdeTrama(): con major de ruido tambien toma el valor del minor.
     @Test
     public void desdeTramaConRuidoDaElValor() {
         TramaIBeacon trama = new TramaIBeacon(
@@ -77,6 +96,7 @@ public class MedicionTest {
         assertEquals(68.0, medicion.getValor(), 0.0001);
     }
 
+    // desdeTrama(): un major con tipo no registrado deja la medicion como desconocida.
     @Test
     public void desdeTramaConUnTipoDesconocidoQuedaComoDesconocido() {
         TramaIBeacon trama = new TramaIBeacon(
@@ -84,6 +104,7 @@ public class MedicionTest {
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, Medicion.desdeTrama(trama).getTipoDeMedicion());
     }
 
+    // desdeTrama(): el contador del major no cambia el tipo detectado.
     @Test
     public void elContadorDelMajorNoAfectaAlTipo() {
         for (int contador = 0; contador < 256; contador++) {
@@ -93,6 +114,7 @@ public class MedicionTest {
         }
     }
 
+    // Medicion(): el constructor vacio deja tipo y valor sin asignar.
     @Test
     public void elConstructorVacioDejaLaMedicionSinAsignar() {
         Medicion medicion = new Medicion();
@@ -100,6 +122,7 @@ public class MedicionTest {
         assertEquals(0.0, medicion.getValor(), 0.0001);
     }
 
+    // setValor(): actualiza el valor guardado en la medicion.
     @Test
     public void setValorActualizaElValorDeLaMedicion() {
         Medicion medicion = new Medicion();
@@ -107,6 +130,7 @@ public class MedicionTest {
         assertEquals(68.5, medicion.getValor(), 0.0001);
     }
 
+    // toString(): la cadena incluye el tipo de medicion y su valor.
     @Test
     public void toStringIncluyeElTipoYElValor() {
         Medicion medicion = new Medicion(55);
@@ -115,6 +139,7 @@ public class MedicionTest {
         assertTrue(medicion.toString().contains("55.0"));
     }
 
+    // Medicion(): los tres tipos producen mediciones distintas entre si.
     @Test
     public void cadaTipoProduceUnaMedicionDistinta() {
         assertNotEquals(new Medicion().asignarTipo(11), new Medicion().asignarTipo(12));

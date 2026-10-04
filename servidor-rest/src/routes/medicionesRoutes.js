@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: medicionesRoutes.js
+//Descripcion: Rutas del servidor REST para /mediciones: valida el POST y devuelve las
+//              ultimas 10 mediciones en el GET.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Servidor REST - Módulo de rutas para mediciones.
  * 

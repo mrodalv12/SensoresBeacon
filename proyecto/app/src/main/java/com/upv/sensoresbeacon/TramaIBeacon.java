@@ -2,6 +2,18 @@ package com.upv.sensoresbeacon;
 
 import java.util.UUID;
 
+//==============================================================================================
+//Nombre: TramaIBeacon.java
+//Descripcion: Localiza la trama iBeacon de Apple dentro de un anuncio BLE y expone sus
+//              campos: uuid, major, minor y txPower.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 5 - Clases):
  *
@@ -236,6 +248,7 @@ public class TramaIBeacon {
         return localizarManufacturerData(bytes, COMPANY_ID_APPLE) != NO_ENCONTRADA;
     }
 
+    // comprueba que en la posicion indicada estan los dos bytes de cabecera iBeacon (0x02 y 0x15) y que caben los 25 bytes.
     private static boolean tieneMarcaIBeacon(byte[] bytes, int inicio) {
         return inicio >= 0
                 && inicio + TAM_DATOS <= bytes.length
@@ -245,6 +258,8 @@ public class TramaIBeacon {
 
     /**
      * --> getInicio() <--
+      *
+      * devuelve la posicion del anuncio donde empieza la trama iBeacon.
      */
     public int getInicio() {
         return inicio;
@@ -252,6 +267,8 @@ public class TramaIBeacon {
 
     /**
      * --> getLosBytes() <--
+      *
+      * devuelve una copia de los bytes completos del anuncio.
      */
     public byte[] getLosBytes() {
         return losBytes.clone();
@@ -259,6 +276,8 @@ public class TramaIBeacon {
 
     /**
      * --> getAdvFlags() <--
+      *
+      * devuelve una copia del byte de banderas del anuncio.
      */
     public byte[] getAdvFlags() {
         return advFlags.clone();
@@ -266,6 +285,8 @@ public class TramaIBeacon {
 
     /**
      * --> getAdvHeader() <--
+      *
+      * devuelve una copia del byte de cabecera del anuncio.
      */
     public byte[] getAdvHeader() {
         return advHeader.clone();
@@ -273,6 +294,8 @@ public class TramaIBeacon {
 
     /**
      * --> getCompanyID() <--
+      *
+      * devuelve una copia de los dos bytes del identificador de fabricante.
      */
     public byte[] getCompanyID() {
         return companyID.clone();
@@ -289,6 +312,8 @@ public class TramaIBeacon {
 
     /**
      * --> getPrefijo() <--
+      *
+      * devuelve una copia del prefijo que debe tener la UUID buscada.
      */
     public byte[] getPrefijo() {
         return prefijo.clone();
@@ -296,6 +321,8 @@ public class TramaIBeacon {
 
     /**
      * --> getiBeaconType() <--
+      *
+      * devuelve el byte de tipo iBeacon, que debe valer 0x02.
      */
     public byte getiBeaconType() {
         return iBeaconType;
@@ -303,6 +330,8 @@ public class TramaIBeacon {
 
     /**
      * --> getiBeaconLength() <--
+      *
+      * devuelve el byte de longitud iBeacon, que debe valer 0x15.
      */
     public byte getiBeaconLength() {
         return iBeaconLength;
@@ -310,6 +339,8 @@ public class TramaIBeacon {
 
     /**
      * --> getUUID() <--
+      *
+      * devuelve una copia de los 16 bytes de la UUID.
      */
     public byte[] getUUID() {
         return uuid.clone();
@@ -317,6 +348,8 @@ public class TramaIBeacon {
 
     /**
      * --> getUUIDComoUUID() <--
+      *
+      * devuelve la UUID de la trama ya como objeto UUID.
      */
     public UUID getUUIDComoUUID() {
         return Utilidades.bytesToUUID(uuid);
@@ -324,6 +357,8 @@ public class TramaIBeacon {
 
     /**
      * --> getMajor() <--
+      *
+      * devuelve una copia de los dos bytes del campo major.
      */
     public byte[] getMajor() {
         return major.clone();
@@ -359,6 +394,8 @@ public class TramaIBeacon {
 
     /**
      * --> getMinor() <--
+      *
+      * devuelve una copia de los dos bytes del campo minor.
      */
     public byte[] getMinor() {
         return minor.clone();
@@ -375,6 +412,8 @@ public class TramaIBeacon {
 
     /**
      * --> getTxPower() <--
+      *
+      * devuelve el byte de potencia de transmision, en dBm con signo.
      */
     public byte getTxPower() {
         return txPower;
@@ -382,6 +421,8 @@ public class TramaIBeacon {
 
     /**
      * --> getBytes() <--
+      *
+      * devuelve una copia de los bytes de la trama.
      */
     public byte[] getBytes() {
         return bytes.clone();

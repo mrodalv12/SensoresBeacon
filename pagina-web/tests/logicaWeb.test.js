@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaWeb.test.js
+//Descripcion: Pruebas de la pagina web: comprueba que los ficheros y los colores
+//              esperados existen.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');

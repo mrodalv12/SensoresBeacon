@@ -3,6 +3,18 @@ package com.upv.sensoresbeacon;
 import android.os.AsyncTask;
 import android.util.Log;
 
+//==============================================================================================
+//Nombre: PeticionarioREST.java
+//Descripcion: Envoltorio asincrono (AsyncTask) sobre el cliente HTTP que delega la
+//              peticion en un TransporteHttp intercambiable.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 5 - Clases):
  *
@@ -53,6 +65,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> PeticionarioREST() -->
+     *
+     * Usa el transporte HTTP real.
      */
     public PeticionarioREST() {
         this(METODO_GET, "", "", new TransporteHttpReal());
@@ -60,6 +74,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
+     *
+     * Monta la peticion y trabaja con el transporte HTTP real.
      */
     public PeticionarioREST(String metodo, String urlDestino, String elCuerpo) {
         this(metodo, urlDestino, elCuerpo, new TransporteHttpReal());
@@ -67,6 +83,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
+     *
+     * Monta la peticion con el transporte indicado, para poder probarla.
      */
     public PeticionarioREST(String metodo, String urlDestino, String elCuerpo, TransporteHttp transporte) {
         this.metodo = metodo;
@@ -110,6 +128,7 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
     /**
      * --> onPostExecute() -->
      */
+    // se ejecuta en el hilo principal cuando termina la peticion.
     @Override
     protected void onPostExecute(RespuestaREST resultado) {
         Log.i(ETIQUETA, "Peticion finalizada, respuesta=" + resultado);
@@ -117,6 +136,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> comoFue() <--
+      *
+      * indica si el codigo recibido se considera una peticion aceptada.
      */
     public boolean comoFue() {
         return laRespuesta.comoFue();
@@ -124,6 +145,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getCodigo() <--
+      *
+      * devuelve el codigo de respuesta que dio el servidor.
      */
     public int getCodigo() {
         return codigo;
@@ -131,6 +154,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getCuerpo() <--
+      *
+      * devuelve el cuerpo de la respuesta del servidor.
      */
     public String getCuerpo() {
         return cuerpo;
@@ -138,6 +163,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getLaRespuesta() <--
+      *
+      * devuelve la respuesta completa recibida.
      */
     public RespuestaREST getLaRespuesta() {
         return laRespuesta;
@@ -154,6 +181,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getMetodo() <--
+      *
+      * devuelve el metodo HTTP de la peticion.
      */
     public String getMetodo() {
         return metodo;
@@ -161,6 +190,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getUrlDestino() <--
+      *
+      * devuelve la URL a la que se envio la peticion.
      */
     public String getUrlDestino() {
         return urlDestino;
@@ -168,6 +199,8 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
 
     /**
      * --> getElCuerpo() <--
+      *
+      * devuelve el cuerpo que se envio en la peticion.
      */
     public String getElCuerpo() {
         return elCuerpo;

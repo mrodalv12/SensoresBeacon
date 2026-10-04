@@ -3,10 +3,12 @@
 //Descripcion: Clase que simplifica el uso del puerto serie (consola) de la placa. 
 //              Se encarga de abrir el puerto a una velocidad dada, esperar a que 
 //              este disponible y escribir mensajes (de cualquier tipo) por consola.
-//Copyright: 
-//Fecha de modificacion: 15-09-26
-//Autor: 
-//Aportacion: 
+//Copyright:
+//Fecha de creacion: 2019-07-05
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
+//Aportacion: limpieza y mas comentarios
 //=============================================================================================
 
 #ifndef PUERTO_SERIE_H_INCLUIDO

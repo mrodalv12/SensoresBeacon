@@ -1,12 +1,13 @@
 //=============================================================================================
 //Nombre: Publicador.h
-//Descripcion: Clase que se encarga de publicar las mediciones de CO2 y temperatura 
-//              a traves de iBeacon. Cada medida se envia como un iBeacon con un 
-//              UUID fijo, el tipo de medicion codificado en el campo major y el 
-//              valor medido en el campo minor. Tambien permite encender la emisora.
-//Copyright: Jordi Bataller i Mascarell
-//Fecha de modificacion: 15-09-26
-//Autor: 
+//Descripcion: Publica las mediciones de CO2 y temperatura como anuncios iBeacon.
+//              El tipo de medicion va codificado en el campo major y el valor
+//              medido en el campo minor, con un UUID fijo en todos los anuncios.
+//Copyright:
+//Fecha de creacion: 2019-07-06
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
 //Aportacion: limpieza y mas comentarios
 //=============================================================================================
 

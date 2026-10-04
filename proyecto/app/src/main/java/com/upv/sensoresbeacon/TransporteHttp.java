@@ -1,5 +1,19 @@
 package com.upv.sensoresbeacon;
 
+
+//==============================================================================================
+//Nombre: TransporteHttp.java
+//Descripcion: Interfaz de transporte HTTP: permite cambiar la comunicacion real por un
+//              doble de prueba.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 4 - Firmas):
  *

@@ -1,5 +1,19 @@
 package com.upv.sensoresbeacon;
 
+
+//==============================================================================================
+//Nombre: MedicionesID.java
+//Descripcion: Enumeracion de los tres tipos de medicion (co2, temperatura, ruido) y sus
+//              codigos, que coinciden con el byte alto del campo major.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 2.1 - Enumerations):
  *
@@ -19,6 +33,7 @@ public enum MedicionesID {
         this.codigo = codigo;
     }
 
+    // devuelve el codigo numerico del tipo, que es el byte alto del major.
     public int getCodigo() {
         return codigo;
     }

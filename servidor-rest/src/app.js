@@ -1,3 +1,14 @@
+//==============================================================================================
+//Nombre: app.js
+//Descripcion: Aplicacion HTTP del servidor REST: solo enruta las peticiones, sin logica de negocio.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 const http = require('http');
 const { routerMediciones } = require('./routes/medicionesRoutes');
 

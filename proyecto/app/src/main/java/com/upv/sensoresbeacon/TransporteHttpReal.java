@@ -9,6 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+//==============================================================================================
+//Nombre: TransporteHttpReal.java
+//Descripcion: Implementacion real de TransporteHttp sobre HttpURLConnection.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (seccion 5 - Clases):
  *
@@ -28,6 +39,8 @@ public class TransporteHttpReal implements TransporteHttp {
 
     /**
      * --> TransporteHttpReal() -->
+     *
+     * Usa el tiempo de lectura por defecto.
      */
     public TransporteHttpReal() {
         this(TIEMPO_LECTURA_MS);
@@ -35,6 +48,8 @@ public class TransporteHttpReal implements TransporteHttp {
 
     /**
      * tiempoLecturaMs: Z --> TransporteHttpReal() -->
+     *
+     * Fija cuantos milisegundos espera como maximo a la respuesta del servidor.
      */
     public TransporteHttpReal(int tiempoLecturaMs) {
         this.tiempoLecturaMs = tiempoLecturaMs;
@@ -75,6 +90,7 @@ public class TransporteHttpReal implements TransporteHttp {
         }
     }
 
+    // convierte el flujo de bytes de la respuesta en una cadena, o devuelve cadena vacia si es null.
     private String leerFlujo(InputStream flujo) throws IOException {
         if (flujo == null) {
             return "";

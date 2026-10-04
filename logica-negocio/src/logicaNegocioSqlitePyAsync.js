@@ -1,12 +1,28 @@
+//==============================================================================================
+//Nombre: logicaNegocioSqlitePyAsync.js
+//Descripcion: Logica de negocio asincrona preparada para trabajar con un repositorio SQLite
+//              (Python).
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Lógica de Negocio con acceso a Base de Datos (async)
  */
 
 class LogicaNegocioSQLitePyAsync {
+    // constructor( repositorio ): guarda el repositorio en el que se apoyara
+    // la logica.
     constructor(repositorio) {
         this.repositorio = repositorio;
     }
 
+    // guardarMedicion(): normaliza la medicion y la guarda en el repositorio;
+    // devuelve el id con el que queda registrada.
     async guardarMedicion(medicion, uuid, minor, major, txPower) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
         const valor = medicion && (medicion.valor !== undefined ? medicion.valor : medicion.valor);
@@ -25,6 +41,8 @@ class LogicaNegocioSQLitePyAsync {
         return { ok: true, id: resultado && resultado.id };
     }
 
+    // obtenerMedicion(): pide al repositorio las ultimas 10 mediciones y las
+    // devuelve con fecha_y_hora, tipo y valor.
     async obtenerMedicion() {
         const mediciones = await this.repositorio.obtenerUltimas10();
         return (mediciones || []).map(m => ({

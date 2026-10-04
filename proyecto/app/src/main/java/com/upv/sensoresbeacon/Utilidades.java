@@ -2,6 +2,18 @@ package com.upv.sensoresbeacon;
 
 import java.util.UUID;
 
+//==============================================================================================
+//Nombre: Utilidades.java
+//Descripcion: Utilidades estaticas de conversion entre bytes, cadenas, UUID e enteros,
+//              usadas al leer la trama iBeacon.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 5 - Clases):
  *
@@ -53,6 +65,7 @@ public final class Utilidades {
     private static final int TAM_LONG = 8;
     private static final int TAM_SHORT = 2;
 
+    // Utilidades(): constructor vacio; la clase solo ofrece metodos estaticos.
     private Utilidades() {
     }
 
@@ -295,6 +308,7 @@ public final class Utilidades {
         return bytesToUUID(bytesDesdeTextoAscii(texto));
     }
 
+    // convierte los 32 caracteres hexadecimales de un UUID en su objeto UUID.
     private static UUID uuidFromHex(String hex) {
         if (hex.length() != TAM_UUID * 2) {
             throw new IllegalArgumentException("Un UUID requiere 32 caracteres hexadecimales: " + hex);

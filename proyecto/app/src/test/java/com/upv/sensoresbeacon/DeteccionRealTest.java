@@ -7,6 +7,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+//==============================================================================================
+//Nombre: DeteccionRealTest.java
+//Descripcion: Pruebas de deteccion sobre anuncios BLE reales: UUID esperada, major/minor y
+//              descarte de anuncios repetidos.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Comprueba el comportamiento con el anuncio que produce realmente el emisor.
  *
@@ -52,6 +64,7 @@ public class DeteccionRealTest {
         return bytes;
     }
 
+    // el anuncio del emisor se detecta y su trama iBeacon se localiza.
     @Test
     public void detectaElAnuncioDelEmisorYLocalizaLaTrama() {
         byte[] bytes = anuncioDelEmisor((11 << 8) + 1, 612, 4);
@@ -59,6 +72,7 @@ public class DeteccionRealTest {
         assertEquals(5, TramaIBeacon.localizarTrama(bytes));
     }
 
+    // la trama usa la UUID que espera la app.
     @Test
     public void laTramaEmiteLaUuidEsperada() {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 1, 612, 4));
@@ -67,12 +81,14 @@ public class DeteccionRealTest {
         assertEquals(MainActivity.UUID_BUSCADA, Utilidades.bytesToHexString(trama.getUUID()));
     }
 
+    // el companyId de la trama se lee como Apple (0x004C).
     @Test
     public void elCompanyIdSeLeeComoApple() {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 1, 612, 4));
         assertEquals(0x004C, trama.getCompanyIDComoInt());
     }
 
+    // major y minor se interpretan en little-endian.
     @Test
     public void elMajorYElMinorSeLeenLittleEndian() {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 7, 2450, 4));
@@ -80,6 +96,7 @@ public class DeteccionRealTest {
         assertEquals(2450, trama.getMinorComoInt());
     }
 
+    // el major lleva el tipo en el byte alto y el contador en el bajo.
     @Test
     public void elTipoVaEnElByteAltoYElContadorEnElBajo() {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 7, 2450, 4));
@@ -88,6 +105,7 @@ public class DeteccionRealTest {
         assertEquals("co2", Medicion.desdeTrama(trama).getTipoDeMedicion());
     }
 
+    // la misma emisora publica tanto CO2 como temperatura.
     @Test
     public void laMismaEmisoraEmiteCO2YTemperatura() {
         TramaIBeacon co2 = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 3, 812, 4));
@@ -96,6 +114,7 @@ public class DeteccionRealTest {
         assertEquals("temperatura", Medicion.desdeTrama(temperatura).getTipoDeMedicion());
     }
 
+    // dos mediciones distintas de la misma placa no se descartan.
     @Test
     public void dosMedicionesDistintasDeLaMismaPlacaNoSeDescartan() {
         // La placa tiene MAC fija: si la deduplicacion usara solo la MAC, la
@@ -105,6 +124,7 @@ public class DeteccionRealTest {
         assertNotEquals(co2, temperatura);
     }
 
+    // un anuncio repetido se descarta, para no enviarlo dos veces.
     @Test
     public void elAnuncioRepetidoSiSeDescarta() {
         String primera = MainActivity.claveDeMedicion(MAC, (11 << 8) + 3, 812);
@@ -112,6 +132,7 @@ public class DeteccionRealTest {
         assertEquals(primera, repetido);
     }
 
+    // cada iteracion del contador produce una medicion nueva.
     @Test
     public void cadaIteracionDelContadorDaUnaMedicionNueva() {
         int[][] medidas = {{11, 1, 700}, {11, 2, 701}, {12, 2, 22}, {13, 2, 55}};
@@ -122,6 +143,7 @@ public class DeteccionRealTest {
         assertEquals(medidas.length, claves.size());
     }
 
+    // un anuncio ajeno no se confunde con la trama iBeacon.
     @Test
     public void unAnuncioNoRelacionadoNoSeConfundeConUnIBeacon() {
         // anuncio BLE corriente: solo flags y el nombre "GTI-3A-MJ"
@@ -133,17 +155,20 @@ public class DeteccionRealTest {
         assertFalse(TramaIBeacon.esTramaIBeacon(anuncio));
     }
 
+    // el anuncio del emisor se reconoce como datos de fabricante de Apple.
     @Test
     public void elAnuncioDelEmisorSeReconoceComoApple() {
         assertTrue(TramaIBeacon.esAnuncioConIBeaconDeApple(anuncioDelEmisor((11 << 8) + 1, 612, 4)));
     }
 
+    // localizarManufacturerData(): encuentra donde estan los datos de Apple.
     @Test
     public void seEncuentraLaPosicionDeLosDatosDeApple() {
         byte[] bytes = anuncioDelEmisor((11 << 8) + 1, 612, 4);
         assertEquals(5, TramaIBeacon.localizarManufacturerData(bytes, 0x004C));
     }
 
+    // los manufacturer data se cuentan en el advertisement correcto.
     @Test
     public void losDatosDeManufacturerCuentanEnElAdvertisementCorrecto() {
         // Un anuncio con la marca iBeacon va detras de la estructura Flags,
@@ -153,6 +178,7 @@ public class DeteccionRealTest {
         assertTrue(TramaIBeacon.localizarManufacturerData(bytes, 0x0000) == TramaIBeacon.NO_ENCONTRADA);
     }
 
+    // un anuncio sin datos del fabricante no se cuenta.
     @Test
     public void unAnuncioQueNoEsDelFabricanteNoSeCuenta() {
         byte[] anuncio = {
@@ -163,6 +189,7 @@ public class DeteccionRealTest {
         assertFalse(TramaIBeacon.esAnuncioConIBeaconDeApple(anuncio));
     }
 
+    // un anuncio de Apple que no es beacon no se toma por iBeacon.
     @Test
     public void unAnuncioDeAppleQueNoEsBeaconNoSeConfunde() {
         // datos de fabricante de Apple, pero sin la marca 02 15

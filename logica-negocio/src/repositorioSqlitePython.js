@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: repositorioSqlitePython.js
+//Descripcion: Repositorio SQLite sincrono: delega el INSERT y el SELECT en python3, sin
+//              dependencias externas de Node.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Repositorio SQLite usando Python3 (evita dependencia externa node-sqlite3)
  * Separado de Lógica de Negocio
@@ -8,6 +20,7 @@ const path = require('path');
 
 const DB_PATH = path.join(__dirname, '../../bbdd/mediciones.db');
 
+// guardar(): inserta la medicion en SQLite mediante python3 y devuelve el id.
 function guardar(datos) {
     const tipo = datos.tipo_de_medicion || datos.tipo || '';
     const valor = datos.valor || 0;
@@ -43,6 +56,8 @@ print(lastid)
     return { id: lastId };
 }
 
+// obtenerUltimas10(): lee las mediciones de SQLite mediante python3 y
+// devuelve las ultimas 10.
 function obtenerUltimas10() {
     const script = `
 import sqlite3

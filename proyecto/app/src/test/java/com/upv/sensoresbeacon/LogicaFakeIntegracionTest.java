@@ -22,6 +22,18 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+//==============================================================================================
+//Nombre: LogicaFakeIntegracionTest.java
+//Descripcion: Prueba de integracion de la logica fake contra un servidor HTTP real
+//              levantado en un puerto local efimero.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Prueba de integracion: levanta un servidor HTTP real en un puerto local
  * efimero, comprueba que el POST de la logica fake llega con el metodo, la
@@ -39,6 +51,7 @@ public class LogicaFakeIntegracionTest {
     private final CountDownLatch peticionRecibida = new CountDownLatch(1);
     private final AtomicReference<String> cabeceraRecibida = new AtomicReference<>();
 
+    // arrancarServidor(): levanta el servidor HTTP real en un puerto efimero.
     @Before
     public void arrancarServidor() throws Exception {
         servidor = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
@@ -48,6 +61,7 @@ public class LogicaFakeIntegracionTest {
         hiloServidor.start();
     }
 
+    // pararServidor(): cierra el servidor y espera al hilo que lo atiende.
     @After
     public void pararServidor() throws Exception {
         if (servidor != null) {
@@ -99,6 +113,7 @@ public class LogicaFakeIntegracionTest {
         }
     }
 
+    // el POST llega con el metodo, la ruta y el cuerpo JSON esperados.
     @Test
     public void elPostDeLaMedicionLlegaAlServidorConTodosLosDatos() throws Exception {
         LogicaFake logica = new LogicaFake(base);
@@ -126,6 +141,7 @@ public class LogicaFakeIntegracionTest {
         assertEquals("GTI-3A-MJ", json.getString("nombre_emisora"));
     }
 
+    // el codigo 200 del servidor se interpreta como peticion aceptada.
     @Test
     public void laRespuestaDelServidorSeInterpretaComoExitosa() {
         LogicaFake logica = new LogicaFake(base);
@@ -141,6 +157,7 @@ public class LogicaFakeIntegracionTest {
         assertEquals(RESPUESTA, peticion.getCuerpo());
     }
 
+    // si el servidor no responde, se devuelve -1 sin lanzar excepcion.
     @Test
     public void unServidorIlegibleDevuelveCodigoMenosUnoSinExcepcion() {
         LogicaFake logica = new LogicaFake("http://127.0.0.1:1/mediciones");

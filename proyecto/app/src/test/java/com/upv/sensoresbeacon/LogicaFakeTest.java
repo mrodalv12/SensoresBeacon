@@ -7,6 +7,18 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+//==============================================================================================
+//Nombre: LogicaFakeTest.java
+//Descripcion: Pruebas de la logica fake con un transporte HTTP falso: comprueba el POST
+//              realizado y su cuerpo JSON.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Pruebas de la logica fake: debe lanzar una peticion POST a /mediciones con
  * los datos de la medicion y los del beacon.
@@ -20,12 +32,14 @@ public class LogicaFakeTest {
     private TransporteHttpFalso transporte;
     private LogicaFake logica;
 
+    // setUp(): crea la logica fake con un transporte falso en cada prueba.
     @Before
     public void setUp() {
         transporte = new TransporteHttpFalso();
         logica = new LogicaFake(URL, transporte);
     }
 
+    // guardarMedicion(): lanza exactamente una peticion HTTP.
     @Test
     public void guardarMedicionHaceUnaUnicaPeticionPost() {
         Medicion medicion = new Medicion(812);
@@ -37,6 +51,7 @@ public class LogicaFakeTest {
         assertEquals("POST", transporte.getUltimaLlamada().metodo);
     }
 
+    // guardarMedicion(): la peticion va contra la ruta /mediciones.
     @Test
     public void guardarMedicionApuntaALaRutaDeMediciones() {
         logica.guardarMedicion(new Medicion(812), UUID_HEX, -59, 11, 812, EMISORA);
@@ -44,6 +59,7 @@ public class LogicaFakeTest {
         assertTrue(transporte.getUltimaLlamada().urlDestino.endsWith(LogicaFake.RUTA_MEDICIONES));
     }
 
+    // el JSON enviado lleva el tipo y el valor de la medicion.
     @Test
     public void elCuerpoJsonContieneElTipoYElValorDeLaMedicion() throws Exception {
         Medicion medicion = new Medicion(23.5);
@@ -56,6 +72,7 @@ public class LogicaFakeTest {
         assertEquals(23.5, cuerpo.getDouble("valor"), 0.0001);
     }
 
+    // el JSON enviado lleva uuid, txPower, major, minor y nombre.
     @Test
     public void elCuerpoJsonContieneTodosLosDatosDelBeacon() throws Exception {
         logica.guardarMedicion(new Medicion(68), UUID_HEX, -70, 13, 68, EMISORA);
@@ -68,6 +85,7 @@ public class LogicaFakeTest {
         assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
     }
 
+    // los campos numericos del beacon van como numero JSON, no como texto.
     @Test
     public void losNumerosDelBeaconSeEnvianComoEnterosYNoComoText() throws Exception {
         logica.guardarMedicion(new Medicion(2450), UUID_HEX, -59, 12, 2450, EMISORA);
@@ -81,6 +99,7 @@ public class LogicaFakeTest {
         assertTrue(cuerpo.get("uuid") instanceof String);
     }
 
+    // el txPower negativo se envia con su signo.
     @Test
     public void txPowerNegativoSeEnviaConSigno() throws Exception {
         logica.guardarMedicion(new Medicion(812), UUID_HEX, -65, 11, 812, EMISORA);
@@ -89,6 +108,7 @@ public class LogicaFakeTest {
         assertEquals(-65, cuerpo.getInt("txPower"));
     }
 
+    // major y minor conservan su valor completo, sin truncar a 16 bits.
     @Test
     public void losCamposDe16BitsNoSeTruncan() throws Exception {
         logica.guardarMedicion(new Medicion(65535), UUID_HEX, -128, 65535, 65535, EMISORA);
@@ -100,6 +120,7 @@ public class LogicaFakeTest {
         assertEquals(-128, cuerpo.getInt("txPower"));
     }
 
+    // guardarMedicion(): la medicion se guarda tambien en la logica.
     @Test
     public void guardarMedicionConservaLaMedicionEnLaLogica() {
         Medicion medicion = new Medicion(15);
@@ -111,6 +132,7 @@ public class LogicaFakeTest {
         assertEquals("ruido", logica.getMedicion().getTipoDeMedicion());
     }
 
+    // un tipo no registrado se envia como desconocido.
     @Test
     public void unMedidorDesconocidoSeEnviaComoDesconocido() throws Exception {
         Medicion medicion = new Medicion(7);
@@ -123,6 +145,7 @@ public class LogicaFakeTest {
         assertEquals(42, cuerpo.getInt("major"));
     }
 
+    // una medicion nula no revienta: no hace ninguna peticion.
     @Test
     public void unaMedicionNulaNoProvocaUnaExcepcion() throws Exception {
         logica.guardarMedicion(null, UUID_HEX, -50, 11, 500, EMISORA);
@@ -131,6 +154,7 @@ public class LogicaFakeTest {
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, cuerpo.getString("tipo"));
     }
 
+    // un nombre nulo se convierte en cadena vacia.
     @Test
     public void nombreEmisoraYNulosSeNormalizanACadenaVacia() throws Exception {
         logica.guardarMedicion(new Medicion(1), null, -50, 11, 1, null);
@@ -140,6 +164,7 @@ public class LogicaFakeTest {
         assertEquals("", cuerpo.getString("nombre_emisora"));
     }
 
+    // la logica guarda la ultima peticion realizada, para poder inspeccionarla.
     @Test
     public void seGuardaLaUltimaPeticionRealizada() {
         logica.guardarMedicion(new Medicion(812), UUID_HEX, -59, 11, 812, EMISORA);
@@ -151,6 +176,7 @@ public class LogicaFakeTest {
         assertTrue(peticion.comoFue());
     }
 
+    // si el servidor falla, la excepcion no sale de la logica.
     @Test
     public void unErrorDelServidorNoPropagaUnaExcepcion() {
         transporte.setRespuesta(new RespuestaREST(500, "{\"error\":\"fallo\"}"));
@@ -160,6 +186,7 @@ public class LogicaFakeTest {
         assertEquals(500, logica.getUltimaPeticion().getCodigo());
     }
 
+    // desde la trama hasta el POST: el flujo completo envia la medicion.
     @Test
     public void elFlujoCompletoDesdeLaTramaEnviaLaMedicion() throws Exception {
         TramaIBeacon trama = new TramaIBeacon(

@@ -1,4 +1,17 @@
 <?php
+
+//==============================================================================================
+//Nombre: index.php
+//Descripcion: Pagina principal: pide las ultimas mediciones al servidor REST y las
+//              muestra en las tarjetas y en la tabla.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 require_once 'includes/mediciones.php';
 
 $mediciones = obtenerUltimasMediciones();

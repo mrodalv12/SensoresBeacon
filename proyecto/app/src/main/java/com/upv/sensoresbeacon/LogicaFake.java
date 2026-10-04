@@ -5,6 +5,18 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+//==============================================================================================
+//Nombre: LogicaFake.java
+//Descripcion: Logica "fake": en vez de persistir en local, envia cada medicion con un
+//              POST /mediciones al servidor REST.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 5 - Clases):
  *
@@ -119,6 +131,8 @@ public class LogicaFake {
 
     /**
      * --> getMedicion() <--
+      *
+      * devuelve la ultima medicion que se ha guardado en la logica.
      */
     public Medicion getMedicion() {
         return medicion;
@@ -126,6 +140,8 @@ public class LogicaFake {
 
     /**
      * --> getUrlServidor() <--
+      *
+      * devuelve la URL del servidor REST configurada.
      */
     public String getUrlServidor() {
         return urlServidor;
@@ -133,6 +149,8 @@ public class LogicaFake {
 
     /**
      * --> getUltimaPeticion() <--
+      *
+      * devuelve la ultima peticion HTTP realizada.
      */
     public PeticionarioREST getUltimaPeticion() {
         return peticionario;

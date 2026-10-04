@@ -24,6 +24,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//==============================================================================================
+//Nombre: MainActivity.java
+//Descripcion: Activity principal: pide permisos, escanea BLE, filtra los anuncios iBeacon
+//              de la UUID del emisor y muestra y envia las mediciones.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 5 - Clases):
  *
@@ -153,6 +165,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
         v = findViewById(R.id.btnBuscarTodos);
         ((Button) v).setOnClickListener(new View.OnClickListener() {
+            // atribuye al boton la accion de buscar todos, buscar el nuestro o detener, segunt sea.
             @Override
             public void onClick(View pulsado) {
                 botonBuscarDispositivosBTLEPulsado();
@@ -161,6 +174,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
         v = findViewById(R.id.btnBuscarNuestro);
         ((Button) v).setOnClickListener(new View.OnClickListener() {
+            // atribuye al boton la accion de buscar todos, buscar el nuestro o detener, segunt sea.
             @Override
             public void onClick(View pulsado) {
                 botonBuscarNuestroDispositivoBTLEPulsado();
@@ -168,7 +182,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         });
 
         v = findViewById(R.id.btnDetener);
+        // atribuye al boton la accion de buscar todos, buscar el nuestro o detener, segunt sea.
         ((Button) v).setOnClickListener(new View.OnClickListener() {
+            // atribuye al boton la accion de buscar todos, buscar el nuestro o detener, segunt sea.
             @Override
             public void onClick(View pulsado) {
                 botonDetenerBusquedaDeDispositivosBTLEPulsado();
@@ -357,6 +373,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return normalizar(uuid).equals(normalizar(uuidBuscada));
     }
 
+    // quita guiones, dos puntos y espacios, y pasa a mayusculas, para comparar UUID.
     private static String normalizar(String texto) {
         return texto.replace("-", "").replace(":", "").replace(" ", "").toUpperCase();
     }
@@ -412,11 +429,13 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
      */
     private ScanCallback crearCallback(final boolean soloElBuscado) {
         return new ScanCallback() {
+            // procesa el anuncio BLE recibido de uno en uno.
             @Override
             public void onScanResult(int tipoCallback, ScanResult resultado) {
                 mostrarInformacionDelDispositivoBTLE(resultado, soloElBuscado);
             }
 
+            // procesa en bloque los anuncios acumulados.
             @Override
             public void onBatchScanResults(List<ScanResult> resultados) {
                 for (ScanResult resultado : resultados) {
@@ -424,6 +443,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
                 }
             }
 
+            // avisa por pantalla de que el escaneo no pudo empezar.
             @Override
             public void onScanFailed(int codigoError) {
                 Log.e(ETIQUETA_LOG, "onScanFailed codigo=" + codigoError);
@@ -603,6 +623,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     private void enviarMedicion(final Medicion medicion, final String uuid, final int txPower,
                                 final int major, final int minor, final String nombre) {
         new Thread(new Runnable() {
+            // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
             @Override
             public void run() {
                 logicaFake.guardarMedicion(medicion, uuid, txPower, major, minor, nombre);
@@ -645,6 +666,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
+    // devuelve el nombre de dispositivo que viaja en el propio anuncio BLE, o null si no lo incluye.
     private String nombreEnElAnuncio(ScanResult resultado) {
         ScanRecord registro = resultado.getScanRecord();
         if (registro == null) {
@@ -724,6 +746,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         final int otros = contadorOtros;
         final int apple = contadorApple;
         runOnUiThread(new Runnable() {
+            // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
             @Override
             public void run() {
                 if (tvContador != null) {
@@ -777,7 +800,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
      */
     public void escribirEnPantalla(final String texto) {
         Log.i(ETIQUETA_LOG, texto);
+        // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
         runOnUiThread(new Runnable() {
+            // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
             @Override
             public void run() {
                 if (tvLog != null) {
@@ -789,6 +814,8 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
     /**
      * --> getContadorBeacons() <--
+      *
+      * devuelve cuantos iBeacons de nuestro emisor se han detectado.
      */
     public int getContadorBeacons() {
         return contadorBeacons;
@@ -796,6 +823,8 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
     /**
      * --> getDispositivoBuscado() <--
+      *
+      * devuelve el nombre del dispositivo que se esta buscando.
      */
     public String getDispositivoBuscado() {
         return dispositivoBuscado;
@@ -803,6 +832,8 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
     /**
      * --> getUuidBuscada() <--
+      *
+      * devuelve la UUID por la que se filtra el escaneo.
      */
     public String getUuidBuscada() {
         return uuidBuscada;
@@ -817,6 +848,8 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
     /**
      * --> isBusquedaEnCurso() <--
+      *
+      * indica si el escaneo de dispositivos esta activo.
      */
     public boolean isBusquedaEnCurso() {
         return busquedaEnCurso;

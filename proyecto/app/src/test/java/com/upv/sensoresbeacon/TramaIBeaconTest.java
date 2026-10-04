@@ -11,6 +11,17 @@ import org.junit.Test;
 
 import java.util.UUID;
 
+//==============================================================================================
+//Nombre: TramaIBeaconTest.java
+//Descripcion: Pruebas de la descomposicion de la trama iBeacon dentro de un anuncio BLE.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Pruebas de la clase TramaIBeacon, incluida la trama tal y como la entrega
  * Android en ScanRecord.getBytes().
@@ -53,6 +64,7 @@ public class TramaIBeaconTest {
         return rellenarDatos(anuncio, 5, major, minor, txPower);
     }
 
+    // rellenarDatos(): monta un anuncio con la trama iBeacon en la posicion pedida.
     private static byte[] rellenarDatos(byte[] bytes, int inicio, int major, int minor, int txPower) {
         bytes[inicio] = 0x4C;
         bytes[inicio + 1] = 0x00;
@@ -68,11 +80,13 @@ public class TramaIBeaconTest {
         return bytes;
     }
 
+    // esTramaIBeacon(): reconoce el anuncio completo que emite Android.
     @Test
     public void detectaElAnuncioRealDeAndroid() {
         assertTrue(TramaIBeacon.esTramaIBeacon(anuncioCompleto(MAJOR, MINOR, TX_POWER)));
     }
 
+    // del anuncio real de Android extrae bien uuid, major, minor y txPower.
     @Test
     public void extraeLosCamposDelAnuncioRealDeAndroid() {
         TramaIBeacon trama = new TramaIBeacon(anuncioCompleto(MAJOR, MINOR, TX_POWER));
@@ -85,11 +99,13 @@ public class TramaIBeaconTest {
         assertEquals(TramaIBeacon.COMPANY_ID_APPLE, trama.getCompanyIDComoInt());
     }
 
+    // esTramaIBeacon(): reconoce la trama iBeacon sin cabecera, la del laboratorio.
     @Test
     public void detectaLaTramaDesnudaDelLaboratorio() {
         assertTrue(TramaIBeacon.esTramaIBeacon(tramaCompleta(MAJOR, MINOR, TX_POWER)));
     }
 
+    // de la trama desnuda extrae bien uuid, major, minor y txPower.
     @Test
     public void extraeLosCamposDeLaTramaDesnudaDelLaboratorio() {
         TramaIBeacon trama = new TramaIBeacon(tramaCompleta(MAJOR, MINOR, TX_POWER));
@@ -101,6 +117,7 @@ public class TramaIBeaconTest {
                 trama.getUUIDComoUUID());
     }
 
+    // con cabecera y sin cabecera se leen los mismos campos.
     @Test
     public void elAnuncioYLaTramaDesnudaProducenLosMismosCampos() {
         TramaIBeacon delAnuncio = new TramaIBeacon(anuncioCompleto(MAJOR, MINOR, TX_POWER));
@@ -113,12 +130,14 @@ public class TramaIBeaconTest {
         assertEquals(desnuda.getCompanyIDComoInt(), delAnuncio.getCompanyIDComoInt());
     }
 
+    // localizarTrama(): encuentra la trama este donde este dentro del anuncio.
     @Test
     public void localizaLaTramaEnLasPosicionesEsperadas() {
         assertEquals(5, TramaIBeacon.localizarTrama(anuncioCompleto(MAJOR, MINOR, TX_POWER)));
         assertEquals(2, TramaIBeacon.localizarTrama(tramaCompleta(MAJOR, MINOR, TX_POWER)));
     }
 
+    // los campos se leen igual aunque el UUID no sea el del emisor del laboratorio.
     @Test
     public void funcionaConTramasDeOtrosEmisoresDistintosDeApple() {
         byte[] anuncio = anuncioCompleto(MAJOR, MINOR, TX_POWER);
@@ -131,6 +150,7 @@ public class TramaIBeaconTest {
         assertEquals(MINOR, trama.getMinorComoInt());
     }
 
+    // esTramaIBeacon(): rechaza anuncios sin la marca iBeacon 02 15.
     @Test
     public void esTramaIBeaconRechazaAnunciosSinLaMarca02_15() {
         byte[] anuncio = anuncioCompleto(MAJOR, MINOR, TX_POWER);
@@ -140,18 +160,21 @@ public class TramaIBeaconTest {
         assertFalse(TramaIBeacon.esTramaIBeacon(anuncio));
     }
 
+    // esTramaIBeacon(): rechaza anuncios demasiado cortos para la trama.
     @Test
     public void esTramaIBeaconRechazaAnunciosDemasiadoCortos() {
         assertFalse(TramaIBeacon.esTramaIBeacon(new byte[]{0x06, (byte) 0xFF, 0x4C}));
         assertFalse(TramaIBeacon.esTramaIBeacon(null));
     }
 
+    // esTramaIBeacon(): rechaza datos que no son de Bluetooth.
     @Test
     public void esTramaIBeaconRechazaAnunciosQueNoSonDeBluetooth() {
         assertFalse(TramaIBeacon.esTramaIBeacon(
                 Utilidades.stringToBytes("02010611FF0706554C0050534B32315A0C")));
     }
 
+    // TramaIBeacon(): separa los bytes de cabecera de los datos de la trama.
     @Test
     public void constructorDescomponeLosCabeceros() {
         TramaIBeacon trama = new TramaIBeacon(tramaCompleta(MAJOR, MINOR, TX_POWER));
@@ -162,6 +185,7 @@ public class TramaIBeaconTest {
         assertEquals(16, trama.getUUID().length);
     }
 
+    // los setters de bytes copian el array, no guardan la referencia recibida.
     @Test
     public void losSettersDeBytesDevuelvenCopiasDefensivas() {
         TramaIBeacon trama = new TramaIBeacon(tramaCompleta(MAJOR, MINOR, TX_POWER));
@@ -170,6 +194,7 @@ public class TramaIBeaconTest {
         assertEquals(0xF7, trama.getUUID()[0] & 0xFF);
     }
 
+    // getMajor(): interpreta el major como entero de 16 bits sin signo.
     @Test
     public void majorSeInterpretaComoEnteroSinSignoDe16Bits() {
         TramaIBeacon trama = new TramaIBeacon(tramaCompleta(0xFFFF, 0xFFFF, 0));
@@ -177,6 +202,7 @@ public class TramaIBeaconTest {
         assertEquals(65535, trama.getMinorComoInt());
     }
 
+    // TramaIBeacon(): falla si el anuncio no contiene una trama iBeacon.
     @Test
     public void constructorRechazaAnunciosSinTramaIBeacon() {
         try {

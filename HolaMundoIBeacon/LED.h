@@ -3,10 +3,12 @@
 //Descripcion: Clase para controlar un LED fisico de la placa: encender, apagar, 
 //              alternar y hacerlo brillar durante un tiempo. Incluye tambien la 
 //              funcion esperar(), que hace una pausa usando delay().
-//Copyright: 
-//Fecha de modificacion: 15-09-26
-//Autor: 
-//Aportacion: 
+//Copyright:
+//Fecha de creacion: 2019-07-05
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
+//Aportacion: limpieza y mas comentarios
 //=============================================================================================
 
 #ifndef LED_H_INCLUIDO

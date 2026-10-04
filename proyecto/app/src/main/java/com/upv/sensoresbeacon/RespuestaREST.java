@@ -1,5 +1,19 @@
 package com.upv.sensoresbeacon;
 
+
+//==============================================================================================
+//Nombre: RespuestaREST.java
+//Descripcion: Codigo y cuerpo de la respuesta del servidor, e indica si la peticion
+//              fue aceptada.
+//Copyright:
+//Fecha de creacion: 2026-10-01
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
+
 /**
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 2.2 - Aggregations):
  *
@@ -33,6 +47,8 @@ public class RespuestaREST {
 
     /**
      * --> RespuestaREST() -->
+     *
+     * Crea una respuesta vacia, sin codigo ni cuerpo.
      */
     public RespuestaREST() {
         this(SIN_CODIGO, "");
@@ -40,6 +56,8 @@ public class RespuestaREST {
 
     /**
      * codigoRespuesta: Z, cuerpoRespuesta: Text --> RespuestaREST() -->
+     *
+     * Guarda el codigo y el cuerpo recibidos; un cuerpo nulo se deja vacio.
      */
     public RespuestaREST(int codigoRespuesta, String cuerpoRespuesta) {
         this.codigoRespuesta = codigoRespuesta;
@@ -48,6 +66,8 @@ public class RespuestaREST {
 
     /**
      * --> getCodigoRespuesta() <--
+      *
+      * devuelve el codigo de respuesta.
      */
     public int getCodigoRespuesta() {
         return codigoRespuesta;
@@ -55,6 +75,8 @@ public class RespuestaREST {
 
     /**
      * --> getCuerpoRespuesta() <--
+      *
+      * devuelve el cuerpo de la respuesta.
      */
     public String getCuerpoRespuesta() {
         return cuerpoRespuesta;
@@ -72,6 +94,7 @@ public class RespuestaREST {
     /**
      * --> toString() <--
      */
+    // describe la respuesta con su codigo y su cuerpo.
     @Override
     public String toString() {
         return "RespuestaREST{codigoRespuesta=" + codigoRespuesta

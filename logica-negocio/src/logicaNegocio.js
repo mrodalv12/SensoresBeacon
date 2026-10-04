@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaNegocio.js
+//Descripcion: Logica de negocio sin base de datos: normaliza los datos de una medicion y
+//              los deja preparados para el repositorio.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Lógica de Negocio - Separada del Servidor REST y de la Base de Datos
  * 
@@ -23,6 +35,8 @@
  * Interacción (--x):
  *   - Envía datos procesados hacia la capa de Base de Datos (puerto de abstracción)
  */
+// guardarMedicion(): normaliza la medicion y los datos del beacon y devuelve
+// el resultado ya procesado, sin tocar la base de datos.
 function guardarMedicion(medicion, uuid, minor, major, txPower) {
     // Validación básica de parámetros
     const tipo = medicion && medicion.tipo !== undefined ? medicion.tipo : (medicion && medicion.tipoDeMedicion);
@@ -58,6 +72,8 @@ function guardarMedicion(medicion, uuid, minor, major, txPower) {
  * Interacción (--x):
  *   - Obtiene datos desde la capa de Base de Datos
  */
+// obtenerMedicion(): devuelve las ultimas 10 mediciones; sin repositorio
+// devuelve una lista vacia.
 function obtenerMedicion() {
     // Devuelve lista de las últimas 10 mediciones registradas
     // Cada elemento: fecha_y_hora (Text), tipo (Text), valor (R)

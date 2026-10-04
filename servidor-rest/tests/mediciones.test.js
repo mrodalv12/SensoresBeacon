@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: mediciones.test.js
+//Descripcion: Pruebas del servidor REST: levanta el servidor y comprueba el POST y el GET
+//              de /mediciones.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 const { test, describe, before, after } = require('node:test');
 const assert = require('node:assert');
 const http = require('http');
@@ -5,6 +17,8 @@ const { server } = require('../src/app');
 
 let port;
 
+// makeRequest(): envia una peticion HTTP al servidor de pruebas y devuelve
+// codigo, cabeceras y cuerpo.
 function makeRequest(method, path, body) {
     return new Promise((resolve, reject) => {
         const req = http.request({

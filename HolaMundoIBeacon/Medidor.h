@@ -1,3 +1,15 @@
+//=============================================================================================
+//Nombre: Medidor.h
+//Descripcion: Clase que lee los sensores analogos de la placa y convierte las
+//              lecturas en CO2 (ppm) y temperatura (°C).
+//Copyright:
+//Fecha de creacion: 2019-07-07
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Jordi Bataller
+//Aportacion: limpieza y mas comentarios
+//=============================================================================================
+
 // -*- mode: c++ -*-
 
 #ifndef MEDIDOR_H_INCLUIDO
@@ -6,6 +18,7 @@
 #include <Arduino.h>
 
 // ------------------------------------------------------
+//Clase Medidor: lee el sensor de gas (CO2) y el de temperatura
 // ------------------------------------------------------
 class Medidor {
 
@@ -30,12 +43,17 @@ private:
 public:
 
   // .....................................................
-  // constructor
+  // Medidor( ) [constructor]
+  //   Crea el medidor. No configura nada: la configuracion del ADC
+  //   se hace despues, en iniciarMedidor().
   // .....................................................
   Medidor(  ) {
   } // ()
 
   // .....................................................
+  // iniciarMedidor( )
+  //   Prepara el conversor analogico-digital: fija la resolucion
+  //   del ADC a 10 bits, que es la que espera el calculo de medirCO2().
   // .....................................................
   void iniciarMedidor() {
 	// las cosas que no se puedan hacer en el constructor, if any
@@ -43,6 +61,10 @@ public:
   } // ()
 
   // .....................................................
+  // medirCO2( ) --> ppm: float
+  //   Lee el sensor de gas y el de referencia, convierte ambos a voltios,
+  //   les resta la referencia y aplica la sensibilidad del sensor para
+  //   obtener la concentracion de CO2 en ppm. Los negativos se recortan a 0.
   // .....................................................
   float medirCO2() {
 
@@ -80,6 +102,9 @@ public:
   } // ()
 
   // .....................................................
+  // medirTemperatura( ) --> tempC: float
+  //   Lee el sensor analogico de temperatura, lo convierte a voltios y
+  //   aplica la formula del datasheet: (Vtemp / Vref) * 87 - 25.
   // .....................................................
   float medirTemperatura() {
 

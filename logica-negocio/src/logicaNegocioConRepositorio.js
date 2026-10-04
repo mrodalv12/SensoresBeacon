@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaNegocioConRepositorio.js
+//Descripcion: Logica de negocio sincrona que recibe un repositorio por constructor y delega
+//              en el el guardado y la lectura de las mediciones.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Lógica de Negocio con acceso a repositorio (BD)
  * 
@@ -6,6 +18,8 @@
  */
 
 class LogicaNegocio {
+    // constructor( repositorio ): guarda el repositorio en el que se apoyara
+    // la logica.
     constructor(repositorio) {
         this.repositorio = repositorio;
     }

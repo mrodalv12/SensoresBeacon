@@ -1,9 +1,23 @@
+//==============================================================================================
+//Nombre: app.js
+//Descripcion: Logica cliente de la pagina: obtiene las mediciones del servidor REST y
+//              actualiza las tarjetas y la tabla.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Lógica cliente para obtener y mostrar mediciones
  * 
  * Diseño según reglas del PDF "Logical_Design_RE_Rules_v3.pdf"
  */
 
+// obtenerMedicion(): pide las mediciones al API y devuelve el array recibido;
+// si la peticion falla, avisa por pantalla y devuelve una lista vacia.
 async function obtenerMedicion() {
     try {
         const response = await fetch('/api/mediciones.php');
@@ -19,6 +33,7 @@ async function obtenerMedicion() {
     }
 }
 
+// mostrarError(): pinta el mensaje de error en el contenedor de errores.
 function mostrarError(mensaje) {
     const errorContainer = document.getElementById('error-container');
     if (errorContainer) {
@@ -26,6 +41,7 @@ function mostrarError(mensaje) {
     }
 }
 
+// limpiarError(): vacia el contenedor de errores.
 function limpiarError() {
     const errorContainer = document.getElementById('error-container');
     if (errorContainer) {
@@ -33,6 +49,8 @@ function limpiarError() {
     }
 }
 
+// formatearFecha(): pasa la fecha que llega del servidor a un formato espanol
+// legible; si no puede, la devuelve tal cual.
 function formatearFecha(fechaYHora) {
     if (!fechaYHora) return '-';
     try {
@@ -50,6 +68,8 @@ function formatearFecha(fechaYHora) {
     }
 }
 
+// actualizarTarjetas(): busca la ultima medicion de CO2 y la de temperatura y
+// las muestra en sus tarjetas.
 function actualizarTarjetas(mediciones) {
     if (!Array.isArray(mediciones) || mediciones.length === 0) return;
     
@@ -82,6 +102,7 @@ function actualizarTarjetas(mediciones) {
     }
 }
 
+// actualizarTabla(): rellena la tabla con las ultimas 10 mediciones.
 function actualizarTabla(mediciones) {
     const tbody = document.getElementById('tabla-body');
     if (!tbody) return;
@@ -100,6 +121,7 @@ function actualizarTabla(mediciones) {
     });
 }
 
+// cargarMediciones(): pide las mediciones y refresca tarjetas y tabla.
 async function cargarMediciones() {
     limpiarError();
     const mediciones = await obtenerMedicion();

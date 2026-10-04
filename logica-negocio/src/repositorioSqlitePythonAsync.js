@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: repositorioSqlitePythonAsync.js
+//Descripcion: Repositorio SQLite asincrono: delega el INSERT y el SELECT en python3 mediante
+//              procesos hijo.
+//Copyright:
+//Fecha de creacion: 2026-10-02
+//Fecha de modificacion: 2026-10-04
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: limpieza y mas comentarios
+//==============================================================================================
+
 /**
  * Repositorio SQLite usando Python3 (async)
  */
@@ -7,6 +19,8 @@ const path = require('path');
 
 const DB_PATH = path.join(__dirname, '../../bbdd/mediciones.db');
 
+// guardar(): inserta la medicion en SQLite con un proceso python3 hijo y
+// devuelve una promesa con el id.
 function guardar(datos) {
     return new Promise((resolve, reject) => {
         const tipo = datos.tipo_de_medicion || datos.tipo || '';
@@ -45,6 +59,8 @@ print(lastid)
     });
 }
 
+// obtenerUltimas10(): lee las mediciones con un proceso python3 hijo y
+// devuelve una promesa con las ultimas 10.
 function obtenerUltimas10() {
     return new Promise((resolve, reject) => {
         const script = `

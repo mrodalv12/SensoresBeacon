@@ -1,3 +1,15 @@
+/*============================================================================================*/
+/*Nombre: style.css
+/*Descripcion: Estilos de la pagina: tarjetas de CO2 y temperatura, tabla de
+/*            mediciones y mensajes de error.
+/*Copyright:
+/*Fecha de creacion: 2026-10-02
+/*Fecha de modificacion: 2026-10-04
+/*Autores: Jordi Bataller y Maria Jose Rodriguez
+/*Autor: Maria Jose Rodriguez
+/*Aportacion: limpieza y mas comentarios
+/*============================================================================================*/
+
 :root {
     --bg-primary: #0F2A2E;
     --bg-card: #1C3C40;
