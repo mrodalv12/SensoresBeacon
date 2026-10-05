@@ -37,12 +37,12 @@ namespace Globales {
 // =======================================================================================
 
 // ------------------------------------------------------------------
-// ALGORITMO de inicializarPlaquita():
-//   1. Punto reservado para hacer la configuracion inicial del
-//      hardware de la placa (pines, reloj, sensores, etc.).
-//   2. Ahora mismo no se ejecuta ninguna instruccion: el cuerpo
-//      esta vacio (solo hay un comentario indicando donde iria).
+// DISENO de inicializarPlaquita():
+//   Punto reservado para la configuracion inicial del hardware de la
+//   placa (pines, reloj, sensores, etc.). No recibe ni devuelve nada.
+//   Ahora mismo el cuerpo esta vacio.
 // ------------------------------------------------------------------
+// --> inicializarPlaquita() -->
 void inicializarPlaquita () {
 
     // aqui iria la configuracion inicial de la placa
@@ -52,14 +52,13 @@ void inicializarPlaquita () {
 // ======================================= SETUP =========================================
 // Inicializa todos los procesos y funciones necesarias para que el codigo funcione
 
-// function void setup () {
-//    VariableGlobal.Puerto.esperarDisponible()
-//    IniciarPlaquita()
-//    VariableGlobal.Publicador.encenderEmisora()
-//    VariableGlobal.Medidor.iniciarMedidor()
-//    VariableGlobal.Puerto.escribir(string finalDeInicializado)
-// }
-//..........................................................................
+// ------------------------------------------------------------------
+// DISENO de setup():
+//   Inicializa todo lo que el programa necesita para funcionar: el
+//   puerto serie, la placa, la emisora BLE y el medidor.
+//   No recibe datos ni devuelve datos.
+// ------------------------------------------------------------------
+// --> setup() -->
 
 void setup() {
 
@@ -91,14 +90,14 @@ void setup() {
 //    dar retroalimentacion visual de algo (se usara despues)
 // la idea es que lo llames varias veces y coloques diferentes tiempos cada vez
 
-// void lucecitas(){
-//    using VariablesGlobales  
-//    VariableGlobal.LED.brillar( int tiempoDeBrillo )
-//    VariableGlobal.LED.brillar( int tiempoDeBrillo )
-//    VariableGlobal.LED.brillar( int tiempoDeBrillo )
-//    VariableGlobal.LED.brillar( int tiempoDeBrillo )
-// }
-//.........................................................................
+// ------------------------------------------------------------------
+// DISENO de lucecitas():
+//   Genera una secuencia de parpadeos en el LED como
+//   retroalimentacion visual de que el programa esta vivo.
+//   No recibe datos ni devuelve datos. La idea es llamarla varias
+//   veces con distintos tiempos cada vez.
+// ------------------------------------------------------------------
+// --> lucecitas() -->
 
 inline void lucecitas() {
   using namespace Globales; //tienes que escribirlo para llamarlo dentro de una funcion
@@ -116,27 +115,8 @@ inline void lucecitas() {
 //======================================== LOOP ========================================
 //ejecuta una serie de instrucciones en bucle
 
-// void loop () {
-//    using Loop
-//    using VariablesGlobales  
-//    
-//    Loop.contador++
-//    VariablesGlobales.Puerto.Escribir(var numeroDeIteracion)
-//    lucecitas()
-
-//    int valorCO2 = VariablesGlobales.Medidor.MedirCO2()
-//    int valorTemperatura = VariablesGlobales.Medidor.MedirTemperatura()
-
-//    VariablesGlobales.Publicador.PublicarCO2(double valor, int contador, int intervalo)
-//    VariablesGlobales.Publicador.PublicarTemperatura(double valor, int contador, int intervalo)
-
-//    VariablesGlobales.Publicador.Emisora.DetenerAnuncio()
-//    VariablesGlobales.Puerto.Escribir(string mensajeDeFinalDeLoop)
-// }
-//.............................................................................
-
 //esto es para tener un contador
-//      para el loop ...............
+//      para el loop .............
 // ------------------------------------------------------------------
 namespace Loop {
   uint8_t cont = 0;
@@ -144,7 +124,15 @@ namespace Loop {
 
 //...................................
 
-// loop(): ejecuta una serie de instrucciones en bucle (diseno commented-out arriba).
+// loop(): ejecuta una serie de instrucciones en bucle. En cada
+// iteracion incrementa el contador, avisa por consola, mide el CO2 y
+// la temperatura y publica los dos valores como anuncios iBeacon,
+// manteniendo cada anuncio 1 segundo.
+// No recibe datos ni devuelve datos.
+// ------------------------------------------------------------------
+// DISENO de loop():
+// ------------------------------------------------------------------
+// --> loop() -->
 void loop () {
 
   using namespace Loop;
@@ -196,7 +184,7 @@ void loop () {
   // es decir la clase elPublicador es public ahora, hacerla private despues
   // pero solo podrasmusar funciones de esa clase ya preparadas, asique esto 
   // ya no te funcionara
-
+/*
   char datos[21] = {
 	'H', 'o', 'l', 'a',
 	'H', 'o', 'l', 'a',
@@ -205,6 +193,7 @@ void loop () {
 	'H', 'o', 'l', 'a',
 	'H'
   };
+  */
 
   // cuando quieras intercambiar entre el char de datos y un mensaje personal,
   //    comentar y descomentar

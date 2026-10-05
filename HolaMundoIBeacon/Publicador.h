@@ -66,13 +66,13 @@ public:
   //Constructor: crea el Publicador sin encender la emisora aun.
   //          La emisora se tiene que encender aparte, desde el setup().
   // ............................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de Publicador() [constructor]:
-//   1. Cuerpo vacio salvo comentarios: no se enciende la emisora.
-//   2. La emisora se enciende aparte, desde setup(), llamando a
-//      encenderEmisora() para no encenderla antes de tiempo.
 // ------------------------------------------------------------------
-Publicador( ) {
+// DISENO de Publicador() [constructor]:
+//   No recibe datos ni devuelve datos: crea el publicador sin encender
+//   la emisora, que se enciende aparte con encenderEmisora().
+// ------------------------------------------------------------------
+  // --> Publicador() -->
+  Publicador( ) {
 	// ATENCION: no hacerlo aqui. (*this).laEmisora.encenderEmisora();
 	// Pondremos un metodo para llamarlo desde el setup() mas tarde
   } // ()
@@ -81,13 +81,12 @@ Publicador( ) {
   //encenderEmisora(): llama a EmisoraBLE para activar el 
   //          hardware Bluetooth de la placa.
   // ............................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de encenderEmisora():
-//   1. Llamar a laEmisora.encenderEmisora(), que inicializa el
-//      hardware Bluetooth de la placa.
-//   2. Terminar; la emisora queda lista para anunciar.
 // ------------------------------------------------------------------
-void encenderEmisora() {
+// DISENO de encenderEmisora():
+//   No recibe datos ni devuelve datos: enciende el hardware Bluetooth.
+// ------------------------------------------------------------------
+  // --> encenderEmisora() -->
+  void encenderEmisora() {
 	(*this).laEmisora.encenderEmisora();
   } // ()
 
@@ -97,16 +96,14 @@ void encenderEmisora() {
   //          El campo major lleva el ID del CO2 y el contador,
   //          el campo minor lleva el valor medido.
   // ............................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de publicarCO2( valorCO2, contador, tiempoEspera ):
-//   1. Calcular el campo major como (CO2 << 8) + contador: el ID de
-//      medicion (11) en el byte alto y la iteracion en el bajo.
-//   2. Emitir un anuncio iBeacon con el UUID fijo, major calculado,
-//      minor = valorCO2 y rssi = RSSI de referencia.
-//   3. Esperar durante tiempoEspera ms manteniendo el anuncio.
-//   4. Detener el anuncio para que no quede emitiendo.
 // ------------------------------------------------------------------
-void publicarCO2( float valorCO2, uint8_t contador,
+// DISENO de publicarCO2( valorCO2, contador, tiempoEspera ):
+//   El valor medido y el numero de iteracion viajan codificados en el
+//   anuncio (minor y major); el intervalo solo controla la duracion.
+//   No devuelve nada.
+// ------------------------------------------------------------------
+  // valorCO2: R, contador: N, tiempoEspera: N --> publicarCO2() -->
+  void publicarCO2( float valorCO2, uint8_t contador,
 					long tiempoEspera ) {
 
 	//
@@ -146,18 +143,15 @@ void publicarCO2( float valorCO2, uint8_t contador,
   //          Funciona igual que publicarCO2() pero con el ID
   //          de TEMPERATURA.
   // ............................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de publicarTemperatura( valorTemperatura, contador,
-//                                    tiempoEspera ):
-//   1. Calcular el campo major como (TEMPERATURA << 8) + contador:
-//      el ID de medicion (12) en el byte alto y la iteracion en el
-//      bajo.
-//   2. Emitir un anuncio iBeacon con el UUID fijo, major calculado,
-//      minor = valorTemperatura y rssi = RSSI de referencia.
-//   3. Esperar durante tiempoEspera ms manteniendo el anuncio.
-//   4. Detener el anuncio para que no quede emitiendo.
 // ------------------------------------------------------------------
-void publicarTemperatura( float valorTemperatura,
+// DISENO de publicarTemperatura( valorTemperatura, contador,
+//                                tiempoEspera ):
+//   Igual que publicarCO2(), pero con el ID de medicion de temperatura.
+//   No devuelve nada.
+// ------------------------------------------------------------------
+  // valorTemperatura: R, contador: N, tiempoEspera: N
+  //     --> publicarTemperatura() -->
+  void publicarTemperatura( float valorTemperatura,
 							uint8_t contador, long tiempoEspera ) {
 
 	uint16_t major = (MedicionesID::TEMPERATURA << 8) + contador;

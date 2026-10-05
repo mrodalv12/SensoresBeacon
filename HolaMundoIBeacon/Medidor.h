@@ -26,10 +26,14 @@ class Medidor {
   // .....................................................
 private:
 
-  // Asignación de pines analógicos
-  const int PIN_VGAS  = A4; // GPIO 5
-  const int PIN_VREF  = A5; // GPIO 28
-  const int PIN_VTEMP = A3; // Pin de temperatura
+  // Asignación de pines analógicos.
+  // Se referencian por su nombre de Arduino (A0..A5) y no por numero de
+  // GPIO: el numero GPIO que hay detras de cada uno depende de la placa
+  // y del paquete concreto de Adafruit, asi que el nombre es la forma
+  // segura de no colgar el codigo de una tabla que puede cambiar.
+  const int PIN_VGAS  = A4; // Sensor de CO2 (salida analogica del gas)
+  const int PIN_VREF  = A5; // Referencia de tension del sensor de CO2
+  const int PIN_VTEMP = A3; // Sensor de temperatura
 
   // Parámetros de conversión ADC
   const float VREF_BOARD    = 3.3;      // Voltaje de referencia de la placa (3.3V)
@@ -46,7 +50,11 @@ public:
   // Medidor( ) [constructor]
   //   Crea el medidor. No configura nada: la configuracion del ADC
   //   se hace despues, en iniciarMedidor().
-  // .....................................................
+  // DISENO de Medidor() [constructor]:
+  //   No recibe datos ni devuelve datos.
+  // ------------------------------------------
+  // --> Medidor() -->
+  // ------------------------------------------
   Medidor(  ) {
   } // ()
 
@@ -54,18 +62,26 @@ public:
   // iniciarMedidor( )
   //   Prepara el conversor analogico-digital: fija la resolucion
   //   del ADC a 10 bits, que es la que espera el calculo de medirCO2().
-  // .....................................................
+  // DISENO de iniciarMedidor():
+  //   No recibe datos ni devuelve datos.
+  // ------------------------------------------
+  // --> iniciarMedidor() -->
+  // ------------------------------------------
   void iniciarMedidor() {
 	// las cosas que no se puedan hacer en el constructor, if any
    analogReadResolution(ADC_RES_BITS);
   } // ()
 
   // .....................................................
-  // medirCO2( ) --> ppm: float
+  // medirCO2( )
   //   Lee el sensor de gas y el de referencia, convierte ambos a voltios,
   //   les resta la referencia y aplica la sensibilidad del sensor para
   //   obtener la concentracion de CO2 en ppm. Los negativos se recortan a 0.
-  // .....................................................
+  // DISENO de medirCO2():
+  //   No recibe datos; devuelve la concentracion medida.
+  // ------------------------------------------
+  // --> medirCO2() --> ppm: R
+  // ------------------------------------------
   float medirCO2() {
 
   int rawVgas  = analogRead(PIN_VGAS); //medicion de gas del sensor directo
@@ -102,10 +118,14 @@ public:
   } // ()
 
   // .....................................................
-  // medirTemperatura( ) --> tempC: float
+  // medirTemperatura( )
   //   Lee el sensor analogico de temperatura, lo convierte a voltios y
   //   aplica la formula del datasheet: (Vtemp / Vref) * 87 - 25.
-  // .....................................................
+  // DISENO de medirTemperatura():
+  //   No recibe datos; devuelve la temperatura medida.
+  // ------------------------------------------
+  // --> medirTemperatura() --> tempC: R
+  // ------------------------------------------
   float medirTemperatura() {
 
     int rawVtemp = analogRead(PIN_VTEMP); //valor del sensor de temp

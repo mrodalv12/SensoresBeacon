@@ -25,14 +25,12 @@ public:
   //Constructor: abre el puerto serie a la velocidad indicada 
   //          (por ejemplo 9600 o 115200 baudios).
   // .........................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de PuertoSerie( baudios ) [constructor]:
-//   1. Llamar a Serial.begin( baudios ) para abrir el puerto serie
-//      con la velocidad indicada (por ejemplo 9600 o 115200 baudios).
-//   2. A partir de aqui, el puerto queda disponible para enviar y
-//      recibir datos por consola.
 // ------------------------------------------------------------------
-PuertoSerie (long baudios) {
+// DISENO de PuertoSerie( baudios ) [constructor]:
+//   La velocidad de comunicacion es el unico dato de entrada.
+// ------------------------------------------------------------------
+  // baudios: N --> PuertoSerie() -->
+  PuertoSerie (long baudios) {
 	Serial.begin( baudios ); 
   } // ()
 
@@ -40,16 +38,13 @@ PuertoSerie (long baudios) {
   //esperarDisponible(): bloquea el programa hasta que el 
   //          puerto serie este listo para enviar datos.
   // .........................................................
-  // ------------------------------------------------------------------
-// ALGORITMO de esperarDisponible():
-//   1. Mientras Serial sea falsy (es decir, el puerto serie no este
-//      listo), hacer una pausa de 10 ms (delay(10)).
-//   2. En cuanto Serial sea truthy, salir del bucle: el puerto
-//      ya puede usarse.
-//   Nota: es un bucle bloqueante; el programa no avanza hasta que
-//   el puerto serie esta disponible.
 // ------------------------------------------------------------------
-void esperarDisponible() {
+// DISENO de esperarDisponible():
+//   No recibe datos ni devuelve datos: bloquea el programa hasta que
+//   el puerto serie esta listo para enviar.
+// ------------------------------------------------------------------
+  // --> esperarDisponible() -->
+  void esperarDisponible() {
 
 	while ( !Serial ) {
 	  delay(10);   
@@ -62,14 +57,13 @@ void esperarDisponible() {
   //          mensaje, sea texto, numero, etc. (tipos genericos).
   // .........................................................
 // ------------------------------------------------------------------
-// ALGORITMO de escribir( mensaje ):
-//   Plantilla generica (puede recibir texto, numero, etc.):
-//   1. Llamar a Serial.print( mensaje ) para escribir el valor
-//      recibido por el puerto serie (consola).
-//   2. Terminar la funcion sin devolver nada.
+// DISENO de escribir( mensaje ):
+//   El mensaje a mostrar es el unico dato de entrada, y admite
+//   cualquier tipo logico (Text, N, Z, R, B). No devuelve nada.
 // ------------------------------------------------------------------
-template<typename T>
-void escribir (T mensaje) {
+  // mensaje: [Type] --> escribir() -->
+  template<typename T>
+  void escribir (T mensaje) {
 	Serial.print( mensaje );
   } // ()
   

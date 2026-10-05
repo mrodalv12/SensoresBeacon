@@ -23,14 +23,10 @@
 // pone al reves el contenido de una array en el mismo array
 // ----------------------------------------------------
 // ------------------------------------------------------------------
-// ALGORITMO de alReves( p, n ):
-//   1. Iniciar un bucle i desde 0 hasta n/2 - 1.
-//   2. Guardar el elemento p[i] en una variable auxiliar.
-//   3. Copiar p[n-i-1] en p[i].
-//   4. Copiar el auxiliar (antiguo p[i]) en p[n-i-1].
-//   Resultado: los n elementos del array quedan invertidos in situ.
-//   5. Devolver el puntero al array ya invertido.
+// DISENO de alReves( p, n ):
+//   Invierte el contenido del array sobre si mismo y lo devuelve.
 // ------------------------------------------------------------------
+// p: [ Type ]_n, n: N --> alReves() --> [ Type ]_n
 template< typename T >
 T *  alReves( T * p, int n ) {
   T aux;
@@ -50,15 +46,13 @@ T *  alReves( T * p, int n ) {
 // espera Bluetooth, con el byte menos significativo primero).
 // ----------------------------------------------------
 // ------------------------------------------------------------------
-// ALGORITMO de stringAUint8AlReves( pString, pUint, tamMax ):
-//   1. Rellenar pUint con ceros (memset) en sus tamMax bytes.
-//   2. Calcular la longitud del string y cuantos caracteres se van
-//      a copiar: como mucho tamMax (min(strlen, tamMax)).
-//   3. Recorrer los caracteres del string desde el 0.
-//   4. Colocar cada caracter en pUint[tamMax - 1 - i], empezando
-//      por el final del array (orden inverso / little-endian).
-//   5. Devolver el puntero pUint ya relleno.
+// DISENO de stringAUint8AlReves( pString, pUint, tamMax ):
+//   Convierte el nombre de 16 caracteres en el UUID de 16 bytes que
+//   espera Bluetooth, con el byte menos significativo primero. Si el
+//   nombre es mas corto que tamMax, los huecos sobrantes quedan a 0.
 // ------------------------------------------------------------------
+// pString: Text, pUint: [ Byte ]_tamMax, tamMax: N
+//     --> stringAUint8AlReves() --> [ Byte ]_tamMax
 uint8_t * stringAUint8AlReves( const char * pString, uint8_t * pUint, int tamMax ) {
   memset(pUint, 0, tamMax); // Limpia todo el array con 0s
   int longitudString = strlen( pString );
@@ -115,13 +109,10 @@ public:
 	// .........................................................
 
 	// ------------------------------------------------------------------
-// ALGORITMO de Caracteristica( nombreCaracteristica_ )  [constructor 1]:
-//   1. Convertir el nombre de la caracteristica a un UUID de 16
-//      bytes en orden inverso (stringAUint8AlReves), guardandolo
-//      en uuidCaracteristica.
-//   2. Construir la BLECharacteristic con ese UUID y guardarla en
-//      el atributo laCaracteristica.
+// DISENO de Caracteristica( nombreCaracteristica_ )  [constructor 1]:
+//   El nombre es el unico dato de entrada y determina el UUID.
 // ------------------------------------------------------------------
+	// nombreCaracteristica_: Text --> Caracteristica() -->
 	Caracteristica( const char * nombreCaracteristica_ ) {
     stringAUint8AlReves( nombreCaracteristica_, uuidCaracteristica, 16 );
     laCaracteristica = BLECharacteristic( uuidCaracteristica );
@@ -134,14 +125,14 @@ public:
 	//          asignarPropiedadesPermisosYTamanyoDatos().
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de Caracteristica( nombre, props, permisoRead,
-//                               permisoWrite, tam )  [constructor 2]:
-//   1. Delegar en el constructor 1 para generar el UUID y crear la
-//      BLECharacteristic con el nombre dado.
-//   2. Llamar a asignarPropiedadesPermisosYTamanyoDatos() para fijar
-//      las propiedades, los permisos de lectura/escritura y el
-//      tamanyo maximo de datos de la caracteristica.
+// DISENO de Caracteristica( nombre, props, permisoRead,
+//                           permisoWrite, tam )  [constructor 2]:
+//   Ademas del nombre, fija ya las propiedades, los permisos y el
+//   tamanyo maximo de datos. No devuelve nada.
 // ------------------------------------------------------------------
+	// nombreCaracteristica_: Text, props: N, permisoRead: [Type],
+	// permisoWrite: [Type], tam: N
+	//     --> Caracteristica() -->
 	Caracteristica( const char * nombreCaracteristica_ ,
 					uint8_t props,
 					SecureMode_t permisoRead,
@@ -161,10 +152,10 @@ public:
 	// CHR_PROPS_WRITE , CHR_PROPS_READ ,  CHR_PROPS_NOTIFY 
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de asignarPropiedades( props ):
-//   1. Llamar a laCaracteristica.setProperties( props ) para fijar
-//      las propiedades BLE (CHR_PROPS_READ/WRITE/NOTIFY, etc.).
+// DISENO de asignarPropiedades( props ):
+//   No devuelve nada; solo fija las propiedades BLE.
 // ------------------------------------------------------------------
+	// props: N --> asignarPropiedades() -->
 	void asignarPropiedades ( uint8_t props ) {
 	  // no puedo escribir AUN si el constructor llama a esto: Serial.println( " laCaracteristica.setProperties( props ); ");
 	  (*this).laCaracteristica.setProperties( props );
@@ -177,11 +168,12 @@ public:
 	// .........................................................
 	// SECMODE_OPEN  , SECMODE_NO_ACCESS
 	// .........................................................
-	// ------------------------------------------------------------------
-// ALGORITMO de asignarPermisos( permisoRead, permisoWrite ):
-//   1. Llamar a laCaracteristica.setPermission() con los permisos de
-//      lectura y escritura recibidos (SECMODE_*.).
 // ------------------------------------------------------------------
+// DISENO de asignarPermisos( permisoRead, permisoWrite ):
+//   No devuelve nada; solo fija los permisos de lectura y escritura.
+// ------------------------------------------------------------------
+	// permisoRead: [Type], permisoWrite: [Type]
+	//     --> asignarPermisos() -->
 	void asignarPermisos( SecureMode_t permisoRead, SecureMode_t permisoWrite ) {
 	  // no puedo escribir AUN si el constructor llama a esto: Serial.println( "laCaracteristica.setPermission( permisoRead, permisoWrite ); " );
 	  (*this).laCaracteristica.setPermission( permisoRead, permisoWrite );
@@ -192,10 +184,10 @@ public:
 	//          que cabe en la caracteristica.
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de asignarTamanyoDatos( tam ):
-//   1. Llamar a laCaracteristica.setMaxLen( tam ) para fijar la
-//      longitud maxima de datos que puede albergar la caracteristica.
+// DISENO de asignarTamanyoDatos( tam ):
+//   No devuelve nada; solo fija la longitud maxima de datos.
 // ------------------------------------------------------------------
+	// tam: N --> asignarTamanyoDatos() -->
 	void asignarTamanyoDatos( uint8_t tam ) {
 	  // no puedo escribir AUN si el constructor llama a esto: Serial.print( " (*this).laCaracteristica.setFixedLen( tam = " );
 	  // no puedo escribir AUN si el constructor llama a esto: Serial.println( tam );
@@ -210,14 +202,12 @@ public:
 	//          de lectura/escritura y tamanyo de datos.
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de asignarPropiedadesPermisosYTamanyoDatos( props,
-//                            permisoRead, permisoWrite, tam ):
-//   Funcion auxiliar de configuracion completa:
-//   1. Fijar las propiedades con asignarPropiedades( props ).
-//   2. Fijar los permisos con asignarPermisos( permisoRead,
-//      permisoWrite ).
-//   3. Fijar el tamanyo maximo con asignarTamanyoDatos( tam ).
+// DISENO de asignarPropiedadesPermisosYTamanyoDatos( props,
+//                                     permisoRead, permisoWrite, tam ):
+//   Configuracion completa de la caracteristica. No devuelve nada.
 // ------------------------------------------------------------------
+	// props: N, permisoRead: [Type], permisoWrite: [Type], tam: N
+	//     --> asignarPropiedadesPermisosYTamanyoDatos() -->
 	void asignarPropiedadesPermisosYTamanyoDatos( uint8_t props,
 												 SecureMode_t permisoRead,
 												 SecureMode_t permisoWrite, 
@@ -233,11 +223,10 @@ public:
 	//          caracteristica y devuelve cuantos bytes se escribieron.
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de escribirDatos( str ):
-//   1. Llamar a laCaracteristica.write( str ) para escribir el
-//      string en la caracteristica BLE.
-//   2. Guardar y devolver cuantos bytes se escribieron (uint16_t r).
+// DISENO de escribirDatos( str ):
+//   Devuelve cuantos bytes se han podido escribir.
 // ------------------------------------------------------------------
+	// str: Text --> escribirDatos() --> r: N
 	uint16_t escribirDatos( const char * str ) {
 	  // Serial.print( " return (*this).laCaracteristica.write( str  = " );
 	  // Serial.println( str );
@@ -254,12 +243,11 @@ public:
 	//          dispositivo conectado. Devuelve los bytes enviados.
 	// .........................................................
 // ------------------------------------------------------------------
-// ALGORITMO de notificarDatos( str ):
-//   1. Calcular la longitud del string (strlen).
-//   2. Llamar a laCaracteristica.notify() con el string y su
-//      longitud para notificarlo a un dispositivo conectado.
-//   3. Devolver cuantos bytes fueron notificados.
+// DISENO de notificarDatos( str ):
+//   Envia el texto como notificacion a los dispositivos conectados.
+//   Devuelve cuantos bytes se han notificado.
 // ------------------------------------------------------------------
+	// str: Text --> notificarDatos() --> r: N
 uint16_t notificarDatos( const char * str ) {
     return laCaracteristica.notify( (const uint8_t*) str, strlen(str) );
 }
@@ -270,11 +258,11 @@ uint16_t notificarDatos( const char * str ) {
 	//          caracteristica desde fuera.
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de instalarCallbackCaracteristicaEscrita( cb ):
-//   1. Registrar la funcion cb como callback de escritura de la
-//      caracteristica (setWriteCallback), de modo que se ejecute
-//      cuando un dispositivo externo escriba datos en ella.
+// DISENO de instalarCallbackCaracteristicaEscrita( cb ):
+//   Registra la funcion que se ejecutara cuando un dispositivo
+//   externo escriba datos. No devuelve nada.
 // ------------------------------------------------------------------
+	// cb: Callback --> instalarCallbackCaracteristicaEscrita() -->
 	void instalarCallbackCaracteristicaEscrita( CallbackCaracteristicaEscrita cb ) {
 	  (*this).laCaracteristica.setWriteCallback( cb );
 	} // ()
@@ -284,13 +272,11 @@ uint16_t notificarDatos( const char * str ) {
 	//          escribe el resultado (error) por consola.
 	// .........................................................
 	// ------------------------------------------------------------------
-// ALGORITMO de activar() [Caracteristica]:
-//   1. Registrar la caracteristica en el stack BLE
-//      (laCaracteristica.begin()).
-//   2. Capturar el codigo de error devuelto (err_t).
-//   3. Escribir ese codigo por consola para diagnosticar si el
-//      alta fue correcta.
+// DISENO de activar() [Caracteristica]:
+//   No recibe datos ni devuelve datos: da de alta la caracteristica en
+//   el stack BLE e informa por consola del codigo de error.
 // ------------------------------------------------------------------
+	// --> activar() -->
 	void activar() {
 	  err_t error = (*this).laCaracteristica.begin();
 	  Serial.print(  " (*this).laCaracteristica.begin(); error = " );
@@ -328,13 +314,10 @@ public:
   //          en UUID (al reves) para crear el BLEService.
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de ServicioEnEmisora( nombreServicio_ ) [constructor]:
-//   1. Convertir el nombre del servicio a un UUID de 16 bytes en
-//      orden inverso (stringAUint8AlReves), guardandolo en
-//      uuidServicio.
-//   2. Construir el BLEService con ese UUID y guardarlo en
-//      elServicio (lista de inicializacion).
+// DISENO de ServicioEnEmisora( nombreServicio_ ) [constructor]:
+//   El nombre es el unico dato de entrada y determina el UUID.
 // ------------------------------------------------------------------
+	// nombreServicio_: Text --> ServicioEnEmisora() -->
 	ServicioEnEmisora( const char * nombreServicio_ )
 	:
 	elServicio( stringAUint8AlReves( nombreServicio_, &uuidServicio[0], 16 ) )
@@ -347,13 +330,11 @@ public:
   //          (util para comprobar si se genero bien).
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de escribeUUID():
-//   1. Imprimir una linea de asteriscos de separacion.
-//   2. Recorrer los 16 bytes de uuidServicio imprimiendo cada byte
-//      como caracter.
-//   3. Imprimir otra linea de asteriscos de cierre.
-//   Resultado: ayuda visual para comprobar el UUID generado.
+// DISENO de escribeUUID():
+//   No recibe datos ni devuelve datos: imprime por consola el UUID
+//   generado, util para comprobar si se ha creado bien.
 // ------------------------------------------------------------------
+	// --> escribeUUID() -->
 	void escribeUUID() {
 	Serial.println ( "**********" );
 	for (int i=0; i<= 15; i++) {
@@ -367,11 +348,12 @@ public:
   //          lista del servicio para activarla mas tarde.
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de anyadirCaracteristica( car ):
-//   1. Anadir la direccion de la caracteristica recibida al vector
-//      lasCaracteristicas del servicio (push_back(&car)).
-//   Nota: se guarda hasta que activarServicio() la active.
+// DISENO de anyadirCaracteristica( car ):
+//   Anade la caracteristica a la lista del servicio; se quedara
+//   pendiente de activar hasta que se llame a activarServicio().
+//   No devuelve nada.
 // ------------------------------------------------------------------
+	// car: Caracteristica --> anyadirCaracteristica() -->
 	void anyadirCaracteristica( Caracteristica & car ) {
 	(*this).lasCaracteristicas.push_back( & car );
   } // ()
@@ -381,12 +363,11 @@ public:
   //          y despues activa todas sus caracteristicas.
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de activarServicio():
-//   1. Registrar el BLEService en el stack BLE (elServicio.begin())
-//      y escribir su codigo de error por consola.
-//   2. Recorrer el vector lasCaracteristicas y llamar a activar()
-//      sobre cada caracteristica para darla de alta.
+// DISENO de activarServicio():
+//   No recibe datos ni devuelve datos: da de alta el servicio en el
+//   stack BLE y activa despues todas sus caracteristicas.
 // ------------------------------------------------------------------
+	// --> activarServicio() -->
 	void activarServicio( ) {
 	// entiendo que al llegar aquí ya ha sido configurado
 	// todo: características y servicio
@@ -406,11 +387,11 @@ public:
   //          una ServicioEnEmisora donde se espera un BLEService.
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de operator BLEService&():
-//   Conversion de tipo implicita de ServicioEnEmisora a BLEService:
-//   1. Devolver el BLEservice interno (elServicio) para poder usar
-//      esta clase donde se espere una referencia a BLEService.
+// DISENO de operator BLEService&():
+//   Conversion de tipo implicita: devuelve el servicio BLE interno,
+//   para poder usar esta clase donde se espere un BLEService.
 // ------------------------------------------------------------------
+	// --> operator BLEService&() --> Servicio
 	operator BLEService&() {
 	// "conversión de tipo": si pongo esta clase en un sitio donde necesitan un BLEService
 	return elServicio;

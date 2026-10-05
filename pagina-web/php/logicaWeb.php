@@ -20,13 +20,7 @@
  */
 
 /**
- * obtenerMedicion() --> [Tipo]
- * 
- * Parámetros de entrada (-->):
- *   - (ninguno)
- * 
- * Salidas (<--):
- *   - Array<{ fecha_y_hora: Text, tipo: Text, valor: R }>
+ * obtenerMedicion() --> [fecha_y_hora: Text, tipo: Text, valor: R]>
  * 
  * Interacción (--x): Realiza petición HTTP GET asíncrona hacia REST /mediciones (cliente HTTP)
  *

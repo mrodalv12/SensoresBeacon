@@ -34,12 +34,12 @@ class EmisoraBLE {
 //	Inicializa las variables miembro privadas al crear una instancia de la clase.
 
 	// ------------------------------------------------------------------
-// ALGORITMO de EmisoraBLE(...) [constructor]:
-//   1. Recibir el nombre de la emisora, el fabricanteID y el txPower.
-//   2. Guardarlos en los atributos privados nombreEmisora,
-//      fabricanteID y txPower mediante la lista de inicializacion.
-//   3. Cuerpo vacio: no se enciende el hardware aqui.
+// DISENO de EmisoraBLE(...) [constructor]:
+//   Identidad, fabricante y potencia son los datos de entrada. El
+//   hardware no se enciende aqui.
 // ------------------------------------------------------------------
+	// nombreEmisora_: Text, fabricanteID_: N, txPower_: Z
+	//     --> EmisoraBLE() -->
 	EmisoraBLE( const char * nombreEmisora_, const uint16_t fabricanteID_,
 				const uint16_t txPower_ ) 
 	:
@@ -54,11 +54,11 @@ class EmisoraBLE {
 //funcion encender emisora : sin parametros
 
   // ------------------------------------------------------------------
-// ALGORITMO de encenderEmisora():
-//   1. Llamar a Bluefruit.begin() para inicializar el stack BLE.
-//   2. Llamar a detenerAnuncio() por si acaso, garantizando que
-//      ninguna emision quede activa antes de empezar a anunciar.
+// DISENO de encenderEmisora():
+//   No recibe datos ni devuelve datos: inicializa el stack BLE y
+//   garantiza que no queda ninguna emision activa.
 // ------------------------------------------------------------------
+  // --> encenderEmisora() -->
   void encenderEmisora() {
 		// Serial.println ( "Bluefruit.begin() " );
 		Bluefruit.begin(); 
@@ -70,12 +70,11 @@ class EmisoraBLE {
 //		de conexion y desconexion
 
   // ------------------------------------------------------------------
-// ALGORITMO de encenderEmisora( cbce, cbct ):
-//   Sobrecarga de encenderEmisora() que ademas registra callbacks:
-//   1. Llamar a encenderEmisora() sin argumentos (Bluefruit.begin()).
-//   2. Registrar cbce como callback de conexion establecida.
-//   3. Registrar cbct como callback de conexion terminada.
+// DISENO de encenderEmisora( cbce, cbct ):
+//   Sobrecarga que ademas de encender la emisora registra los
+//   callbacks de conexion establecida y de conexion terminada.
 // ------------------------------------------------------------------
+  // cbce: Callback, cbct: Callback --> encenderEmisora() -->
   void encenderEmisora( CallbackConexionEstablecida cbce,
 						CallbackConexionTerminada cbct ) {
 
@@ -95,13 +94,11 @@ class EmisoraBLE {
 //}
 //.............................................................
   // ------------------------------------------------------------------
-// ALGORITMO de detenerAnuncio():
-//   1. Preguntar a Bluefruit si hay algun anuncio en curso
-//      (estaAnunciando()).
-//   2. Si lo hay, llamar a Bluefruit.Advertising.stop() para
-//      detener la emision.
-//   3. Si no hay ninguno, no hacer nada.
+// DISENO de detenerAnuncio():
+//   No recibe datos ni devuelve datos: detiene la emision si habia
+//   alguna en curso; si no, no hace nada.
 // ------------------------------------------------------------------
+  // --> detenerAnuncio() -->
   void detenerAnuncio() {
 		if ( (*this).estaAnunciando() ) {
 			// Serial.println ( "Bluefruit.Advertising.stop() " );
@@ -113,10 +110,10 @@ class EmisoraBLE {
 //	indica si hay algun anuncio en emitiendose 
 
   // ------------------------------------------------------------------
-// ALGORITMO de estaAnunciando():
-//   1. Preguntar a Bluefruit.Advertising.isRunning().
-//   2. Devolver true si hay una emision en curso o false si no.
+// DISENO de estaAnunciando():
+//   Indica si hay alguna emision en curso.
 // ------------------------------------------------------------------
+  // --> estaAnunciando() --> B
   bool estaAnunciando() {
 		return Bluefruit.Advertising.isRunning();
 	}
@@ -131,18 +128,12 @@ class EmisoraBLE {
 //..........................................................................................................
 
   // ------------------------------------------------------------------
-// ALGORITMO de emitirAnuncioIBeacon( beaconUUID, major, minor, rssi ):
-//   1. Detener cualquier anuncio previo que pueda seguir activo.
-//   2. Crear un BLEBeacon con el UUID, major, minor y rssi dados.
-//   3. Asignar el fabricanteID al beacon.
-//   4. Configurar la potencia de transmision (txPower), el nombre
-//      de la emisora y anadir el nombre a la respuesta de escaneo.
-//   5. Registrar el beacon como dato de advertising.
-//   6. Permitir reiniciar el anuncio al reconectar (restartOnDisconnect).
-//   7. Fijar el intervalo de emision a 100 ms (unidades de 0.625 ms).
-//   8. Arrancar el anuncio en modo indefinido (start(0)); otro
-//      codigo se encargara de detenerlo cuando toque.
+// DISENO de emitirAnuncioIBeacon( beaconUUID, major, minor, rssi ):
+//   Los cuatro campos del anuncio iBeacon son las entradas, y se
+//   emiten de forma indefinida hasta que se llame a detenerAnuncio().
 // ------------------------------------------------------------------
+  // beaconUUID: [ Byte ]_16, major: Z, minor: Z, rssi: Z
+  //     --> emitirAnuncioIBeacon() -->
   void emitirAnuncioIBeacon( uint8_t * beaconUUID, int16_t major, int16_t minor, uint8_t rssi ) {
 
 		(*this).detenerAnuncio();
@@ -209,8 +200,12 @@ class EmisoraBLE {
   // 0x01, // este es el byte 31 = BLE_GAP_ADV_SET_DATA_SIZE_MAX, parece que sobra
   //
   // .........................................................
-  // Para enviar como carga libre los últimos 21 bytes de un iBeacon (lo que normalmente sería uuid-16 major-2 minor-2 txPower-1)
+  // Para enviar como carga libre los ultimos 21 bytes de un iBeacon
+  // (lo que normalmente seria uuid-16 major-2 minor-2 txPower-1)
   // .........................................................
+  // NOTA: la variante de una sola firma, que calculara la longitud
+  //       con strlen(), quedo comentada; la que se usa recibe la
+  //       longitud ya calculada como parametro.
   /*
   void emitirAnuncioIBeaconLibre( const char * carga ) {
 
@@ -227,22 +222,12 @@ class EmisoraBLE {
 //..........................................................................................................
 
   // ------------------------------------------------------------------
-// ALGORITMO de emitirAnuncioIBeaconLibre( carga, tamanyoCarga ):
-//   1. Detener cualquier anuncio anterior y limpiar Advertising y
-//      ScanResponse.
-//   2. Fijar el nombre de la emisora y anadirlo al ScanResponse.
-//   3. Anexar los flags de advertising (LE only, general discoverable).
-//   4. Preparar un array de 4 + 21 bytes con la cabecera fija de
-//      iBeacon (companyID 0x4c00, tipo 0x02, longitud 21).
-//   5. Copiar la carga recibida en el hueco de 21 bytes restante,
-//      recortando a 21 si la carga fuese mas larga (memcpy).
-//   6. Anadir ese array como Manufacturer Specific Data (un solo
-//      addData).
-//   7. Fijar restartOnDisconnect, intervalo 100 ms y timeout rapido
-//      de 1 segundo.
-//   8. Arrancar el anuncio indefinido (start(0)) e informar por
-//      consola.
+// DISENO de emitirAnuncioIBeaconLibre( carga, tamanyoCarga ):
+//   En lugar de usar la estructura UUID/major/minor, mete la carga
+//   recibida en los 21 bytes libres del anuncio. Si la carga es mas
+//   larga de 21 bytes, se recorta.
 // ------------------------------------------------------------------
+  // carga: Text, tamanyoCarga: N --> emitirAnuncioIBeaconLibre() -->
   void emitirAnuncioIBeaconLibre( const char * carga, const uint8_t tamanyoCarga ) {
 
 	(*this).detenerAnuncio(); 
@@ -304,13 +289,10 @@ class EmisoraBLE {
 //===========================================================================================================
 
   // ------------------------------------------------------------------
-// ALGORITMO de anyadirServicio( servicio ):
-//   1. Pedir a Bluefruit.Advertising.addService() que registre el
-//      servicio BLE (usando la conversion ServicioEnEmisora a
-//      BLEService).
-//   2. Si el registro falla, escribir un aviso por consola.
-//   3. Devolver true/false segun el resultado de addService().
+// DISENO de anyadirServicio( servicio ):
+//   Registra el servicio BLE e indica si el registro ha tenido exito.
 // ------------------------------------------------------------------
+  // servicio: ServicioEnEmisora --> anyadirServicio() --> B
   bool anyadirServicio( ServicioEnEmisora & servicio ) {
 
 	Serial.print( " Bluefruit.Advertising.addService( servicio ); \n");
@@ -331,10 +313,11 @@ class EmisoraBLE {
   
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de anyadirServicioConSusCaracteristicas( servicio )  [caso base]:
-//   1. Devolver directamente el resultado de anyadirServicio(), sin
-//      anadir ninguna caracteristica (caso final de la recursion).
+// DISENO de anyadirServicioConSusCaracteristicas( servicio )  [caso base]:
+//   Version sin caracteristicas: solo registra el servicio.
 // ------------------------------------------------------------------
+  // servicio: ServicioEnEmisora
+  //     --> anyadirServicioConSusCaracteristicas() --> B
   bool anyadirServicioConSusCaracteristicas( ServicioEnEmisora & servicio ) { 
 	return (*this).anyadirServicio( servicio );
   } // 
@@ -342,15 +325,14 @@ class EmisoraBLE {
 
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de anyadirServicioConSusCaracteristicas( servicio,
-//                          caracteristica, restoCaracteristicas... ):
-//   Recursivo, va anadiendo caracteristicas una a una:
-//   1. Anadir la caracteristica actual al servicio
-//      (servicio.anyadirCaracteristica(caracteristica)).
-//   2. Llamarse a si misma con el resto de caracteristicas.
-//   3. En el caso base (sin caracteristicas) se delega en
-//      anyadirServicio() para registrar el servicio en BLE.
+// DISENO de anyadirServicioConSusCaracteristicas( servicio,
+//                              caracteristica, restoCaracteristicas... ):
+//   Version recursiva: anade las caracteristicas de una en una hasta
+//   llegar al caso base, que registra el servicio.
 // ------------------------------------------------------------------
+  // servicio: ServicioEnEmisora, caracteristica: Caracteristica,
+  // restoCaracteristicas: [ Caracteristica ]
+  //     --> anyadirServicioConSusCaracteristicas() --> B
   template <typename ... T>
   bool anyadirServicioConSusCaracteristicas( ServicioEnEmisora & servicio,
 											 ServicioEnEmisora::Caracteristica & caracteristica,
@@ -365,14 +347,13 @@ class EmisoraBLE {
 
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de anyadirServicioConSusCaracteristicasYActivar( servicio,
-//                                             restoCaracteristicas... ):
-//   1. Llamar a anyadirServicioConSusCaracteristicas() para registrar
-//      el servicio con todas sus caracteristicas.
-//   2. Activar el servicio (servicio.activarServicio()): da de alta
-//      en el stack BLE el servicio y sus caracteristicas.
-//   3. Devolver el resultado de la llamada del paso 1.
+// DISENO de anyadirServicioConSusCaracteristicasYActivar( servicio,
+//                                        restoCaracteristicas... ):
+//   Registra el servicio con todas sus caracteristicas y lo activa en
+//   el stack BLE. Devuelve el resultado del registro.
 // ------------------------------------------------------------------
+  // servicio: ServicioEnEmisora, restoCaracteristicas: [ Caracteristica ]
+  //     --> anyadirServicioConSusCaracteristicasYActivar() --> B
   template <typename ... T>
   bool anyadirServicioConSusCaracteristicasYActivar( ServicioEnEmisora & servicio,
 													 // ServicioEnEmisora::Caracteristica & caracteristica,
@@ -390,10 +371,11 @@ class EmisoraBLE {
   // .........................................................
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de instalarCallbackConexionEstablecida( cb ):
-//   1. Registrar la funcion cb como callback de conexion establecida
-//      en el periferico (Bluefruit.Periph.setConnectCallback(cb)).
+// DISENO de instalarCallbackConexionEstablecida( cb ):
+//   Registra la funcion que se ejecutara al establecerse una conexion.
+//   No devuelve nada.
 // ------------------------------------------------------------------
+  // cb: Callback --> instalarCallbackConexionEstablecida() -->
   void instalarCallbackConexionEstablecida( CallbackConexionEstablecida cb ) {
 	Bluefruit.Periph.setConnectCallback( cb );
   } // ()
@@ -402,10 +384,11 @@ class EmisoraBLE {
   // .........................................................
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de instalarCallbackConexionTerminada( cb ):
-//   1. Registrar la funcion cb como callback de desconexion en el
-//      periferico (Bluefruit.Periph.setDisconnectCallback(cb)).
+// DISENO de instalarCallbackConexionTerminada( cb ):
+//   Registra la funcion que se ejecutara al terminar una conexion.
+//   No devuelve nada.
 // ------------------------------------------------------------------
+  // cb: Callback --> instalarCallbackConexionTerminada() -->
   void instalarCallbackConexionTerminada( CallbackConexionTerminada cb ) {
 	Bluefruit.Periph.setDisconnectCallback( cb );
   } // ()
@@ -414,11 +397,10 @@ class EmisoraBLE {
   // .........................................................
   // .........................................................
   // ------------------------------------------------------------------
-// ALGORITMO de getConexion( connHandle ):
-//   1. Pedir a Bluefruit la conexion activa identificada por
-//      connHandle (Bluefruit.Connection(connHandle)).
-//   2. Devolver el puntero BLEConnection correspondiente.
+// DISENO de getConexion( connHandle ):
+//   Devuelve la conexion activa identificada por su identificador.
 // ------------------------------------------------------------------
+  // connHandle: N --> getConexion() --> Conexion
   BLEConnection * getConexion( uint16_t connHandle ) {
 	return Bluefruit.Connection( connHandle );
   } // ()
