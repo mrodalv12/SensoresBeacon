@@ -1,1 +1,33 @@
+# --- Android / Gradle ---
+app/build/
+build/
+.gradle/
+local.properties
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+
+# --- SQLite ---
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# --- Herramientas ---
+*.sqbpro
+
+# --- Secretos y entorno local ---
+.env
+.env.local
+
+# --- IDE ---
+# .idea/ e .vscode/ son configuracion personal de cada maquina: rutas del SDK,
+# ventanas abiertas, atajos. No aportan nada al proyecto de los demas.
+.idea/
+.vscode/
+*.iml
+
+# --- Sistema ---
 .DS_Store
+Thumbs.db

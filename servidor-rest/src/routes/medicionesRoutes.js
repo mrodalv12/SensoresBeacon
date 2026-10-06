@@ -14,7 +14,7 @@
  * Servidor REST - Módulo de rutas para mediciones.
  * 
  * Diseño según reglas del PDF "Logical_Design_RE_Rules_v3.pdf" 
- * Ubicación: /Users/rodolfo/Desktop/promts/Logical_Design_RE_Rules_v3.pdf
+ * Especificacion: "Logical_Design_RE_Rules_v3.pdf" (adjunta al enunciado)
  * 
  * Tipos de datos abstractos utilizados: N, Z, R, Text, [Tipo]
  */

@@ -115,9 +115,10 @@ sin HTTP.
 │   ├── php/logicaWeb.php      #   obtenerMedicion(): GET al REST
 │   ├── includes/mediciones.php
 │   ├── api/mediciones.php     #   endpoint JSON para el refresco del navegador
-│   ├── js/app.js              #   actualiza tarjetas y tabla cada 5 s
-│   ├── css/style.css          #   paleta #0F2A2E / #7FE3C0
-│   └── tests/                 #   5 pruebas JS + 2 comprobaciones PHP
+│   ├── js/app.js              #   actualiza tarjetas y tabla cada 5 min
+│   ├── css/variables.css      #   paleta y medidas, todo en variables CSS
+│   ├── css/style.css          #   usa las variables de variables.css
+│   └── tests/                 #   8 pruebas JS + 2 comprobaciones PHP
 │
 └── bbdd/
     ├── mediciones.sql          # CREATE TABLE + fila de ejemplo
@@ -337,8 +338,10 @@ Abre <http://localhost:8000> en el navegador. Verás las dos tarjetas superiores
 mediciones.
 
 - El renderizado inicial lo hace `index.php` en el servidor.
-- `js/app.js` refresca los datos cada 5 segundos contra `api/mediciones.php`, que
-  actúa de proxy hacia el REST y evita problemas de CORS.
+- `js/app.js` refresca los datos cada 5 minutos contra `api/mediciones.php`, que
+  actúa de proxy hacia el REST y evita problemas de CORS. La frecuencia se
+  cambia en la constante `INTERVALO_REFRESCO_MS` de `js/app.js` (en
+  milisegundos).
 - Si el servidor REST no está disponible, la página muestra un aviso de error en
   lugar de romperse.
 
@@ -496,7 +499,7 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 Estas pruebas **escriben en la base de datos real** (el `POST` inserta una fila),
 así que `bbdd/mediciones.db` debe existir (paso 3.1).
 
-### 4.3 Página web — 5 pruebas de estructura
+### 4.3 Página web — 8 pruebas de estructura
 
 ```bash
 cd pagina-web
@@ -507,8 +510,10 @@ node --test
 > módulo y falla.
 
 `tests/logicaWeb.test.js` comprueba que existen `index.php`,
-`php/logicaWeb.php`, `api/mediciones.php`, `js/app.js` y `css/style.css`, y que la
-hoja de estilos contiene la paleta `#0F2A2E` y `#7FE3C0` del diseño.
+`php/logicaWeb.php`, `api/mediciones.php`, `js/app.js` y `css/variables.css`; que
+`index.php` carga `variables.css` antes de `style.css`; que la paleta del diseño
+está definida en `variables.css`; que `style.css` no tiene colores sueltos y que
+todas las variables que usa están definidas.
 
 ### 4.4 Página web — 2 comprobaciones en PHP
 

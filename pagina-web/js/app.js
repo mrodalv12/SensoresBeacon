@@ -129,7 +129,52 @@ async function cargarMediciones() {
     actualizarTabla(mediciones);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Tiempo que espera la pagina entre peticiones al API. Se mide en
+// MILISEGUNDOS, que es la unidad que espera setInterval.
+//
+// Este es el UNICO sitio del proyecto donde se cambia la frecuencia de
+// refresco: se edita este numero y la pagina pide las mediciones cada vez
+// durante mas tiempo.
+//
+//   30 000 -> medio minuto (refresco rapido, para pruebas)
+//  300 000 -> 5 minutos (valor por defecto)
+// 600 000 -> 10 minutos (refresco lento, ahorra bateria y peticiones)
+const INTERVALO_REFRESCO_MS = 300000;
+
+// Convertimos a segundos para poder ponerlo en el texto de la pagina:
+// Math.floor(300000 / 1000) son 300 segundos, y 300 / 60 son 5 minutos.
+const REFRESCO_SEGUNDOS = INTERVALO_REFRESCO_MS / 1000;
+const REFRESCO_MINUTOS = INTERVALO_REFRESCO_MS / 60000;
+
+// El script se carga al final del <body> (ver index.php), con lo que el HTML
+// ya esta completo cuando se ejecuta este codigo: los elementos #co2-value,
+// #temp-value, #tabla-body y #error-container ya existen y se pueden usar
+// directamente, sin esperar a ningun evento.
+cargarMediciones();
+
+// Pide las mediciones nada mas abrir la pagina, para que el usuario vea datos
+// enseguida y no espere hasta el final del primer intervalo.
+mostrarProximaActualizacion();
+
+// Refresco automatico: vuelve a pedir las mediciones cada INTERVALO_REFRESCO_MS
+// milisegundos (5 minutos por defecto), de modo que las cifras de la pagina se
+// actualizan solas con lo que llega del REST.
+setInterval(() => {
     cargarMediciones();
-    setInterval(cargarMediciones, 5000); // Actualizar cada 5 segundos
-});
+    mostrarProximaActualizacion();
+}, INTERVALO_REFRESCO_MS);
+
+// mostrarProximaActualizacion(): escribe en la pagina cada cuanto se va a
+// refrescar. Es solo informacion para el usuario: el temporizador de verdad
+// lo pone setInterval de arriba.
+function mostrarProximaActualizacion() {
+    const elemento = document.getElementById('proxima-actualizacion');
+    if (!elemento) return;
+
+    const minutos = REFRESCO_MINUTOS;
+    const texto = minutos >= 1
+        ? `${Number(minutos.toFixed(1))} minuto${minutos === 1 ? '' : 's'}`
+        : `${REFRESCO_SEGUNDOS} segundos`;
+
+    elemento.textContent = `Actualización automática cada ${texto}.`;
+}

@@ -28,8 +28,11 @@
  * si el servidor no responde o devuelve un error, devuelve una lista vacia.
  */
 function obtenerMedicion() {
+    // Direccion del servidor REST. localhost vale en cualquier computadora,
+    // porque el servidor corre en la misma maquina que esta pagina. Si el REST
+    // escuchara en otro sitio, se cambia el host (y el puerto) aqui.
     $url = 'http://localhost:8080/mediciones';
-    
+
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPGET, true);

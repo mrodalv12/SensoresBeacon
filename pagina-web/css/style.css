@@ -10,36 +10,9 @@ Autor: Maria Jose Rodriguez
 Aportacion: version pulida (tokens, tipografia, tabla, accesibilidad, responsive)
 ============================================================================================*/
 
-/* ---------- Tokens ---------- */
-:root {
-    /* Color */
-    --bg-page: #0E363D;
-    --bar: #7BCDB8;
-    --bar-edge: #6AB9A5;
-    --surface: #E8EAEA;
-    --surface-alt: #DFE2E2;
-    --surface-head: #D3D8D8;
-    --surface-border: #B9BDC4;
-    --row-line: rgba(14, 54, 61, 0.10);
-    --text-light: #FFFFFF;
-    --text-dark: #0E363D;
-    --text-muted: #4A6368;
-    --focus: #7BCDB8;
-
-    /* Forma */
-    --radius-card: 36px;
-    --radius-table: 20px;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.18), 0 12px 32px -12px rgba(0, 0, 0, 0.45);
-
-    /* Espaciado */
-    --space-1: 0.5rem;
-    --space-2: 1rem;
-    --space-3: 1.5rem;
-    --space-4: 2.5rem;
-    --space-5: 4rem;
-
-    --font: "Inter", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
-}
+/* Los valores de color, forma, espaciado y tipografia NO estan aqui: estan en
+   variables.css, que se carga antes que este fichero. Para cambiar el diseno
+   de la pagina, edita variables.css y no toques este fichero. */
 
 /* ---------- Base ---------- */
 *,
@@ -243,18 +216,27 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background: #CFD5D5;
+    background: var(--row-hover);
 }
 
 /* ---------- Mensajes ---------- */
 .error-message {
     padding: var(--space-2) var(--space-3);
-    background: rgba(255, 99, 99, 0.12);
-    border: 1px solid rgba(255, 120, 120, 0.45);
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
     border-left-width: 4px;
     border-radius: 10px;
-    color: #FFD0D0;
+    color: var(--error-text);
     font-size: 0.95rem;
+}
+
+/* Aviso de cada cuanto se refrescan los datos. Texto secundario: informs,
+   no es el contenido principal de la pagina. */
+.refresh-note {
+    margin: var(--space-2) 0 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
 }
 
 .text-center {

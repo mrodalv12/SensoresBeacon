@@ -1,0 +1,93 @@
+/*============================================================================================
+Nombre: variables.css
+Descripcion: Variables CSS (tokens) del diseno de la pagina. Aqui esta todo lo que hay
+             que tocar para cambiar el aspecto: colores, formas, espaciados y tipografia.
+             El resto de reglas de style.css solo consume estas variables.
+Copyright:
+Fecha de creacion: 2026-10-05
+Fecha de modificacion: 2026-10-05
+Autores: Jordi Bataller y Maria Jose Rodriguez
+Autor: Maria Jose Rodriguez
+Aportacion: extraccion de los tokens a un fichero propio para poder cambiar el
+            diseno sin tocar el CSS de las componentes
+============================================================================================
+
+  COMO CAMBIAR EL DISENO
+  ----------------------
+  Todo lo de abajo es una variable. Cambia el valor a la derecha del ":", por
+  ejemplo de --space-4: 2.5rem a --space-4: 1rem, y el cambio se aplica a toda
+  la pagina sin editar ni una linea mas.
+
+  Si anades un valor en hexadecimal, escribelo siempre con almohadilla (#) y con
+  las 6 cifras, aunque repitas digitos: #7BCDB8, no #7BD. El navegador lo acepta
+  igual, pero asi todos los colores del proyecto se leen de la misma manera.
+
+  Este fichero se carga antes que style.css. Si style.css no ve estas variables,
+  casi seguro es porque se ha borrado el <link> de variables.css del index.php.
+*/
+
+/* ---------- Color ----------
+   agrupados por para donde se usan, no por tono, para que al cambiar la paleta
+   se vea de golpe a que parte de la pagina afecta cada color. */
+:root {
+    /* Fondo de la pagina: el color que ocupa la mayor superficie. */
+    --bg-page: #0E363D;
+
+    /* Barras superior e inferior, y el color de foco de teclado.
+       --bar es el color de acento del proyecto: las barras, el texto
+       seleccionado y el contorno de foco. Cambiarlo aqui repinta las tres
+       cosas a la vez. */
+    --bar: #7BCDB8;
+    --bar-edge: #6AB9A5;
+    --focus: #7BCDB8;
+
+    /* Tarjetas y tabla: los bloques claros donde va el texto oscuro. */
+    --surface: #E8EAEA;
+    --surface-alt: #DFE2E2;
+    --surface-head: #D3D8D8;
+    --surface-border: #B9BDC4;
+
+    /* Linea que separa filas de la tabla (transparente, se mezcla con --surface). */
+    --row-line: rgba(14, 54, 61, 0.10);
+
+    /* Color de una fila de la tabla al pasar el raton por encima. Un tono mas
+       oscuro que --surface-alt, para que se note el cambio de estado. */
+    --row-hover: #CFD5D5;
+
+    /* Aviso de error: fondo translucido, borde y texto. Se guardan por
+       separado porque el fondo necesita ser transparente (rgba) y el texto
+       no. */
+    --error-bg: rgba(255, 99, 99, 0.12);
+    --error-border: rgba(255, 120, 120, 0.45);
+    --error-text: #FFD0D0;
+
+    /* Texto. --text-light va sobre --bg-page; --text-dark y --text-muted,
+       sobre las superficies claras. */
+    --text-light: #FFFFFF;
+    --text-dark: #0E363D;
+    --text-muted: #4A6368;
+
+    /* ---------- Forma ----------
+       --radius-* son las esquinas redondeadas: 0 deja todo recto, y subirlo
+       hasta la mitad del lado mas corto hace un circulo. */
+    --radius-card: 36px;
+    --radius-table: 20px;
+
+    /* Sombra de tarjetas y tabla: dos capas, una difusa y otra marcada. */
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.18), 0 12px 32px -12px rgba(0, 0, 0, 0.45);
+
+    /* ---------- Espaciado ----------
+       Escala de 5 pasos. Se usa rem, no px, para que el espaciado respete
+       el tamano de letra que elija el visitante. Si cambias estos valores,
+       se reajusta el respiro de toda la pagina de golpe. */
+    --space-1: 0.5rem;   /* separacion pequena: sangria del titulo */
+    --space-2: 1rem;     /* separacion media: padding del mensaje de error */
+    --space-3: 1.5rem;   /* separacion normal: padding lateral de celdas */
+    --space-4: 2.5rem;   /* separacion grande: hueco entre bloques */
+    --space-5: 4rem;     /* separacion maxima: padding vertical del contenedor */
+
+    /* ---------- Tipografia ----------
+       Lista de fuentes probadas en orden: gana la primera que exista en el
+       sistema. Las ultimas son las que se usan siempre como recurso final. */
+    --font: "Inter", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+}
