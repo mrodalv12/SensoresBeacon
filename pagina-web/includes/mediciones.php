@@ -7,7 +7,7 @@
 //Copyright:
 //Fecha de creacion: 2026-10-02
 //Fecha de modificacion: 2026-10-04
-//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autores: Maria Jose Rodriguez
 //Autor: Maria Jose Rodriguez
 //Aportacion: limpieza y mas comentarios
 //==============================================================================================
