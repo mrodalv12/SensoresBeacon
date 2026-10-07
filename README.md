@@ -183,7 +183,8 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 | `500 Internal Server Error` | Fallo al guardar en la base de datos |
 
 `uuid`, `major`, `minor` y `txPower` son obligatorios en la petición, igual que
-`tipo` y `valor`. `nombre_emisora` es opcional.
+`tipo` y `valor`. `nombre_emisora` es opcional y se guarda en la base de datos
+como `nombre_cliente`.
 
 **`GET /mediciones`** — devuelve las últimas 10 mediciones.
 
@@ -209,17 +210,17 @@ documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 |---|---|---|---|
 | `id` | `INTEGER PRIMARY KEY AUTOINCREMENT` | no | generado por SQLite |
 | `tipo_de_medicion` | `TEXT NOT NULL` | no | `tipo` del POST |
+| `nombre_cliente` | `TEXT NOT NULL` | no | `nombre_emisora` del POST |
 | `valor` | `REAL NOT NULL` | no | `valor` del POST |
-| `nombre_emisora` | `TEXT NOT NULL` | no | `nombre_emisora` del POST |
 | `fecha_y_hora` | `DATETIME DEFAULT CURRENT_TIMESTAMP` | sí | generado por SQLite |
-| `uuid` | `TEXT` | sí | `uuid` del POST |
-| `major` | `INTEGER` | sí | `major` del POST |
-| `minor` | `INTEGER` | sí | `minor` del POST |
-| `txPower` | `INTEGER` | sí | `txPower` del POST |
 
-Los tipos `Z` (`major`, `minor`, `txPower`) y `uuid` no llevan `NOT NULL` porque son
-atributos opcionales del dispositivo emisor. El script incluye además una fila de
-ejemplo.
+> **Nombre de emisora = nombre del cliente.** La app envía el nombre de la
+> emisora en el campo `nombre_emisora` de la petición; en la base de datos ese
+> dato es el **nombre del cliente** y se almacena en la columna
+> `nombre_cliente`. La tabla solo guarda esos cuatro datos: tipo de medición,
+> nombre del cliente, valor y fecha/hora.
+
+El script incluye además una fila de ejemplo.
 
 La capa de acceso a datos **no** usa `node-sqlite3`: el repositorio invoca
 `python3` con el módulo `sqlite3` de la biblioteca estándar
@@ -355,7 +356,8 @@ mediciones.
 2. Seleccionar la placa **Adafruit Bluefruit LE** y el puerto USB correspondiente.
 3. Instalar las bibliotecas `BluefruitLE` y `Adafruit_TinyUSB`.
 4. Verificar en `Publicador.h` el nombre de la emisora (`"GTI-3A-MJ"`, el mismo
-   que envía la app en `nombre_emisora`) y el `beaconUUID`.
+   que envía la app en `nombre_emisora` y que en la base de datos se guarda como
+   `nombre_cliente`, el nombre del cliente) y el `beaconUUID`.
 5. Subir el programa con el botón de upload.
 
 Al arrancar, el `loop()` publica CO₂ y temperatura cada 2 segundos con valores
