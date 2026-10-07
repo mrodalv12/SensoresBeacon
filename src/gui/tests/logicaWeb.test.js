@@ -17,7 +17,7 @@ const path = require('path');
 
 describe('Página Web - Lógica', () => {
     test('Archivo logicaWeb.php existe', () => {
-        const p = path.join(__dirname, '../php/logicaWeb.php');
+        const p = path.join(__dirname, '../../frontend_business_logic/logicaWeb.php');
         assert.ok(fs.existsSync(p));
     });
     
@@ -85,8 +85,36 @@ describe('Página Web - Lógica', () => {
         assert.ok(fs.existsSync(p));
     });
     
+    // La GUI no debe hacer transporte: app.js no puede contener fetch ni XHR;
+    // toda comunicacion HTTP vive en el proxy frontend_business_logic/js/mediciones.js.
+    test('GUI desacoplada: app.js no contiene fetch', () => {
+        const js = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
+        assert.ok(!/fetch\s*\(/.test(js), 'app.js no debe usar fetch directamente');
+        assert.ok(!/XMLHttpRequest/.test(js), 'app.js no debe usar XMLHttpRequest');
+    });
+
     test('API mediciones.php existe', () => {
-        const p = path.join(__dirname, '../api/mediciones.php');
+        const p = path.join(__dirname, '../../frontend_business_logic/api/mediciones.php');
         assert.ok(fs.existsSync(p));
+    });
+
+    test('Proxy frontend: mediciones.js existe y encapsula el fetch', () => {
+        const p = path.join(__dirname, '../../frontend_business_logic/js/mediciones.js');
+        assert.ok(fs.existsSync(p));
+        const js = fs.readFileSync(p, 'utf8');
+        assert.ok(/fetch\s*\(/.test(js), 'el proxy debe encapsular la comunicacion HTTP');
+    });
+
+    // index.php debe cargar el proxy antes que app.js: la GUI no puede
+    // ejecutarse si su logica de negocio de cliente no esta aun definida.
+    test('index.php carga mediciones.js antes que app.js', () => {
+        const html = fs.readFileSync(path.join(__dirname, '../index.php'), 'utf8');
+        const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]);
+        const posProxy = scripts.indexOf('/frontend_business_logic/js/mediciones.js');
+        const posApp = scripts.indexOf('js/app.js');
+
+        assert.ok(posProxy !== -1, 'index.php no enlaza el proxy mediciones.js');
+        assert.ok(posApp !== -1, 'index.php no enlaza js/app.js');
+        assert.ok(posProxy < posApp, 'el proxy debe cargarse antes que app.js');
     });
 });

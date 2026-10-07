@@ -1,7 +1,7 @@
 {
-  "name": "logica-negocio",
+  "name": "business_logic",
   "version": "1.0.0",
-  "description": "Lógica de Negocio - separada de servidor REST y BD",
+  "description": "Logica de Negocio - separada de comunicacion y BD",
   "main": "src/logicaNegocio.js",
   "scripts": {
     "test": "node --test"

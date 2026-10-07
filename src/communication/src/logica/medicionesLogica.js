@@ -17,8 +17,8 @@
  * Tipos de datos abstractos utilizados: N, Z, R, Text, [Tipo]
  */
 
-const { LogicaNegocioSQLitePyAsync } = require('../../../logica-negocio/src/logicaNegocioSqlitePyAsync');
-const repo = require('../../../logica-negocio/src/repositorioSqlitePythonAsync');
+const { LogicaNegocioSQLitePyAsync } = require('../../../business_logic/src/logicaNegocioSqlitePyAsync');
+const repo = require('../../../business_logic/src/repositorioSqlitePythonAsync');
 
 const logica = new LogicaNegocioSQLitePyAsync(repo);
 

@@ -1,7 +1,7 @@
 //==============================================================================================
 //Nombre: app.js
-//Descripcion: Logica cliente de la pagina: obtiene las mediciones del servidor REST y
-//              actualiza las tarjetas y la tabla.
+//Descripcion: Logica cliente de la pagina: usa el proxy de frontend_business_logic para
+//              obtener las mediciones y actualiza las tarjetas y la tabla.
 //Copyright:
 //Fecha de creacion: 2026-10-02
 //Fecha de modificacion: 2026-10-04
@@ -13,25 +13,12 @@
 /**
  * Lógica cliente para obtener y mostrar mediciones
  * 
+ * La GUI no hace transporte: obtiene los datos llamando al proxy
+ * mediciones.obtenerMedicion() definido en frontend_business_logic/js/mediciones.js
+ * (cargado antes que este fichero en index.php).
+ * 
  * Diseño según reglas del PDF "Logical_Design_RE_Rules_v3.pdf"
  */
-
-// obtenerMedicion(): pide las mediciones al API y devuelve el array recibido;
-// si la peticion falla, avisa por pantalla y devuelve una lista vacia.
-async function obtenerMedicion() {
-    try {
-        const response = await fetch('/api/mediciones.php');
-        if (!response.ok) {
-            throw new Error('Error en la petición HTTP');
-        }
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error('Error al obtener mediciones:', error);
-        mostrarError('No se ha podido conectar con el servidor REST. Verifica la conexión.');
-        return [];
-    }
-}
 
 // mostrarError(): pinta el mensaje de error en el contenedor de errores.
 function mostrarError(mensaje) {
@@ -121,12 +108,16 @@ function actualizarTabla(mediciones) {
     });
 }
 
-// cargarMediciones(): pide las mediciones y refresca tarjetas y tabla.
+// cargarMediciones(): pide las mediciones al proxy de frontend_business_logic y
+// refresca tarjetas y tabla; si el proxy notifica error, lo muestra.
 async function cargarMediciones() {
     limpiarError();
-    const mediciones = await obtenerMedicion();
-    actualizarTarjetas(mediciones);
-    actualizarTabla(mediciones);
+    const lista = await mediciones.obtenerMedicion();
+    if (mediciones.errorActual()) {
+        mostrarError(mediciones.errorActual());
+    }
+    actualizarTarjetas(lista);
+    actualizarTabla(lista);
 }
 
 // Tiempo que espera la pagina entre peticiones al API. Se mide en

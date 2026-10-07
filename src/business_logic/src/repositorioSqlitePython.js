@@ -18,7 +18,7 @@
 const { spawnSync } = require('child_process');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, '../../bbdd/mediciones.db');
+const DB_PATH = path.join(__dirname, '../../database/mediciones.db');
 
 // guardar(): inserta la medicion en SQLite mediante python3 y devuelve el id.
 // Solo guarda tipo, nombre de cliente (nombre_emisora = nombre_cliente),

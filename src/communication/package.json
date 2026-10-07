@@ -1,7 +1,7 @@
 {
-  "name": "servidor-rest",
+  "name": "communication",
   "version": "1.0.0",
-  "description": "Servidor REST para mediciones (ejercicio)",
+  "description": "Capa de comunicacion (servidor REST) para mediciones (ejercicio)",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

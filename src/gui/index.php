@@ -147,10 +147,16 @@ $mediciones = obtenerUltimasMediciones();
 
     <!-- =====================================================================
          SCRIPT: va al final del body a proposito. Asi el HTML ya esta
-         completo cuando se ejecuta, y js/app.js puede buscar los elementos
+         completo cuando se ejecuta, y la GUI puede buscar los elementos
          del DOM (co2-value, temp-value, tabla-body) sin esperar a ningun
          evento.
+
+         Primero se carga el proxy de logica de negocio de cliente
+         (frontend_business_logic/js/mediciones.js): encapsula el transporte
+         HTTP, asi la GUI no hace fetch nunca. Despues app.js, que solo habla
+         con ese proxy.
          ===================================================================== -->
+    <script src="/frontend_business_logic/js/mediciones.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

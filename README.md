@@ -28,7 +28,7 @@ software:
 ### 1.2 Arquitectura y módulos
 
 ```
-   HolaMundoIBeacon/          proyecto/            servidor-rest/        logica-negocio/      bbdd/
+   HolaMundoIBeacon/          proyecto/            src/communication/    src/business_logic/  src/database/
      (placa Bluefruit)      (app Android)          (REST Node.js)        (Node.js)        (SQLite)
            |                     |                      |                      |               |
            |  anuncio iBeacon     |  POST /mediciones   |                      |               |
@@ -42,7 +42,7 @@ software:
            |                      |                      |                      |  obtenerUltimas10()|
            |                      |                      |                      |<--------------+
            |                      |                      |                      |               |
-           |                      |            pagina-web/ (PHP)  ---- curl GET /mediciones ------>+
+           |                      |  src/frontend_business_logic/ y src/gui/ -- GET /mediciones ->+
            |                      |                      |                      |               |
            v                      v                      v                      v               v
      salida por            contador en           201 / 400 / 500        normaliza        tabla
@@ -53,22 +53,69 @@ software:
 |---|---|---|---|
 | Emisor | `HolaMundoIBeacon/` | Arduino (C++) | Publicar CO₂ y temperatura como iBeacon |
 | App Android | `proyecto/` | Java + Gradle | Escanear BLE, decodificar la trama, enviar el `POST` |
-| Servidor REST | `servidor-rest/` | Node.js (`http`) | Enrutado, validación HTTP y códigos de respuesta |
-| Lógica de negocio | `logica-negocio/` | Node.js | `guardarMedicion()` / `obtenerMedicion()`, sin HTTP ni SQL |
-| Base de datos | `bbdd/` | SQLite 3 | Tabla `Mediciones` |
-| Página web | `pagina-web/` | PHP + HTML/CSS/JS | Mostrar las últimas 10 mediciones |
+| Comunicación (REST) | `src/communication/` | Node.js (`http`) | Enrutado, validación HTTP y códigos de respuesta |
+| Lógica de negocio | `src/business_logic/` | Node.js | `guardarMedicion()` / `obtenerMedicion()`, sin HTTP ni SQL |
+| Base de datos | `src/database/` | SQLite 3 | Tabla `Mediciones` |
+| Frontend (proxy de cliente) | `src/frontend_business_logic/` | PHP + JS | `obtenerMedicion()` hacia el REST; encapsula el transporte |
+| GUI web | `src/gui/` | PHP + HTML/CSS/JS | Mostrar las últimas 10 mediciones |
 
-La separación entre capas es estricta: el servidor REST **no** contiene lógica de
-negocio ni accede a la base de datos, y la lógica de negocio **no** conoce HTTP.
+La separación entre capas es estricta: la capa de comunicación **no** contiene
+lógica de negocio ni accede a la base de datos, y la lógica de negocio **no**
+conoce HTTP (cero dependencias de la capa de comunicación ni de frameworks web).
 El acceso a datos se aísla detrás de un *repositorio* intercambiable
 (`repositorioMemoria.js` en pruebas, `repositorioSqlitePythonAsync.js` en
 producción), lo que permite probar la lógica sin base de datos y la base de datos
-sin HTTP.
+sin HTTP. La GUI tampoco hace transporte: se comunica solo con
+`src/frontend_business_logic/`.
 
 ### 1.3 Estructura de carpetas
 
 ```
 .
+├── author.md                  # Nombre del autor (informa el reporte de la revisión)
+│
+├── doc/                       # Diseños formales por componente
+│   ├── communication_design.md
+│   ├── business_logic_design.md
+│   ├── database_design.md
+│   ├── frontend_business_logic_design.md
+│   └── gui_design.md
+│
+├── src/                       # Código, organizado por capas (backend y frontend)
+│   ├── communication/              # Capa de comunicación: servidor REST (Node.js)
+│   │   ├── src/server.js           #   arranque y puerto
+│   │   ├── src/app.js              #   servidor HTTP + 404
+│   │   ├── src/routes/medicionesRoutes.js   # POST y GET /mediciones
+│   │   ├── src/logica/medicionesLogica.js   # puente con la lógica de negocio
+│   │   └── tests/mediciones.test.js         # 6 pruebas HTTP reales
+│   │
+│   ├── business_logic/             # Lógica de negocio (Node.js, sin HTTP)
+│   │   ├── src/logicaNegocio.js                    # núcleo, sin BD
+│   │   ├── src/logicaNegocioConRepositorio.js      # con repositorio inyectado
+│   │   ├── src/logicaNegocioSqlitePy.js            # + SQLite vía Python (sync)
+│   │   ├── src/logicaNegocioSqlitePyAsync.js       # + SQLite vía Python (async)
+│   │   ├── src/repositorioMemoria.js               # doble en memoria
+│   │   ├── src/repositorioSqlitePython.js          # SQLite (sync)
+│   │   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
+│   │   └── tests/                                  # 10 pruebas
+│   │
+│   ├── database/                        # Base de datos (SQLite 3)
+│   │   ├── mediciones.sql               # CREATE TABLE + fila de ejemplo
+│   │   └── mediciones.db               # base de datos generada (no versionada)
+│   │
+│   ├── frontend_business_logic/        # Lógica de negocio de cliente (proxy)
+│   │   ├── logicaWeb.php               #   obtenerMedicion(): GET al REST
+│   │   ├── api/mediciones.php          #   endpoint JSON para el refresco
+│   │   └── js/mediciones.js            #   proxy JS que encapsula fetch/RUTA_API
+│   │
+│   └── gui/                        # GUI web (PHP + HTML/CSS/JS)
+│       ├── index.php              #   renderizado en servidor
+│       ├── includes/mediciones.php
+│       ├── js/app.js              #   actualiza tarjetas y tabla cada 5 min
+│       ├── css/variables.css      #   paleta y medidas, todo en variables CSS
+│       ├── css/style.css          #   usa las variables de variables.css
+│       └── tests/                 #   11 pruebas JS + 2 comprobaciones PHP
+│
 ├── HolaMundoIBeacon/          # Firmware del emisor (Arduino IDE)
 │   ├── HolaMundoIBeacon.ino   #   setup() / loop() y orquestación
 │   ├── Publicador.h           #   publicaCO2() / publicarTemperatura()
@@ -78,52 +125,24 @@ sin HTTP.
 │   ├── PuertoSerie.h          #   salida por consola
 │   └── ServicioEnEmisora.h    #   definición del servicio BLE
 │
-├── proyecto/                  # App Android (Gradle)
-│   ├── app/src/main/java/com/upv/sensoresbeacon/
-│   │   ├── MainActivity.java  #   escaneo BLE, 3 botones, contadores, LogCat
-│   │   ├── TramaIBeacon.java  #   decodificación de la trama iBeacon
-│   │   ├── Medicion.java      #   tipoDeMedicion + valor
-│   │   ├── MedicionesID.java  #   enumeración co2=11, temperatura=12, ruido=13
-│   │   ├── LogicaFake.java    #   lógica "fake": POST al servidor REST
-│   │   ├── PeticionarioREST.java
-│   │   ├── TransporteHttp.java    # interfaz (permite dobles de prueba)
-│   │   ├── TransporteHttpReal.java# implementación con HttpURLConnection
-│   │   ├── RespuestaREST.java
-│   │   └── Utilidades.java    #   conversión de bytes, UUID, hex
-│   ├── app/src/test/java/...  #   108 pruebas unitarias JUnit
-│   └── app/build.gradle
-│
-├── servidor-rest/             # Servidor REST (Node.js, sin dependencias)
-│   ├── src/server.js          #   arranque y puerto
-│   ├── src/app.js             #   servidor HTTP + 404
-│   ├── src/routes/medicionesRoutes.js   # POST y GET /mediciones
-│   ├── src/logica/medicionesLogica.js   # puente con la lógica de negocio
-│   └── tests/mediciones.test.js         # 6 pruebas HTTP reales
-│
-├── logica-negocio/            # Lógica de negocio (Node.js, sin dependencias)
-│   ├── src/logicaNegocio.js                    # núcleo, sin BD
-│   ├── src/logicaNegocioConRepositorio.js      # con repositorio inyectado
-│   ├── src/logicaNegocioSqlitePy.js            # + SQLite vía Python (sync)
-│   ├── src/logicaNegocioSqlitePyAsync.js       # + SQLite vía Python (async)
-│   ├── src/repositorioMemoria.js               # doble en memoria
-│   ├── src/repositorioSqlitePython.js          # SQLite (sync)
-│   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
-│   └── tests/                                  # 10 pruebas
-│
-├── pagina-web/                # Página web (PHP)
-│   ├── index.php              #   renderizado en servidor
-│   ├── php/logicaWeb.php      #   obtenerMedicion(): GET al REST
-│   ├── includes/mediciones.php
-│   ├── api/mediciones.php     #   endpoint JSON para el refresco del navegador
-│   ├── js/app.js              #   actualiza tarjetas y tabla cada 5 min
-│   ├── css/variables.css      #   paleta y medidas, todo en variables CSS
-│   ├── css/style.css          #   usa las variables de variables.css
-│   └── tests/                 #   8 pruebas JS + 2 comprobaciones PHP
-│
-└── bbdd/
-    ├── mediciones.sql          # CREATE TABLE + fila de ejemplo
-    └── mediciones.db           # base de datos generada (no versionada)
+└── proyecto/                  # App Android (Gradle)
+    ├── app/src/main/java/com/upv/sensoresbeacon/
+    │   ├── MainActivity.java  #   escaneo BLE, 3 botones, contadores, LogCat
+    │   ├── TramaIBeacon.java  #   decodificación de la trama iBeacon
+    │   ├── Medicion.java      #   tipoDeMedicion + valor
+    │   ├── MedicionesID.java  #   enumeración co2=11, temperatura=12, ruido=13
+    │   ├── LogicaFake.java    #   lógica "fake": POST al servidor REST
+    │   ├── PeticionarioREST.java
+    │   ├── TransporteHttp.java    # interfaz (permite dobles de prueba)
+    │   ├── TransporteHttpReal.java# implementación con HttpURLConnection
+    │   ├── RespuestaREST.java
+    │   └── Utilidades.java    #   conversión de bytes, UUID, hex
+    ├── app/src/test/java/...  #   108 pruebas unitarias JUnit
+    └── app/build.gradle
 ```
+
+> La estructura sigue el layout de la revisión de sprint: `author.md` con el
+> autor, `doc/` con un diseño por componente y `src/<componente>/` con el código.
 
 ### 1.4 Formato de la trama iBeacon
 
@@ -203,7 +222,7 @@ Cualquier otra ruta devuelve `404 Not Found`.
 
 ### 1.6 Esquema de la base de datos
 
-`bbdd/mediciones.sql` crea la tabla `Mediciones` con los tipos abstractos del
+`src/database/mediciones.sql` crea la tabla `Mediciones` con los tipos abstractos del
 documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 
 | Columna | Tipo SQLite | Nulable | Origen |
@@ -254,13 +273,13 @@ estado o con otro sistema.
 | Servidor REST y lógica de negocio | **Node.js ≥ 18** | Probado con v22.13.1. Sin dependencias: no hace falta `npm install` |
 | Base de datos | **Python 3** con el módulo `sqlite3` | Incluido en Python de serie |
 | Crear la base de datos | **Cliente `sqlite3`** (opcional) | Solo para el paso 3.1 |
-| Página web | **PHP ≥ 7.4** con la extensión **curl** | Necesario para `paginaWeb.php` |
+| Página web | **PHP ≥ 7.4** con la extensión **curl** | Necesario para `logicaWeb.php` |
 | App Android | **JDK 17+** y **Android SDK** (compileSdk 34) | Se usa el *Gradle Wrapper* incluido |
 | Emisor | **Arduino IDE 2.x** + soporte de placa **Adafruit Bluefruit LE** | Bibliotecas `BluefruitLE` y `Adafruit_TinyUSB` |
 
 > **Nota:** las pruebas de Node.js y de Android se ejecutan sin instalar nada.
 > En la máquina donde se generó este README, **PHP no estaba instalado**, por lo
-> que la página web y `pagina-web/tests/logicaWeb.test.php` no se pudieron
+> que la página web y `src/gui/tests/logicaWeb.test.php` no se pudieron
 > ejecutar; los comandos están documentados en los apartados 3.3 y 4.4.
 
 ---
@@ -272,12 +291,12 @@ la página web y el emisor antes que la app.
 
 ### 3.1 Crear la base de datos
 
-`bbdd/mediciones.db` **no está versionada** (está en `.gitignore`, porque es un
-fichero binario que cambia en cada escritura). Hay que generarla a partir del
-script SQL:
+`src/database/mediciones.db` **no está versionada** (está en `.gitignore`,
+porque es un fichero binario que cambia en cada escritura). Hay que generarla a
+partir del script SQL:
 
 ```bash
-cd bbdd
+cd src/database
 sqlite3 mediciones.db < mediciones.sql
 ```
 
@@ -291,10 +310,10 @@ sqlite3 mediciones.db "SELECT COUNT(*) FROM Mediciones;"
 Debería aparecer el esquema `CREATE TABLE Mediciones` y un conteo de `1` (la fila
 de ejemplo que incluye el script).
 
-### 3.2 Servidor REST
+### 3.2 Capa de comunicación (servidor REST)
 
 ```bash
-cd servidor-rest
+cd src/communication
 npm start
 ```
 
@@ -324,31 +343,36 @@ curl -X POST http://localhost:8080/mediciones \
 La segunda orden debe responder `201 Created` con `{"status":"ok",...}`, y la
 primera debe devolver un array JSON con la medición recién insertada.
 
-### 3.3 Página web
+### 3.3 GUI web (frontend)
 
 Requiere PHP con `curl` y el servidor REST ya levantado (el paso 3.2), porque
-`pagina-web/php/logicaWeb.php` hace un `GET` a `http://localhost:8080/mediciones`.
+`src/frontend_business_logic/logicaWeb.php` hace un `GET` a
+`http://localhost:8080/mediciones`. La raíz del servidor PHP es la carpeta `src/`
+(contiene toda la parte web):
 
 ```bash
-cd pagina-web
-php -S localhost:8000
+php -S localhost:8000 -t src
 ```
 
-Abre <http://localhost:8000> en el navegador. Verás las dos tarjetas superiores
-(último CO₂ en ppm y última temperatura en °C) y la tabla con las últimas 10
-mediciones.
+Abre <http://localhost:8000/gui/index.php> en el navegador. Verás las dos
+tarjetas superiores (último CO₂ en ppm y última temperatura en °C) y la tabla con
+las últimas 10 mediciones.
 
-- El renderizado inicial lo hace `index.php` en el servidor.
-- `js/app.js` refresca los datos cada 5 minutos contra `api/mediciones.php`, que
-  actúa de proxy hacia el REST y evita problemas de CORS. La frecuencia se
-  cambia en la constante `INTERVALO_REFRESCO_MS` de `js/app.js` (en
-  milisegundos).
+- El renderizado inicial lo hace `src/gui/index.php` en el servidor.
+- `src/gui/js/app.js` refresca los datos cada 5 minutos contra
+  `src/frontend_business_logic/api/mediciones.php`, que actúa de proxy hacia el
+  REST y evita problemas de CORS. `app.js` **no** hace `fetch` directamente: usa
+  el proxy `src/frontend_business_logic/js/mediciones.js`, que es el único que
+  conoce la ruta del API (`RUTA_API`). La frecuencia se cambia en la constante
+  `INTERVALO_REFRESCO_MS` de `js/app.js` (en milisegundos).
 - Si el servidor REST no está disponible, la página muestra un aviso de error en
   lugar de romperse.
 
-> Para desplegar en producción, colocar el directorio `pagina-web/` bajo un
-> servidor Apache o Nginx con PHP y apuntar el servidor REST a una ruta real
-> (hoy está fija en `logicaWeb.php`, línea 21).
+> Para desplegar en producción, colocar `src/` como document root (o publicar
+> `src/gui/` y `src/frontend_business_logic/` bajo un servidor Apache o Nginx
+> con PHP) y apuntar el servidor REST a una ruta real: en PHP está fija en
+> `src/frontend_business_logic/logicaWeb.php` (`$url`) y en el navegador la
+> define `RUTA_API` en `src/frontend_business_logic/js/mediciones.js`.
 
 ### 3.4 Emisor (placa Adafruit Bluefruit LE)
 
@@ -416,16 +440,16 @@ etiquetas `MainActivity`, `TramaIBeacon`, `LogicaFake` y `PeticionarioREST`.
 
 ```bash
 # 1. base de datos
-sqlite3 bbdd/mediciones.db "SELECT COUNT(*) FROM Mediciones;"
+sqlite3 src/database/mediciones.db "SELECT COUNT(*) FROM Mediciones;"
 
 # 2. servidor REST
 curl -s http://localhost:8080/mediciones
 
 # 3. página web
-curl -s http://localhost:8000/api/mediciones.php
+curl -s http://localhost:8000/frontend_business_logic/api/mediciones.php
 
 # 4. base de datos de nuevo: debe haber una fila más
-sqlite3 bbdd/mediciones.db "SELECT id, tipo_de_medicion, valor, fecha_y_hora FROM Mediciones ORDER BY id DESC LIMIT 3;"
+sqlite3 src/database/mediciones.db "SELECT id, tipo_de_medicion, valor, fecha_y_hora FROM Mediciones ORDER BY id DESC LIMIT 3;"
 ```
 
 Con la placa emitiendo y la app en marcha, el contador de filas debe aumentar
@@ -440,20 +464,20 @@ runner integrado de Node.js (`node --test`).
 
 | Módulo | Comando | Pruebas | Estado |
 |---|---|---|---|
-| Lógica de negocio | `cd logica-negocio && npm test` | 10 | 10 ✅ |
-| Servidor REST | `cd servidor-rest && npm test` | 6 | 6 ✅ |
-| Página web (estructura) | `cd pagina-web && node --test` | 5 | 5 ✅ |
-| Página web (PHP) | `cd pagina-web && php tests/logicaWeb.test.php` | 2 | requiere PHP + REST |
+| Lógica de negocio | `cd src/business_logic && npm test` | 10 | 10 ✅ |
+| Comunicación (REST) | `cd src/communication && npm test` | 6 | 6 ✅ |
+| GUI web (estructura) | `cd src/gui && node --test` | 11 | 11 ✅ |
+| GUI web (PHP) | `cd src/gui && php tests/logicaWeb.test.php` | 2 | requiere PHP + REST |
 | App Android | `cd proyecto && ./gradlew test` | 108 × 2 variantes | 108 ✅ |
 | Emisor | — | — | sin pruebas automáticas |
 
-**Total verificado: 129 pruebas automáticas en verde** (21 de Node.js + 108 de
+**Total verificado: 135 pruebas automáticas en verde** (27 de Node.js + 108 de
 Android), más 2 comprobaciones en PHP pendientes de instalar PHP.
 
 ### 4.1 Lógica de negocio — 10 pruebas
 
 ```bash
-cd logica-negocio
+cd src/business_logic
 npm test
 ```
 
@@ -463,7 +487,7 @@ Tres archivos, todos con el runner de Node:
 |---|---|---|
 | `tests/logicaNegocio.test.js` | 6 | `guardarMedicion()` normaliza tipo, valor y beacon; `obtenerMedicion()` devuelve un array de como mucho 10 elementos con `fecha_y_hora`, `tipo` y `valor` |
 | `tests/logicaConRepositorio.test.js` | 3 | La lógica con repositorio inyectado: guarda, devuelve las últimas y procesa beacon + medición |
-| `tests/logicaSqlitePy.test.js` | 1 | Integración real contra `bbdd/mediciones.db`: guarda una fila y la recupera |
+| `tests/logicaSqlitePy.test.js` | 1 | Integración real contra `src/database/mediciones.db`: guarda una fila y la recupera |
 
 Para ver el detalle de cada caso:
 
@@ -479,10 +503,10 @@ Salida esperada al final:
 # fail 0
 ```
 
-### 4.2 Servidor REST — 6 pruebas
+### 4.2 Capa de comunicación — 6 pruebas
 
 ```bash
-cd servidor-rest
+cd src/communication
 npm test
 ```
 
@@ -499,12 +523,12 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 | `GET /mediciones - campos fecha_y_hora, tipo, valor` | Los tres campos existen |
 
 Estas pruebas **escriben en la base de datos real** (el `POST` inserta una fila),
-así que `bbdd/mediciones.db` debe existir (paso 3.1).
+así que `src/database/mediciones.db` debe existir (paso 3.1).
 
-### 4.3 Página web — 8 pruebas de estructura
+### 4.3 GUI web — 11 pruebas de estructura
 
 ```bash
-cd pagina-web
+cd src/gui
 node --test
 ```
 
@@ -512,16 +536,21 @@ node --test
 > módulo y falla.
 
 `tests/logicaWeb.test.js` comprueba que existen `index.php`,
-`php/logicaWeb.php`, `api/mediciones.php`, `js/app.js` y `css/variables.css`; que
-`index.php` carga `variables.css` antes de `style.css`; que la paleta del diseño
-está definida en `variables.css`; que `style.css` no tiene colores sueltos y que
-todas las variables que usa están definidas.
+`../frontend_business_logic/logicaWeb.php`,
+`../frontend_business_logic/api/mediciones.php`, `js/app.js` y
+`css/variables.css`; que `index.php` carga `variables.css` antes de `style.css`;
+que la paleta del diseño está definida en `variables.css`; que `style.css` no
+tiene colores sueltos y que todas las variables que usa están definidas.
+Además verifica el desacople de la GUI: `js/app.js` **no** contiene
+`fetch`/`XMLHttpRequest`, `../frontend_business_logic/js/mediciones.js` sí
+encapsula el `fetch` y la constante `RUTA_API`, e `index.php` carga el proxy
+antes que `app.js`.
 
-### 4.4 Página web — 2 comprobaciones en PHP
+### 4.4 GUI web — 2 comprobaciones en PHP
 
 ```bash
 # el servidor REST debe estar levantado (paso 3.2)
-cd pagina-web
+cd src/gui
 php tests/logicaWeb.test.php
 ```
 
@@ -585,8 +614,8 @@ Desde la raíz del repositorio, el runner descubre los tres proyectos:
 node --test
 ```
 
-Resultado: **21 pruebas** (10 de lógica de negocio + 6 del servidor REST + 5 de
-la página web).
+Resultado: **27 pruebas** (10 de lógica de negocio + 6 de la capa de
+comunicación + 11 de la GUI web).
 
 ---
 

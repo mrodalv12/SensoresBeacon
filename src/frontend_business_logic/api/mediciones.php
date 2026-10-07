@@ -13,7 +13,7 @@
 //==============================================================================================
 
 header('Content-Type: application/json');
-require_once __DIR__ . '/../php/logicaWeb.php';
+require_once __DIR__ . '/../logicaWeb.php';
 
 try {
     $mediciones = obtenerMedicion();

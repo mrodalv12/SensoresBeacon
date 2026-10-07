@@ -12,7 +12,7 @@
 //Aportacion: limpieza y mas comentarios
 //==============================================================================================
 
-require_once __DIR__ . '/../php/logicaWeb.php';
+require_once __DIR__ . '/../../frontend_business_logic/logicaWeb.php';
 
 // test_..._devuelve_array(): comprueba que obtenerMedicion() devuelve un array.
 function test_obtenerMedicion_devuelve_array() {
