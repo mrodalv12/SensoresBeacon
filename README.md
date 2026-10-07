@@ -21,7 +21,9 @@ software:
 3. El **servidor REST** valida el JSON recibido y se lo pasa a la **lógica de
    negocio**.
 4. La **lógica de negocio** normaliza los datos y los persiste en una base de
-   datos **SQLite**.
+   datos **SQLite**: solo `tipo`, `nombre_cliente` (el `nombre_emisora` de la
+   app), `valor`, `fecha_y_hora` y un `id` único; los campos del beacon
+   (`uuid`, `txPower`, `major`, `minor`) se descartan.
 5. La **página web** consulta el servidor por `GET` y representa las últimas diez
    mediciones.
 
@@ -147,7 +149,7 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
 ### 1.4 Formato de la trama iBeacon
 
 El emisor (`Publicador.h`) y la app (`TramaIBeacon.java`) comparten este
-convenio, que es la clave para que los datosensorsviajen dentro del propio
+convenio, que es la clave para que los datos del sensor viajen dentro del propio
 anuncio:
 
 | Campo | Contenido | Ejemplo |
@@ -171,7 +173,7 @@ anuncio:
   `ruido = 13`. Cualquier otro valor devuelve `"desconocido"`.
 
 La app **no** deduplica por MAC: la misma placa emite CO₂ y temperatura con la
-misma dirección, así que la clave de deduplicación combina MAC + `major` +
+misma dirección, así que la clave de duplicación combina MAC + `major` +
 `minor` (`MainActivity.claveDeMedicion()`). Además muestra tres contadores
 diferentes —iBeacons reconocidos, anuncios de Apple que no son iBeacon y otros
 anuncios BLE— para poder distinguir "no llega nada" de "llega pero no se
@@ -202,8 +204,10 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 | `500 Internal Server Error` | Fallo al guardar en la base de datos |
 
 `uuid`, `major`, `minor` y `txPower` son obligatorios en la petición, igual que
-`tipo` y `valor`. `nombre_emisora` es opcional y se guarda en la base de datos
-como `nombre_cliente`.
+`tipo` y `valor`. Solo se **validan**: **no se guardan en la base de datos**.
+`nombre_emisora` es opcional y es el único de esos campos que se persiste, en la
+columna `nombre_cliente`. La tabla `Mediciones` guarda únicamente `id`,
+`tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
 
 **`GET /mediciones`** — devuelve las últimas 10 mediciones.
 
@@ -516,7 +520,7 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 | Prueba | Comprueba |
 |---|---|
 | `POST /mediciones - válida` | Responde `201` |
-| `POST /mediciones - valida y pasa a lógica de negocio` | Responde `201` y `status: "ok"` con todos los campos, incluido `nombre_emisora` |
+| `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "id": N } }` |
 | `POST /mediciones - campos faltantes retorna 400` | Responde `400` |
 | `POST /mediciones - JSON inválido retorna 400` | Responde `400` |
 | `GET /mediciones - retorna lista JSON` | Responde `200` con un array |
