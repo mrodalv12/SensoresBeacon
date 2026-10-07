@@ -6,6 +6,10 @@
 --         Seccion 2 (Enumerations)            -> tipos con dominio finito
 --         Seccion 3 (Variable Naming)         -> identificadores en minuscula,
 --                                                tipos en PascalCase
+-- Nota  : La tabla guarda unicamente tipo de medicion, nombre de cliente,
+--         valor y fecha/hora. El "nombre de emisora" que envia la app en el
+--         campo nombre_emisora es el nombre del cliente: aqui se almacena en
+--         la columna nombre_cliente.
 -- ============================================================================
 
 CREATE TABLE Mediciones (
@@ -22,6 +26,12 @@ CREATE TABLE Mediciones (
     
     tipo_de_medicion TEXT    NOT NULL,
 
+    -- Text -> TEXT NOT NULL (obligatorio).
+    -- Es el nombre de emisora que envia la app (nombre_emisora) = nombre del
+    -- cliente. Se almacena como nombre_cliente.
+    
+    nombre_cliente   TEXT    NOT NULL,
+
     -- R (Real Numbers) -> REAL NOT NULL
     -- REAL es el unico tipo con afinidad REAL (punto flotante IEEE 754).
     -- No usar NUMERIC: su afinidad convertiria enteros a real y ocultaria
@@ -29,40 +39,13 @@ CREATE TABLE Mediciones (
     
     valor            REAL    NOT NULL,
 
-    -- Text -> TEXT NOT NULL (obligatorio).
-    
-    nombre_emisora   TEXT    NOT NULL,
-
     -- La Seccion 1 del PDF no define un tipo fecha/hora y SQLite no tiene
     -- tipo temporal nativo. CURRENT_TIMESTAMP produce 'YYYY-MM-DD HH:MM:SS';
     -- declararlo DATETIME le da afinidad NUMERIC y, al no ser un numero
     -- bien formado, el valor queda almacenado como texto.
     
-    fecha_y_hora     DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    -- Text, opcional: la especificacion no lo declara obligatorio, asi que
-    -- se permite NULL. Segun la Seccion 2.1 del PDF, si el dominio de valores
-    -- fuera finito (p.ej. un UUID versionado) procederia un tipo enumerado
-    -- explicito; al no especificarse los valores se mantiene TEXT.
-    
-    uuid             TEXT,
-
-    -- Z (Integers) -> INTEGER (64 bits con signo).
-    -- Sin NOT NULL: son atributos opcionales del dispositivo emisor.
-    
-    major            INTEGER,
-    minor            INTEGER,
-
-    -- Z (Integers) -> INTEGER.
-    -- La Seccion 3 del PDF exige identificadores en minuscula (major, minor),
-    -- por lo que "txPower" incumple la convencion. Se conserva tal cual
-    -- porque la especificacion lo nombra de esa forma.
-    
-    txPower          INTEGER
+    fecha_y_hora     DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
--- Nota de diseño: si se requiere que un mismo registro se identifique de
--- forma univoca por su uuid, añadir UNIQUE sobre la columna uuid.
 
 -- ----------------------------------------------------------------------------
 -- Datos de ejemplo
@@ -71,6 +54,6 @@ CREATE TABLE Mediciones (
 -- CURRENT_TIMESTAMP). Reconstruir la base desde cero:
 --     sqlite3 mediciones.db < mediciones.sql
 INSERT INTO Mediciones
-    (tipo_de_medicion, valor, nombre_emisora, uuid, major, minor, txPower)
+    (tipo_de_medicion, nombre_cliente, valor)
 VALUES
-    ('RSSI', -72.5, 'emisor-A', 'abc-123', 4, 2, 7);
+    ('co2', 'GTI-3A-MJ', 812);

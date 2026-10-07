@@ -21,21 +21,15 @@ const path = require('path');
 const DB_PATH = path.join(__dirname, '../../bbdd/mediciones.db');
 
 // guardar(): inserta la medicion en SQLite mediante python3 y devuelve el id.
+// Solo guarda tipo, nombre de cliente (nombre_emisora = nombre_cliente),
+// valor y fecha_y_hora.
 function guardar(datos) {
     const tipo = datos.tipo_de_medicion || datos.tipo || '';
     const valor = datos.valor || 0;
-    const nombre = datos.nombre_emisora || datos.nombreEmisora || '';
-    const uuid = datos.uuid || '';
-    const major = datos.major === null || datos.major === undefined ? 'NULL' : datos.major;
-    const minor = datos.minor === null || datos.minor === undefined ? 'NULL' : datos.minor;
-    const txPower = datos.txPower === null || datos.txPower === undefined ? 'NULL' : datos.txPower;
+    const nombre = datos.nombre_cliente || datos.nombre_emisora || datos.nombreEmisora || '';
 
-    const sql = `INSERT INTO Mediciones (tipo_de_medicion, valor, nombre_emisora, uuid, major, minor, txPower) 
-                 VALUES ('${tipo.replace(/'/g, "''")}', ${valor}, '${nombre.replace(/'/g, "''")}', 
-                         ${uuid ? "'" + uuid.replace(/'/g, "''") + "'" : 'NULL'}, 
-                         ${major === 'NULL' ? 'NULL' : major}, 
-                         ${minor === 'NULL' ? 'NULL' : minor}, 
-                         ${txPower === 'NULL' ? 'NULL' : txPower});`;
+    const sql = `INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor) 
+                 VALUES ('${tipo.replace(/'/g, "''")}', '${nombre.replace(/'/g, "''")}', ${valor});`;
     
     const script = `
 import sqlite3
