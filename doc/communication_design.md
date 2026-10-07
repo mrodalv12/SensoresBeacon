@@ -11,13 +11,16 @@ la base de datos.
 ### 1.1 External Transport Contract
 
 ```
-POST /mediciones  ->  cuerpo: ( uuid: Text, minor: N, major: N, txPower: Z,
-                               tipo: Text, valor: R, nombre_emisora: Text? )
+POST /mediciones  ->  cuerpo: ( tipo: Text, valor: R, nombre_emisora: Text? )
                   ->  201 (ok) / 400 (entrada invalida) / 500 (error interno)
 
 GET  /mediciones  ->  [] u objeto vacio si no hay, lista JSON de [ Medicion ]
                   ->  200 (ok) / 500 (error interno)
 ```
+
+Los datos del beacon (`rssi`, `txPower`, `major`, `minor`, `uuid`) **no viajan
+en el POST**: se quedan en la aplicación Android (la `uuid` se usa solo ahí
+para localizar el iBeacon).
 
 Tipos abstractos de dominio utilizados (ver `business_logic_design.md`):
 
@@ -69,10 +72,12 @@ metodo: Text, ruta: Text --> routerMediciones() --> enrutado: B
 cuerpo: Text --> handlePostMediciones() --> codigo: Z
 ```
 
-- Valida los campos obligatorios y sus tipos (Text para `uuid`/`tipo`,
-  números finitos para `minor`/`major`/`txPower`/`valor`).
-- Construye `datos = ( beacon: (...), medicion: (tipo, valor) )` y delega en
+- Valida los campos obligatorios y sus tipos (Text para `tipo` y
+  `nombre_emisora` opcional, número real finito para `valor`).
+- Construye `medicion = (tipo, valor, nombre_emisora?)` y delega en
   `business_logic.guardarMedicion()`.
+- Ignora cualquier campo desconocido del cuerpo (los datos del beacon no
+  llegan, pero la capa no falla si alguien los envía).
 - Traduce el resultado a `201`, `400` o `500`.
 
 ```text
@@ -92,8 +97,10 @@ handleGetMediciones() --> [ Medicion ]
   comunicación lo reenvía dentro del `medicion` que entrega a la lógica, y la
   lógica lo persiste en la columna `nombre_cliente` de la base de datos (ver
   `database_design.md`).
-- `uuid`, `minor`, `major`, `txPower` son datos de telemetría del beacon: se
-  validan en esta capa pero no se persisten.
+- **Los datos del beacon no llegan hasta aquí:** `rssi`, `txPower`, `major`,
+  `minor` y `uuid` se quedan en la aplicación Android; la `uuid` solo se usa en
+  la app para filtrar el iBeacon. El contrato del POST se limita a `tipo`,
+  `valor` y `nombre_emisora`, y ninguno de ellos se persiste como beacon.
 
 ## 3. General Rules
 

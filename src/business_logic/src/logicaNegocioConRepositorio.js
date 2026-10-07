@@ -25,32 +25,24 @@ class LogicaNegocio {
     }
 
     /**
-     * guardarMedicion(medicion: Medicion, uuid: Text, minor: N, major: N, txPower: Z) -->
+     * guardarMedicion(medicion: Medicion) -->
      * 
      * Parámetros de entrada (-->):
-     *   - medicion: Medicion (tipo: Text, valor: R, nombreEmisora?: Text)
-     *   - uuid: Text
-     *   - minor: N
-     *   - major: N
-     *   - txPower: Z
+     *   - medicion: Medicion (tipo: Text, valor: R, nombre_emisora?: Text)
      * 
      * Salidas (<--):
      *   - { ok: Boolean, id?: N }
      * 
-     * Interacción (--x): Envía a repositorio/BD
+     * Interacción (--x): Envía a repositorio/BD. No recibe datos del beacon.
      */
-    guardarMedicion(medicion, uuid, minor, major, txPower) {
+    guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
         const valor = medicion && (medicion.valor !== undefined ? medicion.valor : medicion.valor);
 
         const datos = {
             tipo_de_medicion: typeof tipo === 'string' ? tipo : String(tipo || 'desconocido'),
             valor: Number(valor || 0),
-            nombre_emisora: medicion && medicion.nombreEmisora ? medicion.nombreEmisora : (medicion && medicion.nombre_emisora) || '',
-            uuid: typeof uuid === 'string' ? uuid : String(uuid || ''),
-            major: Number(major || 0),
-            minor: Number(minor || 0),
-            txPower: Number(txPower || 0)
+            nombre_emisora: medicion && (medicion.nombreEmisora || medicion.nombre_emisora) || ''
         };
 
         const resultado = this.repositorio.guardar(datos);

@@ -115,13 +115,12 @@ public class LogicaFakeIntegracionTest {
 
     // el POST llega con el metodo, la ruta y el cuerpo JSON esperados.
     @Test
-    public void elPostDeLaMedicionLlegaAlServidorConTodosLosDatos() throws Exception {
+    public void elPostDeLaMedicionLlegaAlServidorConLosTresCampos() throws Exception {
         LogicaFake logica = new LogicaFake(base);
         Medicion medicion = new Medicion(2450);
         medicion.asignarTipo(12);
 
-        logica.guardarMedicion(medicion, "F7826DA6-4FA2-4E98-8024-BC5B71E0893E",
-                -59, 12, 2450, "GTI-3A-MJ");
+        logica.guardarMedicion(medicion, "GTI-3A-MJ");
 
         assertTrue("El servidor no recibio ninguna peticion",
                 peticionRecibida.await(ESPERA_SEGUNDOS, TimeUnit.SECONDS));
@@ -132,12 +131,10 @@ public class LogicaFakeIntegracionTest {
 
         String cuerpo = bruto.substring(bruto.indexOf("{\"tipo\""));
         JSONObject json = new JSONObject(cuerpo);
+        // solo tipo, valor y nombre_emisora: ningun campo del beacon.
+        assertEquals(3, json.length());
         assertEquals("temperatura", json.getString("tipo"));
         assertEquals(2450.0, json.getDouble("valor"), 0.0001);
-        assertEquals("F7826DA6-4FA2-4E98-8024-BC5B71E0893E", json.getString("uuid"));
-        assertEquals(-59, json.getInt("txPower"));
-        assertEquals(12, json.getInt("major"));
-        assertEquals(2450, json.getInt("minor"));
         assertEquals("GTI-3A-MJ", json.getString("nombre_emisora"));
     }
 
@@ -148,8 +145,7 @@ public class LogicaFakeIntegracionTest {
         Medicion medicion = new Medicion(812);
         medicion.asignarTipo(11);
 
-        logica.guardarMedicion(medicion, "F7826DA64FA24E988024BC5B71E0893E",
-                -59, 11, 812, "GTI-3A-MJ");
+        logica.guardarMedicion(medicion, "GTI-3A-MJ");
 
         PeticionarioREST peticion = logica.getUltimaPeticion();
         assertEquals(201, peticion.getCodigo());
@@ -162,7 +158,7 @@ public class LogicaFakeIntegracionTest {
     public void unServidorIlegibleDevuelveCodigoMenosUnoSinExcepcion() {
         LogicaFake logica = new LogicaFake("http://127.0.0.1:1/mediciones");
 
-        logica.guardarMedicion(new Medicion(1), "00", -1, 11, 1, "GTI-3A-MJ");
+        logica.guardarMedicion(new Medicion(1), "GTI-3A-MJ");
 
         assertEquals(RespuestaREST.SIN_CODIGO, logica.getUltimaPeticion().getCodigo());
     }

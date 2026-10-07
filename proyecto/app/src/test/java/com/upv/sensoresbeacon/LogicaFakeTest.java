@@ -1,6 +1,7 @@
 package com.upv.sensoresbeacon;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.json.JSONObject;
@@ -13,7 +14,7 @@ import org.junit.Test;
 //              realizado y su cuerpo JSON.
 //Copyright:
 //Fecha de creacion: 2026-10-01
-//Fecha de modificacion: 2026-10-04
+//Fecha de modificacion: 2026-10-07
 //Autores: Jordi Bataller y Maria Jose Rodriguez
 //Autor: Maria Jose Rodriguez
 //Aportacion: limpieza y mas comentarios
@@ -21,12 +22,12 @@ import org.junit.Test;
 
 /**
  * Pruebas de la logica fake: debe lanzar una peticion POST a /mediciones con
- * los datos de la medicion y los del beacon.
+ * tipo, valor y nombre_emisora. Los datos del beacon (uuid, txPower, major,
+ * minor y rssi) no se envian: se quedan en la app.
  */
 public class LogicaFakeTest {
 
     private static final String URL = "http://10.0.2.2:8080/mediciones";
-    private static final String UUID_HEX = "F7826DA64FA24E988024BC5B71E0893E";
     private static final String EMISORA = "GTI-3A-MJ";
 
     private TransporteHttpFalso transporte;
@@ -45,7 +46,7 @@ public class LogicaFakeTest {
         Medicion medicion = new Medicion(812);
         medicion.asignarTipo(11);
 
-        logica.guardarMedicion(medicion, UUID_HEX, -59, 11, 812, EMISORA);
+        logica.guardarMedicion(medicion, EMISORA);
 
         assertEquals(1, transporte.getNumeroLlamadas());
         assertEquals("POST", transporte.getUltimaLlamada().metodo);
@@ -54,7 +55,7 @@ public class LogicaFakeTest {
     // guardarMedicion(): la peticion va contra la ruta /mediciones.
     @Test
     public void guardarMedicionApuntaALaRutaDeMediciones() {
-        logica.guardarMedicion(new Medicion(812), UUID_HEX, -59, 11, 812, EMISORA);
+        logica.guardarMedicion(new Medicion(812), EMISORA);
         assertEquals(URL, transporte.getUltimaLlamada().urlDestino);
         assertTrue(transporte.getUltimaLlamada().urlDestino.endsWith(LogicaFake.RUTA_MEDICIONES));
     }
@@ -65,59 +66,62 @@ public class LogicaFakeTest {
         Medicion medicion = new Medicion(23.5);
         medicion.asignarTipo(12);
 
-        logica.guardarMedicion(medicion, UUID_HEX, -59, 12, 23, EMISORA);
+        logica.guardarMedicion(medicion, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
         assertEquals("temperatura", cuerpo.getString("tipo"));
         assertEquals(23.5, cuerpo.getDouble("valor"), 0.0001);
     }
 
-    // el JSON enviado lleva uuid, txPower, major, minor y nombre.
+    // el JSON no lleva ningun dato del beacon: uuid, txPower, major, minor y
+    // rssi se quedan en la app y no viajan en el POST.
     @Test
-    public void elCuerpoJsonContieneTodosLosDatosDelBeacon() throws Exception {
-        logica.guardarMedicion(new Medicion(68), UUID_HEX, -70, 13, 68, EMISORA);
+    public void elCuerpoJsonNoLlevaLosDatosDelBeacon() throws Exception {
+        logica.guardarMedicion(new Medicion(68), EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals(UUID_HEX, cuerpo.getString("uuid"));
-        assertEquals(-70, cuerpo.getInt("txPower"));
-        assertEquals(13, cuerpo.getInt("major"));
-        assertEquals(68, cuerpo.getInt("minor"));
+        assertFalse(cuerpo.has("uuid"));
+        assertFalse(cuerpo.has("txPower"));
+        assertFalse(cuerpo.has("major"));
+        assertFalse(cuerpo.has("minor"));
+        assertFalse(cuerpo.has("rssi"));
         assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
     }
 
-    // los campos numericos del beacon van como numero JSON, no como texto.
+    // el cuerpo del POST contiene exactamente los tres campos del contrato.
     @Test
-    public void losNumerosDelBeaconSeEnvianComoEnterosYNoComoText() throws Exception {
-        logica.guardarMedicion(new Medicion(2450), UUID_HEX, -59, 12, 2450, EMISORA);
+    public void elCuerpoJsonSoloLlevaLosTresCamposDelContrato() throws Exception {
+        logica.guardarMedicion(new Medicion(2450), EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
+        assertEquals(3, cuerpo.length());
+        assertTrue(cuerpo.has("tipo"));
+        assertTrue(cuerpo.has("valor"));
+        assertTrue(cuerpo.has("nombre_emisora"));
         assertTrue(cuerpo.get("valor") instanceof Number);
-        assertTrue(cuerpo.get("major") instanceof Number);
-        assertTrue(cuerpo.get("minor") instanceof Number);
-        assertTrue(cuerpo.get("txPower") instanceof Number);
         assertTrue(cuerpo.get("tipo") instanceof String);
-        assertTrue(cuerpo.get("uuid") instanceof String);
     }
 
-    // el txPower negativo se envia con su signo.
+    // un valor negativo (por ejemplo ruido en dB) se envia con su signo.
     @Test
-    public void txPowerNegativoSeEnviaConSigno() throws Exception {
-        logica.guardarMedicion(new Medicion(812), UUID_HEX, -65, 11, 812, EMISORA);
+    public void valorNegativoSeEnviaConSigno() throws Exception {
+        Medicion medicion = new Medicion(-72.5);
+        medicion.asignarTipo(13);
+
+        logica.guardarMedicion(medicion, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals(-65, cuerpo.getInt("txPower"));
+        assertEquals("ruido", cuerpo.getString("tipo"));
+        assertEquals(-72.5, cuerpo.getDouble("valor"), 0.0001);
     }
 
-    // major y minor conservan su valor completo, sin truncar a 16 bits.
+    // el valor conserva su magnitud completa, sin truncar a 16 bits.
     @Test
-    public void losCamposDe16BitsNoSeTruncan() throws Exception {
-        logica.guardarMedicion(new Medicion(65535), UUID_HEX, -128, 65535, 65535, EMISORA);
+    public void elValorDe16BitsNoSeTrunca() throws Exception {
+        logica.guardarMedicion(new Medicion(65535), EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals(65535, cuerpo.getInt("major"));
-        assertEquals(65535, cuerpo.getInt("minor"));
         assertEquals(65535.0, cuerpo.getDouble("valor"), 0.0001);
-        assertEquals(-128, cuerpo.getInt("txPower"));
     }
 
     // guardarMedicion(): la medicion se guarda tambien en la logica.
@@ -126,7 +130,7 @@ public class LogicaFakeTest {
         Medicion medicion = new Medicion(15);
         medicion.asignarTipo(13);
 
-        logica.guardarMedicion(medicion, UUID_HEX, -50, 13, 15, EMISORA);
+        logica.guardarMedicion(medicion, EMISORA);
 
         assertEquals(medicion, logica.getMedicion());
         assertEquals("ruido", logica.getMedicion().getTipoDeMedicion());
@@ -138,17 +142,17 @@ public class LogicaFakeTest {
         Medicion medicion = new Medicion(7);
         medicion.asignarTipo(42);
 
-        logica.guardarMedicion(medicion, UUID_HEX, -50, 42, 7, EMISORA);
+        logica.guardarMedicion(medicion, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, cuerpo.getString("tipo"));
-        assertEquals(42, cuerpo.getInt("major"));
+        assertEquals(7, cuerpo.getDouble("valor"), 0.0001);
     }
 
     // una medicion nula no revienta: no hace ninguna peticion.
     @Test
     public void unaMedicionNulaNoProvocaUnaExcepcion() throws Exception {
-        logica.guardarMedicion(null, UUID_HEX, -50, 11, 500, EMISORA);
+        logica.guardarMedicion(null, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, cuerpo.getString("tipo"));
@@ -157,17 +161,16 @@ public class LogicaFakeTest {
     // un nombre nulo se convierte en cadena vacia.
     @Test
     public void nombreEmisoraYNulosSeNormalizanACadenaVacia() throws Exception {
-        logica.guardarMedicion(new Medicion(1), null, -50, 11, 1, null);
+        logica.guardarMedicion(new Medicion(1), null);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals("", cuerpo.getString("uuid"));
         assertEquals("", cuerpo.getString("nombre_emisora"));
     }
 
     // la logica guarda la ultima peticion realizada, para poder inspeccionarla.
     @Test
     public void seGuardaLaUltimaPeticionRealizada() {
-        logica.guardarMedicion(new Medicion(812), UUID_HEX, -59, 11, 812, EMISORA);
+        logica.guardarMedicion(new Medicion(812), EMISORA);
 
         PeticionarioREST peticion = logica.getUltimaPeticion();
         assertEquals(PeticionarioREST.METODO_POST, peticion.getMetodo());
@@ -181,7 +184,7 @@ public class LogicaFakeTest {
     public void unErrorDelServidorNoPropagaUnaExcepcion() {
         transporte.setRespuesta(new RespuestaREST(500, "{\"error\":\"fallo\"}"));
 
-        logica.guardarMedicion(new Medicion(812), UUID_HEX, -59, 11, 812, EMISORA);
+        logica.guardarMedicion(new Medicion(812), EMISORA);
 
         assertEquals(500, logica.getUltimaPeticion().getCodigo());
     }
@@ -193,19 +196,15 @@ public class LogicaFakeTest {
                 TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 612, -65));
         Medicion medicion = Medicion.desdeTrama(trama);
 
-        logica.guardarMedicion(medicion,
-                Utilidades.uuidToHexString(trama.getUUIDComoUUID()),
-                trama.getTxPower(),
-                trama.getMajorComoInt(),
-                trama.getMinorComoInt(),
-                EMISORA);
+        logica.guardarMedicion(medicion, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
         assertEquals("co2", cuerpo.getString("tipo"));
         assertEquals(612.0, cuerpo.getDouble("valor"), 0.0001);
-        assertEquals("F7826DA6-4FA2-4E98-8024-BC5B71E0893E".replace("-", ""), cuerpo.getString("uuid"));
-        assertEquals(-65, cuerpo.getInt("txPower"));
-        assertEquals((11 << 8) + 1, cuerpo.getInt("major"));
-        assertEquals(612, cuerpo.getInt("minor"));
+        assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
+        assertFalse(cuerpo.has("uuid"));
+        assertFalse(cuerpo.has("major"));
+        assertFalse(cuerpo.has("minor"));
+        assertFalse(cuerpo.has("txPower"));
     }
 }

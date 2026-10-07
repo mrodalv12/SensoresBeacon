@@ -31,11 +31,13 @@ const HTTP_INTERNAL_SERVER_ERROR = 500;
  * POST/mediciones
  * 
  * Diseño lógico (siguiendo reglas RE):
- * - Recibe en el cuerpo JSON: 
- *   beacon = (uuid: Text, minor: N, major: N, txPower: Z, nombre_emisora: Text?)
- *   medicion = (tipo: Text, valor: R)
+ * - Recibe en el cuerpo JSON:
+ *   medicion = (tipo: Text, valor: R, nombre_emisora: Text?)
+ * - Los datos del beacon (uuid, txPower, major, minor, rssi) no se envian en
+ *   el POST: se quedan en la app Android (la uuid solo se usa ahi para buscar
+ *   el iBeacon).
  * - Valida entrada
- * - Llama a Lógica de Negocio: guardarMedicion(datos) 
+ * - Llama a Lógica de Negocio: guardarMedicion(medicion) 
  * - Responde con códigos HTTP 200/201/400/500
  */
 function handlePostMediciones(req, res) {
@@ -53,50 +55,24 @@ function handlePostMediciones(req, res) {
         try {
             const parsed = body ? JSON.parse(body) : {};
 
-            // Validación de campos requeridos según especificación
-            const uuid = parsed.uuid;
-            const minor = parsed.minor;
-            const major = parsed.major;
-            const txPower = parsed.txPower;
+            // Campos del contrato POST
             const tipo = parsed.tipo;
             const valor = parsed.valor;
             const nombreEmisora = parsed.nombre_emisora;
 
             // Validación básica (tipos)
-            if (uuid === undefined || minor === undefined || major === undefined || 
-                txPower === undefined || tipo === undefined || valor === undefined) {
+            if (tipo === undefined || valor === undefined) {
                 res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ 
-                    error: 'Campos requeridos: uuid(Text), minor(N), major(N), txPower(Z), tipo(Text), valor(R)' 
+                    error: 'Campos requeridos: tipo(Text), valor(R)' 
                 }));
                 return;
             }
 
             // Validaciones de tipo
-            if (typeof uuid !== 'string') {
-                res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'uuid debe ser Text' }));
-                return;
-            }
             if (typeof tipo !== 'string') {
                 res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'tipo debe ser Text' }));
-                return;
-            }
-            // Números (N, Z, R)
-            if (typeof minor !== 'number' || !Number.isFinite(minor)) {
-                res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'minor debe ser N (número)' }));
-                return;
-            }
-            if (typeof major !== 'number' || !Number.isFinite(major)) {
-                res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'major debe ser N (número)' }));
-                return;
-            }
-            if (typeof txPower !== 'number' || !Number.isFinite(txPower)) {
-                res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'txPower debe ser Z (número entero)' }));
                 return;
             }
             if (typeof valor !== 'number' || !Number.isFinite(valor)) {
@@ -104,24 +80,21 @@ function handlePostMediciones(req, res) {
                 res.end(JSON.stringify({ error: 'valor debe ser R (número real)' }));
                 return;
             }
+            if (nombreEmisora !== undefined && typeof nombreEmisora !== 'string') {
+                res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'nombre_emisora debe ser Text' }));
+                return;
+            }
 
-            // Preparar datos para Lógica de Negocio
-            const datosMedicion = {
-                beacon: {
-                    uuid: uuid,
-                    minor: minor,
-                    major: major,
-                    txPower: txPower,
-                    ...(nombreEmisora !== undefined ? { nombre_emisora: nombreEmisora } : {})
-                },
-                medicion: {
-                    tipo: tipo,
-                    valor: valor
-                }
-            };
+            // Preparar la medicion para la Lógica de Negocio (única
+            // responsabilidad del servidor REST: validar y delegar)
+            const medicion = { tipo: tipo, valor: valor };
+            if (nombreEmisora !== undefined) {
+                medicion.nombre_emisora = nombreEmisora;
+            }
 
             // Llamada a la Lógica de Negocio (única responsabilidad del servidor REST)
-            LogicaNegocioMediciones.guardarMedicion(datosMedicion)
+            LogicaNegocioMediciones.guardarMedicion(medicion)
                 .then(resultado => {
                     res.writeHead(HTTP_CREATED, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ status: 'ok', resultado }));

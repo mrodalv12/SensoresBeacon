@@ -23,14 +23,15 @@ class LogicaNegocioSQLitePy {
     }
 
     /**
-     * guardarMedicion(medicion: Medicion, uuid: Text, minor: N, major: N, txPower: Z) -->
+     * guardarMedicion(medicion: Medicion) -->
      */
     /**
      * guardarMedicion(): normaliza la medicion y la guarda en el repositorio;
-     * devuelve el id con el que queda registrada. Los datos del beacon
-     * (uuid, minor, major, txPower) se reciben pero no se persisten.
+     * devuelve el id con el que queda registrada. Solo recibe el dominio de la
+     * medicion (tipo, valor, nombre_emisora): ningun dato del beacon llega
+     * aqui, porque el POST no lo envia.
      */
-    async guardarMedicion(medicion, uuid, minor, major, txPower) {
+    async guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
         const valor = medicion && (medicion.valor !== undefined ? medicion.valor : medicion.valor);
 

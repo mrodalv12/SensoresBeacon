@@ -16,14 +16,17 @@ necesidad de conexión ni de emparejamiento. El resto del sistema es puramente
 software:
 
 1. La **placa emisora** publica cada medición como un anuncio iBeacon.
-2. La **app Android** escanea los iBeacon, decodifica la trama, deduce el tipo de
-   medición y el valor, y hace un `POST` al servidor REST.
+2. La **app Android** escanea los iBeacon, filtra por UUID, decodifica la trama
+   y deduce el tipo de medición y el valor. Hace un `POST` al servidor REST con
+   **solo tres campos**: `tipo`, `valor` y `nombre_emisora`. Los datos del
+   beacon (`rssi`, `txPower`, `major`, `minor` y `uuid`) se quedan en la app: la
+   UUID solo se usa allí para buscar el iBeacon.
 3. El **servidor REST** valida el JSON recibido y se lo pasa a la **lógica de
    negocio**.
 4. La **lógica de negocio** normaliza los datos y los persiste en una base de
-   datos **SQLite**: solo `tipo`, `nombre_cliente` (el `nombre_emisora` de la
-   app), `valor`, `fecha_y_hora` y un `id` único; los campos del beacon
-   (`uuid`, `txPower`, `major`, `minor`) se descartan.
+   datos **SQLite**: `tipo_de_medicion`, `nombre_cliente` (el `nombre_emisora`
+   de la app), `valor`, `fecha_y_hora` y un `id` único. Ningún dato del beacon
+   llega hasta aquí.
 5. La **página web** consulta el servidor por `GET` y representa las últimas diez
    mediciones.
 
@@ -99,7 +102,7 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
 │   │   ├── src/repositorioMemoria.js               # doble en memoria
 │   │   ├── src/repositorioSqlitePython.js          # SQLite (sync)
 │   │   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
-│   │   └── tests/                                  # 10 pruebas
+│   │   └── tests/                                  # 11 pruebas
 │   │
 │   ├── database/                        # Base de datos (SQLite 3)
 │   │   ├── mediciones.sql               # CREATE TABLE + fila de ejemplo
@@ -189,10 +192,6 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 {
   "tipo": "temperatura",
   "valor": 23.5,
-  "uuid": "45505347-2D47-5449-2D50-524F592D4D4A",
-  "txPower": -59,
-  "major": 12,
-  "minor": 2450,
   "nombre_emisora": "GTI-3A-MJ"
 }
 ```
@@ -203,11 +202,11 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 | `400 Bad Request` | Campo obligatorio ausente, tipo incorrecto o JSON malformado |
 | `500 Internal Server Error` | Fallo al guardar en la base de datos |
 
-`uuid`, `major`, `minor` y `txPower` son obligatorios en la petición, igual que
-`tipo` y `valor`. Solo se **validan**: **no se guardan en la base de datos**.
-`nombre_emisora` es opcional y es el único de esos campos que se persiste, en la
-columna `nombre_cliente`. La tabla `Mediciones` guarda únicamente `id`,
-`tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
+`tipo` y `valor` son obligatorios; `nombre_emisora` es opcional y se guarda en
+la base de datos como `nombre_cliente`. El `POST` **no** lleva `rssi`,
+`txPower`, `major`, `minor` ni `uuid`: esos datos se quedan en la app Android
+(la UUID solo se usa allí para buscar el iBeacon). La tabla `Mediciones` guarda
+únicamente `id`, `tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
 
 **`GET /mediciones`** — devuelve las últimas 10 mediciones.
 
@@ -341,7 +340,7 @@ curl http://localhost:8080/mediciones
 
 curl -X POST http://localhost:8080/mediciones \
   -H 'Content-Type: application/json' \
-  -d '{"tipo":"co2","valor":812,"uuid":"45505347-2D47-5449-2D50-524F592D4D4A","txPower":-59,"major":11,"minor":812,"nombre_emisora":"GTI-3A-MJ"}'
+  -d '{"tipo":"co2","valor":812,"nombre_emisora":"GTI-3A-MJ"}'
 ```
 
 La segunda orden debe responder `201 Created` con `{"status":"ok",...}`, y la
@@ -468,17 +467,17 @@ runner integrado de Node.js (`node --test`).
 
 | Módulo | Comando | Pruebas | Estado |
 |---|---|---|---|
-| Lógica de negocio | `cd src/business_logic && npm test` | 10 | 10 ✅ |
+| Lógica de negocio | `cd src/business_logic && npm test` | 11 | 11 ✅ |
 | Comunicación (REST) | `cd src/communication && npm test` | 6 | 6 ✅ |
 | GUI web (estructura) | `cd src/gui && node --test` | 11 | 11 ✅ |
 | GUI web (PHP) | `cd src/gui && php tests/logicaWeb.test.php` | 2 | requiere PHP + REST |
 | App Android | `cd proyecto && ./gradlew test` | 108 × 2 variantes | 108 ✅ |
 | Emisor | — | — | sin pruebas automáticas |
 
-**Total verificado: 135 pruebas automáticas en verde** (27 de Node.js + 108 de
+**Total verificado: 136 pruebas automáticas en verde** (28 de Node.js + 108 de
 Android), más 2 comprobaciones en PHP pendientes de instalar PHP.
 
-### 4.1 Lógica de negocio — 10 pruebas
+### 4.1 Lógica de negocio — 11 pruebas
 
 ```bash
 cd src/business_logic
@@ -489,8 +488,8 @@ Tres archivos, todos con el runner de Node:
 
 | Archivo | Pruebas | Qué cubre |
 |---|---|---|
-| `tests/logicaNegocio.test.js` | 6 | `guardarMedicion()` normaliza tipo, valor y beacon; `obtenerMedicion()` devuelve un array de como mucho 10 elementos con `fecha_y_hora`, `tipo` y `valor` |
-| `tests/logicaConRepositorio.test.js` | 3 | La lógica con repositorio inyectado: guarda, devuelve las últimas y procesa beacon + medición |
+| `tests/logicaNegocio.test.js` | 7 | `guardarMedicion()` normaliza tipo, valor y nombre de emisora sin procesar ningún dato del beacon; `obtenerMedicion()` devuelve un array de como mucho 10 elementos con `fecha_y_hora`, `tipo` y `valor` |
+| `tests/logicaConRepositorio.test.js` | 3 | La lógica con repositorio inyectado: guarda, devuelve las últimas y procesa la medición sin datos del beacon |
 | `tests/logicaSqlitePy.test.js` | 1 | Integración real contra `src/database/mediciones.db`: guarda una fila y la recupera |
 
 Para ver el detalle de cada caso:
@@ -502,8 +501,8 @@ node --test --test-reporter=spec
 Salida esperada al final:
 
 ```
-# tests 10
-# pass 10
+# tests 11
+# pass 11
 # fail 0
 ```
 
@@ -519,12 +518,12 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 
 | Prueba | Comprueba |
 |---|---|
-| `POST /mediciones - válida` | Responde `201` |
+| `POST /mediciones - válida` | Responde `201` solo con `tipo` y `valor` (sin datos del beacon) |
 | `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "id": N } }` |
-| `POST /mediciones - campos faltantes retorna 400` | Responde `400` |
+| `POST /mediciones - campos faltantes retorna 400` | Responde `400` si falta `valor` |
 | `POST /mediciones - JSON inválido retorna 400` | Responde `400` |
 | `GET /mediciones - retorna lista JSON` | Responde `200` con un array |
-| `GET /mediciones - campos fecha_y_hora, tipo, valor` | Los tres campos existen |
+| `GET /mediciones - campos deben ser fecha_y_hora, tipo, valor` | Exactamente esos tres campos, sin datos del beacon |
 
 Estas pruebas **escriben en la base de datos real** (el `POST` inserta una fila),
 así que `src/database/mediciones.db` debe existir (paso 3.1).
@@ -594,10 +593,10 @@ Informe HTML: `proyecto/app/build/reports/tests/testDebugUnitTest/index.html`.
 | `FiltroUuidTest` | 16 | Validez y normalización de la UUID, filtro del fabricante `0x004C`, marca `02 15` |
 | `DeteccionRealTest` | 15 | Tramas reales: localización, `major`/`minor`/`txPower`, decodificación del tipo, deduplicación, anuncios de Apple que no son iBeacon |
 | `TramaIBeaconTest` | 14 | Localización de la trama dentro del anuncio AD completo y de la trama desnuda, campos, casos límite |
-| `LogicaFakeTest` | 14 | Cuerpo JSON del `POST`: tipos, valores extremos (`65535`, `-128`), `null` |
+| `LogicaFakeTest` | 14 | Cuerpo JSON del `POST`: los tres campos del contrato, ausencia de datos del beacon (`uuid`, `txPower`, `major`, `minor`, `rssi`), tipos, valores extremos (`65535`, `-72.5`), `null` |
 | `MedicionTest` | 14 | `asignarTipo()` con los códigos 11/12/13 y desconocidos, `Medicion.desdeTrama()` |
 | `PeticionarioRESTTest` | 11 | Método, URL y cuerpo, códigos 2xx/3xx frente a 4xx/5xx, `TransporteHttp` inyectado |
-| `LogicaFakeIntegracionTest` | 3 | **Integración real**: levanta un `ServerSocket` en un puerto efímero y comprueba que el `POST` llega con método, ruta, `Content-Type` y JSON correctos; y que un servidor ilegible devuelve código `-1` sin excepción |
+| `LogicaFakeIntegracionTest` | 3 | **Integración real**: levanta un `ServerSocket` en un puerto efímero y comprueba que el `POST` llega con método, ruta, `Content-Type` y un JSON de solo tres campos (`tipo`, `valor`, `nombre_emisora`); y que un servidor ilegible devuelve código `-1` sin excepción |
 
 Detalle de una sola clase:
 
@@ -618,7 +617,7 @@ Desde la raíz del repositorio, el runner descubre los tres proyectos:
 node --test
 ```
 
-Resultado: **27 pruebas** (10 de lógica de negocio + 6 de la capa de
+Resultado: **28 pruebas** (11 de lógica de negocio + 6 de la capa de
 comunicación + 11 de la GUI web).
 
 ---

@@ -37,9 +37,13 @@ import org.json.JSONObject;
  *  --> getMedicion() <--
  *  -------------------------------------------------
  *
- * Logica "fake": en lugar de persistir en una base de datos, performs una
+ * Logica "fake": en lugar de persistir en una base de datos, realiza una
  * peticion POST contra el servidor REST (POST /mediciones), que sera quien
  * escriba los datos en la base de datos en el futuro.
+ *
+ * Por el POST solo viajan tipo, valor y nombre_emisora. Los datos del beacon
+ * (uuid, txPower, major, minor) se quedan en la app: la uuid se usa unicamente
+ * para buscar el iBeacon y los demas solo se muestran en pantalla.
  */
 public class LogicaFake {
 
@@ -49,10 +53,6 @@ public class LogicaFake {
 
     private static final String C_TIPO = "tipo";
     private static final String C_VALOR = "valor";
-    private static final String C_UUID = "uuid";
-    private static final String C_TX_POWER = "txPower";
-    private static final String C_MAJOR = "major";
-    private static final String C_MINOR = "minor";
     private static final String C_NOMBRE_EMISORA = "nombre_emisora";
 
     private Medicion medicion;
@@ -86,18 +86,14 @@ public class LogicaFake {
     }
 
     /**
-     * medicion: Medicion, uuid: Byte, txPower: Byte, major: Byte, minor: Byte,
-     * nombre_emisora: Text --> guardarMedicion() -->
+     * medicion: Medicion, nombre_emisora: Text --> guardarMedicion() -->
      *
-     * Realiza el POST /mediciones con los datos de la medicion y del beacon.
-     *
-     * "txPower" se mantiene con signo porque es una potencia en dBm y puede
-     * ser negativa; "major" y "minor" son naturales de 16 bits sin signo.
+     * Realiza el POST /mediciones con los tres campos del contrato: tipo, valor
+     * y nombre_emisora. Los datos del beacon no viajan en la peticion.
      */
-    public void guardarMedicion(Medicion medicion, String uuid, int txPower, int major, int minor,
-                                String nombre_emisora) {
+    public void guardarMedicion(Medicion medicion, String nombre_emisora) {
         this.medicion = medicion == null ? new Medicion() : medicion;
-        String cuerpo = construirCuerpo(uuid, txPower, major, minor, nombre_emisora);
+        String cuerpo = construirCuerpo(nombre_emisora);
 
         peticionario = new PeticionarioREST(
                 PeticionarioREST.METODO_POST, urlServidor, cuerpo, transporte);
@@ -107,20 +103,15 @@ public class LogicaFake {
     }
 
     /**
-     * uuid: Text, txPower: Z, major: N, minor: N, nombre_emisora: Text
-     *   --> construirCuerpo() --> cuerpo: Text
+     * nombre_emisora: Text --> construirCuerpo() --> cuerpo: Text
      *
-     * Serializa en JSON la medicion junto con los datos del beacon.
+     * Serializa en JSON la medicion (tipo y valor) con el nombre de la emisora.
      */
-    public String construirCuerpo(String uuid, int txPower, int major, int minor, String nombre_emisora) {
+    public String construirCuerpo(String nombre_emisora) {
         JSONObject cuerpo = new JSONObject();
         try {
             cuerpo.put(C_TIPO, medicion.getTipoDeMedicion());
             cuerpo.put(C_VALOR, medicion.getValor());
-            cuerpo.put(C_UUID, uuid == null ? "" : uuid);
-            cuerpo.put(C_TX_POWER, txPower);
-            cuerpo.put(C_MAJOR, major);
-            cuerpo.put(C_MINOR, minor);
             cuerpo.put(C_NOMBRE_EMISORA, nombre_emisora == null ? "" : nombre_emisora);
         } catch (JSONException e) {
             Log.e(ETIQUETA, "No se pudo construir el cuerpo JSON: " + e.getMessage());

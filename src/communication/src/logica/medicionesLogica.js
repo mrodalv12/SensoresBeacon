@@ -24,26 +24,13 @@ const logica = new LogicaNegocioSQLitePyAsync(repo);
 
 class LogicaNegocioMediciones {
     /**
-     * guardarMedicion(): separa los datos del beacon y los de la medicion, y
-     * se los pasa a la logica de negocio para que los guarde. El nombre de
-     * emisora del beacon (nombre_emisora) es el nombre del cliente y viaja con
-     * la medicion para que se guarde en la columna nombre_cliente.
+     * guardarMedicion(): recibe la medicion del contrato POST (tipo, valor y
+     * nombre_emisora) y se la pasa a la logica de negocio para que la guarde.
+     * La logica de negocio es quien convierte nombre_emisora en la columna
+     * nombre_cliente de la base de datos. Ningun dato del beacon viaja por aqui.
      */
-    static async guardarMedicion(datos) {
-        const beacon = datos && datos.beacon || {};
-        const medicion = datos && datos.medicion || {};
-        
-        const medicionConNombre = beacon.nombre_emisora !== undefined
-            ? { ...medicion, nombre_emisora: beacon.nombre_emisora }
-            : medicion;
-
-        return await logica.guardarMedicion(
-            medicionConNombre,
-            beacon.uuid,
-            beacon.minor,
-            beacon.major,
-            beacon.txPower
-        );
+    static async guardarMedicion(medicion) {
+        return await logica.guardarMedicion(medicion || {});
     }
 
     /**

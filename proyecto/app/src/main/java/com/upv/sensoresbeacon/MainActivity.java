@@ -601,7 +601,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         Log.i(ETIQUETA_LOG, mensaje);
         escribirEnPantalla(mensaje);
 
-        enviarMedicion(medicion, uuid, txPower, major, minor, nombre);
+        enviarMedicion(medicion, nombre);
     }
 
     /**
@@ -615,18 +615,18 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     }
 
     /**
-     * medicion: Medicion, uuid: Text, txPower: Z, major: N, minor: N,
-     * nombre: Text --> enviarMedicion() -->
+     * medicion: Medicion, nombre: Text --> enviarMedicion() -->
      *
-     * Delega en la logica fake la peticion POST, sin bloquear la interfaz.
+     * Delega en la logica fake la peticion POST, sin bloquear la interfaz. Solo
+     * se envian tipo, valor y nombre: uuid, txPower, major y minor se quedan en
+     * la app (la uuid ya se ha usado para filtrar el iBeacon).
      */
-    private void enviarMedicion(final Medicion medicion, final String uuid, final int txPower,
-                                final int major, final int minor, final String nombre) {
+    private void enviarMedicion(final Medicion medicion, final String nombre) {
         new Thread(new Runnable() {
             // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
             @Override
             public void run() {
-                logicaFake.guardarMedicion(medicion, uuid, txPower, major, minor, nombre);
+                logicaFake.guardarMedicion(medicion, nombre);
             }
         }, "guardarMedicion").start();
     }

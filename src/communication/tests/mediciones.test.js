@@ -62,11 +62,8 @@ describe('Servidor REST - /mediciones', () => {
     });
 
     test('POST /mediciones - válida', async () => {
+        // solo tipo y valor: no hace falta ningun dato del beacon
         const body = JSON.stringify({
-            uuid: 'F7826DA64FA24E988024BC5B71E0893E',
-            minor: 812,
-            major: 11,
-            txPower: -59,
             tipo: 'distancia',
             valor: 2.5
         });
@@ -75,11 +72,8 @@ describe('Servidor REST - /mediciones', () => {
     });
 
     test('POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)', async () => {
+        // los tres campos del contrato: tipo, valor y nombre_emisora
         const body = JSON.stringify({
-            uuid: 'F7826DA64FA24E988024BC5B71E0893E',
-            minor: 68,
-            major: 13,
-            txPower: -70,
             tipo: 'temperatura',
             valor: 23.5,
             nombre_emisora: 'GTI-3A-MJ'
@@ -92,8 +86,7 @@ describe('Servidor REST - /mediciones', () => {
 
     test('POST /mediciones - campos faltantes retorna 400', async () => {
         const body = JSON.stringify({
-            uuid: 'ABC123',
-            minor: 1
+            tipo: 'co2'
         });
         const res = await makeRequest('POST', '/mediciones', body);
         assert.strictEqual(res.statusCode, 400);
@@ -116,9 +109,11 @@ describe('Servidor REST - /mediciones', () => {
         assert.strictEqual(res.statusCode, 200);
         const parsed = JSON.parse(res.body);
         if (parsed.length > 0) {
-            assert.ok(Object.prototype.hasOwnProperty.call(parsed[0], 'fecha_y_hora'));
-            assert.ok(Object.prototype.hasOwnProperty.call(parsed[0], 'tipo'));
-            assert.ok(Object.prototype.hasOwnProperty.call(parsed[0], 'valor'));
+            // exactamente esos tres campos: nada de datos del beacon
+            assert.deepStrictEqual(
+                Object.keys(parsed[0]).sort(),
+                ['fecha_y_hora', 'tipo', 'valor']
+            );
         }
     });
 });

@@ -90,11 +90,11 @@ definida en `database_design.md`:
 
 ## 2. Design Clarifications
 
-- **Telemetría del beacon:** la implementación recibe además
-  (`uuid: Text`, `minor: N`, `major: N`, `txPower: Z`) por compatibilidad de
-  firma con la capa de comunicación, pero **no los persiste**; no forman parte
-  del diseño lógico de `guardarMedicion()` (la firma pura usa solo tipos de
-  dominio).
+- **Los datos del beacon no llegan a esta capa:** `rssi`, `txPower`, `major`,
+  `minor` y `uuid` se quedan en la aplicación Android (la `uuid` solo se usa
+  ahí para buscar el iBeacon) y no se envían en el `POST`. `guardarMedicion()`
+  recibe únicamente `MedicionNueva = (tipo, valor, nombre_cliente)`, es decir,
+  solo tipos de dominio; ningún transporte ni cabecera.
 - **Varias implementaciones, un solo contrato:** existen variantes
   (`logicaNegocio.js`, `logicaNegocioConRepositorio.js`,
   `logicaNegocioSqlitePy.js`, `logicaNegocioSqlitePyAsync.js`) con la misma

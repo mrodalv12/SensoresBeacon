@@ -20,37 +20,32 @@
  */
 
 /**
- * guardarMedicion(medicion: Medicion, uuid: Text, minor: N, major: N, txPower: Z) --> guardarMedicion()
+ * guardarMedicion(medicion: Medicion) --> guardarMedicion()
  * 
  * Parámetros de entrada (-->):
- *   - medicion: Medicion  (contiene tipo: Text, valor: R)
- *   - uuid: Text
- *   - minor: N
- *   - major: N
- *   - txPower: Z
+ *   - medicion: Medicion  (tipo: Text, valor: R, nombre_emisora?: Text)
  * 
  * Salidas (<--):
  *   - resultado: { ok: B, ... } o estado de operación
  * 
  * Interacción (--x):
  *   - Envía datos procesados hacia la capa de Base de Datos (puerto de abstracción)
+ * 
+ * No recibe ningun dato del beacon (uuid, txPower, major, minor, rssi): esos
+ * datos se quedan en la app Android y nunca llegan a esta capa.
  */
-// guardarMedicion(): normaliza la medicion y los datos del beacon y devuelve
-// el resultado ya procesado, sin tocar la base de datos.
-function guardarMedicion(medicion, uuid, minor, major, txPower) {
+// guardarMedicion(): normaliza la medicion y devuelve el resultado ya
+// procesado, sin tocar la base de datos.
+function guardarMedicion(medicion) {
     // Validación básica de parámetros
     const tipo = medicion && medicion.tipo !== undefined ? medicion.tipo : (medicion && medicion.tipoDeMedicion);
     const valor = medicion && medicion.valor !== undefined ? medicion.valor : medicion;
 
-    // Procesamiento de datos recibidos del Beacon y la medición
+    // Procesamiento de la medicion
     const datosProcesados = {
         tipo: typeof tipo === 'string' ? tipo : String(tipo || ''),
         valor: typeof valor === 'number' ? valor : Number(valor || 0),
-        uuid: typeof uuid === 'string' ? uuid : (uuid || ''),
-        minor: Number(minor || 0),
-        major: Number(major || 0),
-        txPower: Number(txPower || 0),
-        nombreEmisora: medicion && medicion.nombreEmisora ? medicion.nombreEmisora : ''
+        nombreEmisora: (medicion && (medicion.nombreEmisora || medicion.nombre_emisora)) || ''
     };
 
     // En esta capa NO hay acceso directo a BD. Solo procesa y prepara para enviar.

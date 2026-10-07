@@ -7,11 +7,7 @@ describe('Lógica de Negocio - Integración con BD (Python)', () => {
     test('guardarMedicion y obtenerMedicion funcionan con BD', async () => {
         const logica = new LogicaNegocioSQLitePy(repo);
         const res = await logica.guardarMedicion(
-            { tipo: 'distancia', valor: 2.5 },
-            'TEST-PY-123',
-            812,
-            11,
-            -59
+            { tipo: 'distancia', valor: 2.5, nombre_emisora: 'TEST-PY-123' }
         );
         assert.strictEqual(res.ok, true);
         assert.ok(res.id);

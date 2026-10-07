@@ -5,21 +5,17 @@ const { guardarMedicion, obtenerMedicion } = require('../src/logicaNegocio');
 describe('Lógica de Negocio - guardarMedicion', () => {
     test('guardarMedicion procesa datos correctamente', () => {
         const medicion = { tipo: 'distancia', valor: 2.5 };
-        const resultado = guardarMedicion(medicion, 'F7826DA6', 812, 11, -59);
+        const resultado = guardarMedicion(medicion);
         
         assert.strictEqual(resultado.ok, true);
         assert.ok(resultado.procesados);
         assert.strictEqual(resultado.procesados.tipo, 'distancia');
         assert.strictEqual(resultado.procesados.valor, 2.5);
-        assert.strictEqual(resultado.procesados.uuid, 'F7826DA6');
-        assert.strictEqual(resultado.procesados.minor, 812);
-        assert.strictEqual(resultado.procesados.major, 11);
-        assert.strictEqual(resultado.procesados.txPower, -59);
     });
 
     test('guardarMedicion acepta objeto medicion con tipo y valor', () => {
         const medicion = { tipo: 'temperatura', valor: 23.5, nombreEmisora: 'GTI-3A-MJ' };
-        const resultado = guardarMedicion(medicion, 'ABC123', 68, 13, -70);
+        const resultado = guardarMedicion(medicion);
         
         assert.strictEqual(resultado.ok, true);
         assert.strictEqual(resultado.procesados.tipo, 'temperatura');
@@ -29,10 +25,20 @@ describe('Lógica de Negocio - guardarMedicion', () => {
 
     test('guardarMedicion maneja valores numéricos correctamente', () => {
         const medicion = { tipo: 'RSSI', valor: -72.5 };
-        const resultado = guardarMedicion(medicion, 'uuid-test', 4, 2, 7);
+        const resultado = guardarMedicion(medicion);
         
         assert.strictEqual(resultado.procesados.valor, -72.5);
         assert.strictEqual(typeof resultado.procesados.valor, 'number');
+    });
+
+    test('guardarMedicion no procesa ningún dato del beacon', () => {
+        const resultado = guardarMedicion({ tipo: 'co2', valor: 812 });
+
+        assert.strictEqual(resultado.procesados.uuid, undefined);
+        assert.strictEqual(resultado.procesados.txPower, undefined);
+        assert.strictEqual(resultado.procesados.major, undefined);
+        assert.strictEqual(resultado.procesados.minor, undefined);
+        assert.strictEqual(resultado.procesados.rssi, undefined);
     });
 });
 
