@@ -19,23 +19,12 @@
  * Tipos de datos abstractos utilizados: N, Z, R, Text, [Tipo]
  */
 
-/**
- * guardarMedicion(medicion: Medicion) --> guardarMedicion()
- * 
- * Parámetros de entrada (-->):
- *   - medicion: Medicion  (tipo: Text, valor: R, nombre_emisora?: Text)
- * 
- * Salidas (<--):
- *   - resultado: { ok: B, ... } o estado de operación
- * 
- * Interacción (--x):
- *   - Envía datos procesados hacia la capa de Base de Datos (puerto de abstracción)
- * 
- * No recibe ningun dato del beacon (uuid, txPower, major, minor, rssi): esos
- * datos se quedan en la app Android y nunca llegan a esta capa.
- */
-// guardarMedicion(): normaliza la medicion y devuelve el resultado ya
-// procesado, sin tocar la base de datos.
+//--------------------
+// medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, procesados: MedicionNueva )
+//   Normaliza la medicion y devuelve el resultado ya procesado, sin tocar la
+//   base de datos. No recibe ningun dato del beacon (uuid, txPower, major,
+//   minor, rssi): esos se quedan en la app Android.
+//--------------------
 function guardarMedicion(medicion) {
     // Validación básica de parámetros
     const tipo = medicion && medicion.tipo !== undefined ? medicion.tipo : (medicion && medicion.tipoDeMedicion);
@@ -55,20 +44,11 @@ function guardarMedicion(medicion) {
     };
 }
 
-/**
- * obtenerMedicion() --> [MedicionResumen]
- * 
- * Parámetros de entrada (-->):
- *   - (ninguno)
- * 
- * Salidas (<--):
- *   - [Tipo]: lista de elementos con fecha_y_hora: Text, tipo: Text, valor: R
- * 
- * Interacción (--x):
- *   - Obtiene datos desde la capa de Base de Datos
- */
-// obtenerMedicion(): devuelve las ultimas 10 mediciones; sin repositorio
-// devuelve una lista vacia.
+//--------------------
+// obtenerMedicion() --> [ Medicion ]
+//   Devuelve las ultimas 10 mediciones (fecha_y_hora, tipo, valor); sin
+//   repositorio devuelve una lista vacia.
+//--------------------
 function obtenerMedicion() {
     // Devuelve lista de las últimas 10 mediciones registradas
     // Cada elemento: fecha_y_hora (Text), tipo (Text), valor (R)

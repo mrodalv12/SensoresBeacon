@@ -20,7 +20,10 @@
  * Diseño según reglas del PDF "Logical_Design_RE_Rules_v3.pdf"
  */
 
-// mostrarError(): pinta el mensaje de error en el contenedor de errores.
+//--------------------
+// mensaje: Text --> mostrarError() -->
+//   Pinta el mensaje de error en el contenedor de errores.
+//--------------------
 function mostrarError(mensaje) {
     const errorContainer = document.getElementById('error-container');
     if (errorContainer) {
@@ -28,7 +31,10 @@ function mostrarError(mensaje) {
     }
 }
 
-// limpiarError(): vacia el contenedor de errores.
+//--------------------
+// limpiarError() -->
+//   Vacia el contenedor de errores.
+//--------------------
 function limpiarError() {
     const errorContainer = document.getElementById('error-container');
     if (errorContainer) {
@@ -36,8 +42,11 @@ function limpiarError() {
     }
 }
 
-// formatearFecha(): pasa la fecha que llega del servidor a un formato espanol
-// legible; si no puede, la devuelve tal cual.
+//--------------------
+// fechaYHora: Text --> formatearFecha() --> Text
+//   Pasa la fecha que llega del servidor a un formato espanol legible; si no
+//   puede, la devuelve tal cual.
+//--------------------
 function formatearFecha(fechaYHora) {
     if (!fechaYHora) return '-';
     try {
@@ -55,8 +64,11 @@ function formatearFecha(fechaYHora) {
     }
 }
 
-// actualizarTarjetas(): busca la ultima medicion de CO2 y la de temperatura y
-// las muestra en sus tarjetas.
+//--------------------
+// mediciones: [ Medicion ] --> actualizarTarjetas() -->
+//   Busca la ultima medicion de CO2 y la de temperatura y las muestra en sus
+//   tarjetas.
+//--------------------
 function actualizarTarjetas(mediciones) {
     if (!Array.isArray(mediciones) || mediciones.length === 0) return;
     
@@ -89,7 +101,10 @@ function actualizarTarjetas(mediciones) {
     }
 }
 
-// actualizarTabla(): rellena la tabla con las ultimas 10 mediciones.
+//--------------------
+// mediciones: [ Medicion ] --> actualizarTabla() -->
+//   Rellena la tabla con las ultimas 10 mediciones.
+//--------------------
 function actualizarTabla(mediciones) {
     const tbody = document.getElementById('tabla-body');
     if (!tbody) return;
@@ -108,8 +123,11 @@ function actualizarTabla(mediciones) {
     });
 }
 
-// cargarMediciones(): pide las mediciones al proxy de frontend_business_logic y
-// refresca tarjetas y tabla; si el proxy notifica error, lo muestra.
+//--------------------
+// cargarMediciones() -->
+//   Pide las mediciones al proxy de frontend_business_logic y refresca tarjetas
+//   y tabla; si el proxy notifica error, lo muestra.
+//--------------------
 async function cargarMediciones() {
     limpiarError();
     const lista = await mediciones.obtenerMedicion();
@@ -147,17 +165,22 @@ cargarMediciones();
 // enseguida y no espere hasta el final del primer intervalo.
 mostrarProximaActualizacion();
 
-// Refresco automatico: vuelve a pedir las mediciones cada INTERVALO_REFRESCO_MS
-// milisegundos (5 minutos por defecto), de modo que las cifras de la pagina se
-// actualizan solas con lo que llega del REST.
+//--------------------
+// callback() -->
+//   Refresco automatico: vuelve a pedir las mediciones cada INTERVALO_REFRESCO_MS
+//   milisegundos (5 minutos por defecto), de modo que las cifras de la pagina se
+//   actualizan solas con lo que llega del REST.
+//--------------------
 setInterval(() => {
     cargarMediciones();
     mostrarProximaActualizacion();
 }, INTERVALO_REFRESCO_MS);
 
-// mostrarProximaActualizacion(): escribe en la pagina cada cuanto se va a
-// refrescar. Es solo informacion para el usuario: el temporizador de verdad
-// lo pone setInterval de arriba.
+//--------------------
+// mostrarProximaActualizacion() -->
+//   Escribe en la pagina cada cuanto se va a refrescar. Es solo informacion para
+//   el usuario: el temporizador de verdad lo pone setInterval de arriba.
+//--------------------
 function mostrarProximaActualizacion() {
     const elemento = document.getElementById('proxima-actualizacion');
     if (!elemento) return;

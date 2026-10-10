@@ -20,9 +20,12 @@ const path = require('path');
 
 const DB_PATH = path.join(__dirname, '../../database/mediciones.db');
 
-// guardar(): inserta la medicion en SQLite mediante python3 y devuelve el id.
-// Solo guarda tipo, nombre de cliente (nombre_emisora = nombre_cliente),
-// valor y fecha_y_hora.
+//--------------------
+// datos: MedicionNueva --> guardar() --> { id: N }
+//   Inserta la medicion en SQLite mediante python3 y devuelve el id. Solo
+//   guarda tipo, nombre de cliente (nombre_emisora = nombre_cliente), valor y
+//   fecha_y_hora.
+//--------------------
 function guardar(datos) {
     const tipo = datos.tipo_de_medicion || datos.tipo || '';
     const valor = datos.valor || 0;
@@ -50,8 +53,10 @@ print(lastid)
     return { id: lastId };
 }
 
-// obtenerUltimas10(): lee las mediciones de SQLite mediante python3 y
-// devuelve las ultimas 10.
+//--------------------
+// obtenerUltimas10() --> [ Medicion ]
+//   Lee las mediciones de SQLite mediante python3 y devuelve las ultimas 10.
+//--------------------
 function obtenerUltimas10() {
     const script = `
 import sqlite3

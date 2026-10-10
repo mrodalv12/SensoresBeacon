@@ -18,23 +18,19 @@
  */
 
 class LogicaNegocio {
-    // constructor( repositorio ): guarda el repositorio en el que se apoyara
-    // la logica.
+    //--------------------
+    // repositorio: Repositorio --> constructor() --> nueva instancia
+    //   Guarda el repositorio en el que se apoyara la logica.
+    //--------------------
     constructor(repositorio) {
         this.repositorio = repositorio;
     }
 
-    /**
-     * guardarMedicion(medicion: Medicion) -->
-     * 
-     * Parámetros de entrada (-->):
-     *   - medicion: Medicion (tipo: Text, valor: R, nombre_emisora?: Text)
-     * 
-     * Salidas (<--):
-     *   - { ok: Boolean, id?: N }
-     * 
-     * Interacción (--x): Envía a repositorio/BD. No recibe datos del beacon.
-     */
+    //--------------------
+    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
+    //   Normaliza tipo, valor y nombre y delega el alta en el repositorio.
+    //   No recibe datos del beacon.
+    //--------------------
     guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
         const valor = medicion && (medicion.valor !== undefined ? medicion.valor : medicion.valor);
@@ -49,13 +45,11 @@ class LogicaNegocio {
         return { ok: true, id: resultado && resultado.id };
     }
 
-    /**
-     * obtenerMedicion() --> [Tipo]
-     * 
-     * Parámetros de entrada (-->): ninguno
-     * Salidas (<--): Array<{ fecha_y_hora: Text, tipo: Text, valor: R }>
-     * Interacción (--x): Obtiene desde repositorio/BD
-     */
+    //--------------------
+    // obtenerMedicion() --> [ Medicion ]
+    //   Pide al repositorio las ultimas 10 mediciones y las devuelve con
+    //   fecha_y_hora, tipo y valor.
+    //--------------------
     obtenerMedicion() {
         const mediciones = this.repositorio.obtenerUltimas10() || [];
         return mediciones.map(m => ({

@@ -27,8 +27,11 @@ const mediciones = (function () {
     // Ultimo error de comunicacion, para que la GUI lo muestre si quiere.
     let mensajeError = '';
 
-    // obtenerMedicion(): pide las mediciones al API y devuelve una lista; si la
-    // peticion falla, anota el error y devuelve una lista vacia.
+    //--------------------
+    // obtenerMedicion() --> Promise<[ Medicion ]>
+    //   Pide las mediciones al API y devuelve una lista; si la peticion falla,
+    //   anota el error y devuelve una lista vacia.
+    //--------------------
     async function obtenerMedicion() {
         try {
             const response = await fetch(RUTA_API);
@@ -45,7 +48,10 @@ const mediciones = (function () {
         }
     }
 
-    // errorActual(): devuelve el ultimo error de comunicacion ('' si no lo hay).
+    //--------------------
+    // errorActual() --> Text
+    //   Devuelve el ultimo error de comunicacion ('' si no lo hay).
+    //--------------------
     function errorActual() {
         return mensajeError;
     }

@@ -19,20 +19,18 @@
  * Tipos de datos abstractos: N, Z, R, Text, [Tipo]
  */
 
-/**
- * obtenerMedicion() --> [fecha_y_hora: Text, tipo: Text, valor: R]>
- * 
- * Interacción (--x): Realiza petición HTTP GET asíncrona hacia REST /mediciones (cliente HTTP)
- *
- * Pide las mediciones al servidor REST por HTTP, se queda solo con los tipos
- * que la pagina debe mostrar (co2 y temperatura) y devuelve las ultimas 10;
- * si el servidor no responde o devuelve un error, devuelve una lista vacia.
- */
+//--------------------
+// obtenerMedicion() --> [ Medicion ]
+//   Pide las mediciones al servidor REST por HTTP, se queda solo con los tipos
+//   que la pagina debe mostrar (co2 y temperatura) y devuelve las ultimas 10;
+//   si el servidor no responde o devuelve un error, devuelve una lista vacia.
+//--------------------
 function obtenerMedicion() {
-    // Direccion del servidor REST. localhost vale en cualquier computadora,
-    // porque el servidor corre en la misma maquina que esta pagina. Si el REST
-    // escuchara en otro sitio, se cambia el host (y el puerto) aqui.
-    $url = 'http://localhost:8080/mediciones';
+    // Direccion del servidor REST. Por defecto localhost:8080, que vale en
+    // cualquier computadora porque el servidor corre en la misma maquina que
+    // esta pagina. Se puede sobreescribir con la variable de entorno REST_URL
+    // (util si el REST escuchara en otro host o puerto).
+    $url = getenv('REST_URL') ?: 'http://localhost:8080/mediciones';
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

@@ -14,10 +14,11 @@
 
 require_once __DIR__ . '/../../frontend_business_logic/logicaWeb.php';
 
-/**
- * obtenerUltimasMediciones(): devuelve las ultimas mediciones, llamar a
- * obtenerMedicion() y asi las vistas no dependen de donde vienen.
- */
+//--------------------
+// obtenerUltimasMediciones() --> [ Medicion ]
+//   Devuelve las ultimas mediciones llamando a obtenerMedicion(), y asi las
+//   vistas no dependen de donde vienen.
+//--------------------
 function obtenerUltimasMediciones() {
     return obtenerMedicion();
 }

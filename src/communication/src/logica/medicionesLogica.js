@@ -23,19 +23,19 @@ const repo = require('../../../business_logic/src/repositorioSqlitePythonAsync')
 const logica = new LogicaNegocioSQLitePyAsync(repo);
 
 class LogicaNegocioMediciones {
-    /**
-     * guardarMedicion(): recibe la medicion del contrato POST (tipo, valor y
-     * nombre_emisora) y se la pasa a la logica de negocio para que la guarde.
-     * La logica de negocio es quien convierte nombre_emisora en la columna
-     * nombre_cliente de la base de datos. Ningun dato del beacon viaja por aqui.
-     */
+    //--------------------
+    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
+    //   Recibe la medicion del contrato POST (tipo, valor y nombre_emisora) y
+    //   la pasa a la logica de negocio. Ningun dato del beacon viaja por aqui.
+    //--------------------
     static async guardarMedicion(medicion) {
         return await logica.guardarMedicion(medicion || {});
     }
 
-    /**
-     * obtenerMedicion(): pide a la logica de negocio las mediciones guardadas.
-     */
+    //--------------------
+    // obtenerMedicion() --> [ Medicion ]
+    //   Pide a la logica de negocio las mediciones guardadas.
+    //--------------------
     static async obtenerMedicion() {
         return await logica.obtenerMedicion();
     }

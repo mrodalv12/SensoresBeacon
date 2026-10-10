@@ -34,9 +34,9 @@ MedicionNueva = ( tipo: Text, valor: R, nombre_cliente: Text )
 ```text
 --------- communication (servidor REST) ----------
 |
-| (http.createServer)
+| (http.createServer: callback inline en app.js)
 |
-peticion: PeticionHTTP --> enrutar() -->
+req: PeticionHTTP, res: RespuestaHTTP --> callback() -->   (delega en routerMediciones)
 |
 |
 ruta, metodo: Text   --> routerMediciones() --> enrutado: B
@@ -55,11 +55,12 @@ peticion HTTP        --> handleGetMediciones() --> respuesta: 200/500
 ### 1.3 Function/Method Logical Designs
 
 ```text
-peticion: PeticionHTTP --> enrutar() --> enrutado: B
+req: PeticionHTTP, res: RespuestaHTTP --> callback(req, res) -->
 ```
 
-- Lee la petición, delega en `routerMediciones()` y, si no se enruta,
-  responde `404`.
+- Callback que `app.js` pasa a `http.createServer()` (no es una función con
+  nombre propio). Delega en `routerMediciones(req, res)` y, si este devuelve
+  `false` (ruta no reconocida), responde `404`.
 
 ```text
 metodo: Text, ruta: Text --> routerMediciones() --> enrutado: B

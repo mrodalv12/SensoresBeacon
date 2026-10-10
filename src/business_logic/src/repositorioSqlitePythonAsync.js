@@ -19,9 +19,12 @@ const path = require('path');
 
 const DB_PATH = path.join(__dirname, '../../database/mediciones.db');
 
-// guardar(): inserta la medicion en SQLite con un proceso python3 hijo y
-// devuelve una promesa con el id. Solo guarda tipo, nombre de cliente
-// (nombre_emisora = nombre_cliente), valor y fecha_y_hora.
+//--------------------
+// datos: MedicionNueva --> guardar() --> Promise<{ id: N }>
+//   Inserta la medicion en SQLite con un proceso python3 hijo y devuelve una
+//   promesa con el id. Solo guarda tipo, nombre de cliente (nombre_emisora =
+//   nombre_cliente), valor y fecha_y_hora.
+//--------------------
 function guardar(datos) {
     return new Promise((resolve, reject) => {
         const tipo = datos.tipo_de_medicion || datos.tipo || '';
@@ -52,8 +55,11 @@ print(lastid)
     });
 }
 
-// obtenerUltimas10(): lee las mediciones con un proceso python3 hijo y
-// devuelve una promesa con las ultimas 10.
+//--------------------
+// obtenerUltimas10() --> Promise<[ Medicion ]>
+//   Lee las mediciones con un proceso python3 hijo y devuelve una promesa con
+//   las ultimas 10.
+//--------------------
 function obtenerUltimas10() {
     return new Promise((resolve, reject) => {
         const script = `

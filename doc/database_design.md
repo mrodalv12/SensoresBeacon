@@ -21,11 +21,11 @@ DESCRIPTION: Almacena las mediciones registradas por la aplicacion movil: tipo
 
 COLUMNS:
 
-+ id               | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL
-+ tipo_de_medicion | TEXT      | NOT NULL
-+ nombre_cliente   | TEXT      | NOT NULL
-+ valor            | REAL      | NOT NULL
-+ fecha_y_hora     | DATETIME  | DEFAULT CURRENT_TIMESTAMP
++ id               | INTEGER  | NOT NULL | Auto-Increment
++ tipo_de_medicion | TEXT     | NOT NULL
++ nombre_cliente   | TEXT     | NOT NULL
++ valor            | REAL     | NOT NULL
++ fecha_y_hora     | DATETIME | NULL     | CURRENT_TIMESTAMP
 
 PRIMARY KEY: id
 
@@ -36,8 +36,6 @@ FOREIGN KEYS:
 CONSTRAINTS:
 
 + NOT NULL en tipo_de_medicion, nombre_cliente y valor
-+ CHECK (tipo_de_medicion IN ('co2', 'temperatura', 'ruido')) -- dominio finito
-+ CHECK (valor >= 0)
 + id AUTOINCREMENT (generado por SQLite)
 + fecha_y_hora generado por CURRENT_TIMESTAMP si no se indica
 ====================================================================================
@@ -64,6 +62,10 @@ CONSTRAINTS:
   `sqlite3 src/database/mediciones.db < src/database/mediciones.sql`.
 - El fichero `src/database/mediciones.sqbpro` es el proyecto de DB Browser for
   SQLite (edición visual) y no afecta al funcionamiento.
+- **Sin `CHECK` en el esquema real:** el dominio finito de `tipo_de_medicion`
+  (`co2`, `temperatura`, `ruido`) y la no-negatividad de `valor` son convenciones
+  que aplica la aplicación/la lógica de negocio, no `CHECK` de la base de datos;
+  el diseño refleja el esquema tal cual está implementado en `mediciones.sql`.
 
 ## 3. General Rules
 

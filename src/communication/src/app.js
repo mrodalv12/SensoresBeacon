@@ -16,6 +16,11 @@ const { routerMediciones } = require('./routes/medicionesRoutes');
  * Aplicación HTTP - Servidor REST
  * Solo se encarga de enrutar peticiones. No contiene lógica de negocio.
  */
+//--------------------
+// req: PeticionHTTP, res: RespuestaHTTP --> callback(req, res) -->
+//   Manejador del servidor: delega en routerMediciones() y, si la ruta no se
+//   atiende, responde 404.
+//--------------------
 const server = http.createServer((req, res) => {
     // Intentar enrutar a mediciones
     if (routerMediciones(req, res)) {

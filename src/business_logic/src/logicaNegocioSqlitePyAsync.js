@@ -15,16 +15,19 @@
  */
 
 class LogicaNegocioSQLitePyAsync {
-    // constructor( repositorio ): guarda el repositorio en el que se apoyara
-    // la logica.
+    //--------------------
+    // repositorio: Repositorio --> constructor() --> nueva instancia
+    //   Guarda el repositorio en el que se apoyara la logica.
+    //--------------------
     constructor(repositorio) {
         this.repositorio = repositorio;
     }
 
-    // guardarMedicion(): normaliza la medicion y la guarda en el repositorio;
-    // devuelve el id con el que queda registrada. Solo recibe el dominio de la
-    // medicion (tipo, valor, nombre_emisora): ningun dato del beacon llega
-    // aqui, porque el POST no lo envia.
+    //--------------------
+    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
+    //   Normaliza la medicion y la guarda en el repositorio; devuelve el id.
+    //   Solo recibe el dominio (tipo, valor, nombre): ningun dato del beacon.
+    //--------------------
     async guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
         const valor = medicion && (medicion.valor !== undefined ? medicion.valor : medicion.valor);
@@ -39,8 +42,11 @@ class LogicaNegocioSQLitePyAsync {
         return { ok: true, id: resultado && resultado.id };
     }
 
-    // obtenerMedicion(): pide al repositorio las ultimas 10 mediciones y las
-    // devuelve con fecha_y_hora, tipo y valor.
+    //--------------------
+    // obtenerMedicion() --> [ Medicion ]
+    //   Pide al repositorio las ultimas 10 mediciones y las devuelve con
+    //   fecha_y_hora, tipo y valor.
+    //--------------------
     async obtenerMedicion() {
         const mediciones = await this.repositorio.obtenerUltimas10();
         return (mediciones || []).map(m => ({

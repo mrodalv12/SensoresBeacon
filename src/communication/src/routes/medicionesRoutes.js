@@ -27,19 +27,13 @@ const HTTP_CREATED = 201;
 const HTTP_BAD_REQUEST = 400;
 const HTTP_INTERNAL_SERVER_ERROR = 500;
 
-/**
- * POST/mediciones
- * 
- * Diseño lógico (siguiendo reglas RE):
- * - Recibe en el cuerpo JSON:
- *   medicion = (tipo: Text, valor: R, nombre_emisora: Text?)
- * - Los datos del beacon (uuid, txPower, major, minor, rssi) no se envian en
- *   el POST: se quedan en la app Android (la uuid solo se usa ahi para buscar
- *   el iBeacon).
- * - Valida entrada
- * - Llama a Lógica de Negocio: guardarMedicion(medicion) 
- * - Responde con códigos HTTP 200/201/400/500
- */
+//--------------------
+// cuerpo: Text --> handlePostMediciones() --> codigo: Z
+//   Recibe medicion = (tipo: Text, valor: R, nombre_emisora: Text?) por el
+//   cuerpo JSON, la valida y delega en la logica de negocio; responde
+//   201/400/500. Los datos del beacon (uuid, txPower, major, minor, rssi) no
+//   se envian en el POST.
+//--------------------
 function handlePostMediciones(req, res) {
     let body = '';
 
@@ -111,14 +105,11 @@ function handlePostMediciones(req, res) {
     });
 }
 
-/**
- * GET/mediciones
- * 
- * Diseño lógico (siguiendo reglas RE):
- * - Invoca a Lógica de Negocio: obtenerMedicion()
- * - Responde con lista JSON de las últimas 10 mediciones
- * - Campos requeridos: fecha_y_hora, tipo, valor
- */
+//--------------------
+// handleGetMediciones() --> [ Medicion ]
+//   Invoca a la logica de negocio (obtenerMedicion()) y responde con la lista
+//   JSON de las ultimas 10 mediciones (fecha_y_hora, tipo, valor).
+//--------------------
 function handleGetMediciones(req, res) {
     try {
         LogicaNegocioMediciones.obtenerMedicion()
@@ -143,9 +134,11 @@ function handleGetMediciones(req, res) {
     }
 }
 
-/**
- * Router para rutas de mediciones
- */
+//--------------------
+// metodo: Text, ruta: Text --> routerMediciones() --> enrutado: B
+//   Empareja POST y GET /mediciones con sus manejadores; devuelve B indicando
+//   si la ruta se ha atendido.
+//--------------------
 function routerMediciones(req, res) {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
