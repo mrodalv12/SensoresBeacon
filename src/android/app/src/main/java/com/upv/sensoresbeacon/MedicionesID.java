@@ -15,11 +15,13 @@ package com.upv.sensoresbeacon;
 
 
 /**
+ * ------------------ MedicionesID ------------------
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 2.1 - Enumerations):
  *
  * MedicionesID = { co2, temperatura, ruido }
  *
  * Los codigos coinciden con el campo "major" de la trama iBeacon.
+ * --------------------------------------------------
  */
 public enum MedicionesID {
 
@@ -29,28 +31,37 @@ public enum MedicionesID {
 
     private final int codigo;
 
+    //--------------------
+    // codigo: Z --> MedicionesID() -->
+    //
+    // Guarda el codigo del tipo de medicion.
+    //--------------------
     MedicionesID(int codigo) {
         this.codigo = codigo;
     }
 
-    // devuelve el codigo numerico del tipo, que es el byte alto del major.
+    //--------------------
+    // --> getCodigo() --> codigo: Z
+    //
+    // Devuelve el codigo numerico del tipo, que es el byte alto del major.
+    //--------------------
     public int getCodigo() {
         return codigo;
     }
 
-    /**
-     * codigo: Z --> getNombre() --> Text
-     */
+    //--------------------
+    // codigo: Z --> getNombre() --> Text
+    //--------------------
     public String getNombre() {
         return name();
     }
 
-    /**
-     * codigo: Z --> getTipo() --> Text
-     *
-     * Devuelve el nombre del tipo de medicion asociado al codigo (major) o
-     * TIPO_DESCONOCIDO si el codigo no pertenece a la enumeracion.
-     */
+    //--------------------
+    // codigo: Z --> getTipo() --> Text
+    //
+    // Devuelve el nombre del tipo de medicion asociado al codigo (major) o
+    // TIPO_DESCONOCIDO si el codigo no pertenece a la enumeracion.
+    //--------------------
     public static String getTipo(int codigo) {
         for (MedicionesID medicion : values()) {
             if (medicion.codigo == codigo) {
@@ -60,9 +71,9 @@ public enum MedicionesID {
         return TIPO_DESCONOCIDO;
     }
 
-    /**
-     * codigo: Z --> existe() --> B
-     */
+    //--------------------
+    // codigo: Z --> existe() --> B
+    //--------------------
     public static boolean existe(int codigo) {
         for (MedicionesID medicion : values()) {
             if (medicion.codigo == codigo) {

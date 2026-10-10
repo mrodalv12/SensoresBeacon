@@ -63,29 +63,29 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
     private String cuerpo;
     private TransporteHttp transporte;
 
-    /**
-     * --> PeticionarioREST() -->
-     *
-     * Usa el transporte HTTP real.
-     */
+    //--------------------
+    // --> PeticionarioREST() -->
+    //
+    // Usa el transporte HTTP real.
+    //--------------------
     public PeticionarioREST() {
         this(METODO_GET, "", "", new TransporteHttpReal());
     }
 
-    /**
-     * metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
-     *
-     * Monta la peticion y trabaja con el transporte HTTP real.
-     */
+    //--------------------
+    // metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
+    //
+    // Monta la peticion y trabaja con el transporte HTTP real.
+    //--------------------
     public PeticionarioREST(String metodo, String urlDestino, String elCuerpo) {
         this(metodo, urlDestino, elCuerpo, new TransporteHttpReal());
     }
 
-    /**
-     * metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
-     *
-     * Monta la peticion con el transporte indicado, para poder probarla.
-     */
+    //--------------------
+    // metodo: Text, urlDestino: Text, elCuerpo: Text --> PeticionarioREST() -->
+    //
+    // Monta la peticion con el transporte indicado, para poder probarla.
+    //--------------------
     public PeticionarioREST(String metodo, String urlDestino, String elCuerpo, TransporteHttp transporte) {
         this.metodo = metodo;
         this.urlDestino = urlDestino;
@@ -94,18 +94,18 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
         this.laRespuesta = new RespuestaREST();
     }
 
-    /**
-     * urlDestino: Text, elCuerpo: Text --> crearPOST() --> peticionario: PeticionarioREST --x
-     */
+    //--------------------
+    // urlDestino: Text, elCuerpo: Text --> crearPOST() --> peticionario: PeticionarioREST --x
+    //--------------------
     public static PeticionarioREST crearPOST(String urlDestino, String elCuerpo) {
         return new PeticionarioREST(METODO_POST, urlDestino, elCuerpo);
     }
 
-    /**
-     * --> hacerPeticionarioREST() -->
-     *
-     * Permite ejecutar la peticion de forma sincrona y comprobable en pruebas.
-     */
+    //--------------------
+    // --> hacerPeticionarioREST() -->
+    //
+    // Permite ejecutar la peticion de forma sincrona y comprobable en pruebas.
+    //--------------------
     public RespuestaREST hacerPeticionarioREST() {
         laRespuesta = transporte.enviar(metodo, urlDestino, elCuerpo);
         codigo = laRespuesta.getCodigoRespuesta();
@@ -115,93 +115,93 @@ public class PeticionarioREST extends AsyncTask<Void, Void, RespuestaREST> {
         return laRespuesta;
     }
 
-    /**
-     * --> doInBackground() <--
-     *
-     * Metodo ejecutado por AsyncTask en el hilo de segundo plano.
-     */
+    //--------------------
+    // --> doInBackground() <--
+    //
+    // Metodo ejecutado por AsyncTask en el hilo de segundo plano.
+    //--------------------
     @Override
     protected RespuestaREST doInBackground(Void... parametros) {
         return hacerPeticionarioREST();
     }
 
-    /**
-     * --> onPostExecute() -->
-     */
+    //--------------------
+    // --> onPostExecute() -->
+    //--------------------
     // se ejecuta en el hilo principal cuando termina la peticion.
     @Override
     protected void onPostExecute(RespuestaREST resultado) {
         Log.i(ETIQUETA, "Peticion finalizada, respuesta=" + resultado);
     }
 
-    /**
-     * --> comoFue() <--
-      *
-      * indica si el codigo recibido se considera una peticion aceptada.
-     */
+    //--------------------
+    // --> comoFue() <--
+    //
+    // indica si el codigo recibido se considera una peticion aceptada.
+    //--------------------
     public boolean comoFue() {
         return laRespuesta.comoFue();
     }
 
-    /**
-     * --> getCodigo() <--
-      *
-      * devuelve el codigo de respuesta que dio el servidor.
-     */
+    //--------------------
+    // --> getCodigo() <--
+    //
+    // devuelve el codigo de respuesta que dio el servidor.
+    //--------------------
     public int getCodigo() {
         return codigo;
     }
 
-    /**
-     * --> getCuerpo() <--
-      *
-      * devuelve el cuerpo de la respuesta del servidor.
-     */
+    //--------------------
+    // --> getCuerpo() <--
+    //
+    // devuelve el cuerpo de la respuesta del servidor.
+    //--------------------
     public String getCuerpo() {
         return cuerpo;
     }
 
-    /**
-     * --> getLaRespuesta() <--
-      *
-      * devuelve la respuesta completa recibida.
-     */
+    //--------------------
+    // --> getLaRespuesta() <--
+    //
+    // devuelve la respuesta completa recibida.
+    //--------------------
     public RespuestaREST getLaRespuesta() {
         return laRespuesta;
     }
 
-    /**
-     * transporte: TransporteHttp --> setTransporte() -->
-     *
-     * Inyecta un doble de prueba en lugar del cliente HTTP real.
-     */
+    //--------------------
+    // transporte: TransporteHttp --> setTransporte() -->
+    //
+    // Inyecta un doble de prueba en lugar del cliente HTTP real.
+    //--------------------
     public void setTransporte(TransporteHttp transporte) {
         this.transporte = transporte;
     }
 
-    /**
-     * --> getMetodo() <--
-      *
-      * devuelve el metodo HTTP de la peticion.
-     */
+    //--------------------
+    // --> getMetodo() <--
+    //
+    // devuelve el metodo HTTP de la peticion.
+    //--------------------
     public String getMetodo() {
         return metodo;
     }
 
-    /**
-     * --> getUrlDestino() <--
-      *
-      * devuelve la URL a la que se envio la peticion.
-     */
+    //--------------------
+    // --> getUrlDestino() <--
+    //
+    // devuelve la URL a la que se envio la peticion.
+    //--------------------
     public String getUrlDestino() {
         return urlDestino;
     }
 
-    /**
-     * --> getElCuerpo() <--
-      *
-      * devuelve el cuerpo que se envio en la peticion.
-     */
+    //--------------------
+    // --> getElCuerpo() <--
+    //
+    // devuelve el cuerpo que se envio en la peticion.
+    //--------------------
     public String getElCuerpo() {
         return elCuerpo;
     }

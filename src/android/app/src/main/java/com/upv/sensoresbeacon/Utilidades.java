@@ -65,15 +65,19 @@ public final class Utilidades {
     private static final int TAM_LONG = 8;
     private static final int TAM_SHORT = 2;
 
-    // Utilidades(): constructor vacio; la clase solo ofrece metodos estaticos.
+    //--------------------
+    // --> Utilidades() -->
+    //
+    // Constructor vacio; la clase solo ofrece metodos estaticos.
+    //--------------------
     private Utilidades() {
     }
 
-    /**
-     * texto: Text --> stringToBytes() --> bytes: [Z]
-     *
-     * Convierte una cadena hexadecimal en su vector de bytes.
-     */
+    //--------------------
+    // texto: Text --> stringToBytes() --> bytes: [Z]
+    //
+    // Convierte una cadena hexadecimal en su vector de bytes.
+    //--------------------
     public static byte[] stringToBytes(String texto) {
         if (texto == null) {
             return new byte[0];
@@ -89,11 +93,11 @@ public final class Utilidades {
         return bytes;
     }
 
-    /**
-     * bytes: [Z] --> bytesToString() --> Text
-     *
-     * Representacion hexadecimal en mayusculas y sin separadores.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToString() --> Text
+    //
+    // Representacion hexadecimal en mayusculas y sin separadores.
+    //--------------------
     public static String bytesToString(byte[] bytes) {
         if (bytes == null) {
             return "";
@@ -105,13 +109,13 @@ public final class Utilidades {
         return sb.toString();
     }
 
-    /**
-     * bytes: [Z] --> bytesToHexString() --> Text
-     *
-     * Representacion hexadecimal en mayusculas. Para los 16 bytes de un UUID
-     * aplica el formato canonico 8-4-4-4-12; en cualquier otro caso devuelve
-     * la hexadecimal sin separadores.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToHexString() --> Text
+    //
+    // Representacion hexadecimal en mayusculas. Para los 16 bytes de un UUID
+    // aplica el formato canonico 8-4-4-4-12; en cualquier otro caso devuelve
+    // la hexadecimal sin separadores.
+    //--------------------
     public static String bytesToHexString(byte[] bytes) {
         if (bytes == null) {
             return "";
@@ -129,17 +133,17 @@ public final class Utilidades {
                 .toString();
     }
 
-    /**
-     * texto: Text --> stringToUUID() --> uuid: UUID
-     */
+    //--------------------
+    // texto: Text --> stringToUUID() --> uuid: UUID
+    //--------------------
     public static UUID stringToUUID(String texto) {
         String limpio = texto.replace("-", "").replace(" ", "").replace(":", "");
         return uuidFromHex(limpio);
     }
 
-    /**
-     * bytes: [Z] --> bytesToUUID() --> uuid: UUID
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToUUID() --> uuid: UUID
+    //--------------------
     public static UUID bytesToUUID(byte[] bytes) {
         if (bytes == null || bytes.length < TAM_UUID) {
             return null;
@@ -155,29 +159,29 @@ public final class Utilidades {
         return new UUID(msb, lsb);
     }
 
-    /**
-     * uuid: UUID --> uuidToString() --> Text
-     *
-     * Formato canonico 8-4-4-4-12 en minusculas.
-     */
+    //--------------------
+    // uuid: UUID --> uuidToString() --> Text
+    //
+    // Formato canonico 8-4-4-4-12 en minusculas.
+    //--------------------
     public static String uuidToString(UUID uuid) {
         return uuid == null ? "" : uuid.toString();
     }
 
-    /**
-     * uuid: UUID --> uuidToHexString() --> Text
-     *
-     * Formato canonico 8-4-4-4-12 en mayusculas, sin guiones bajos.
-     */
+    //--------------------
+    // uuid: UUID --> uuidToHexString() --> Text
+    //
+    // Formato canonico 8-4-4-4-12 en mayusculas, sin guiones bajos.
+    //--------------------
     public static String uuidToHexString(UUID uuid) {
         return uuid == null ? "" : uuid.toString().replace("-", "").toUpperCase();
     }
 
-    /**
-     * n: Z --> intToBytes() --> bytes: [Z]
-     *
-     * Entero de 32 bits en orden big-endian (4 bytes).
-     */
+    //--------------------
+    // n: Z --> intToBytes() --> bytes: [Z]
+    //
+    // Entero de 32 bits en orden big-endian (4 bytes).
+    //--------------------
     public static byte[] intToBytes(int n) {
         return new byte[]{
                 (byte) ((n >> 24) & 0xFF),
@@ -187,11 +191,11 @@ public final class Utilidades {
         };
     }
 
-    /**
-     * bytes: [Z] --> bytesToInt() --> n: Z
-     *
-     * Lee un entero de 32 bits big-endian a partir del byte indicado.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToInt() --> n: Z
+    //
+    // Lee un entero de 32 bits big-endian a partir del byte indicado.
+    //--------------------
     public static int bytesToInt(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_INT > bytes.length) {
             return 0;
@@ -203,11 +207,11 @@ public final class Utilidades {
         return n;
     }
 
-    /**
-     * bytes: [Z] --> bytesToIntOK() --> n: Z
-     *
-     * Como bytesToInt() pero validating la longitud minima necesaria.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToIntOK() --> n: Z
+    //
+    // Como bytesToInt() pero validating la longitud minima necesaria.
+    //--------------------
     public static int bytesToIntOK(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_INT > bytes.length) {
             throw new IllegalArgumentException("La trama no contiene un entero de 4 bytes en la posicion " + desde);
@@ -215,13 +219,13 @@ public final class Utilidades {
         return bytesToInt(bytes, desde);
     }
 
-    /**
-     * bytes: [Z] --> bytesToLong() --> n: Z
-     *
-     * Lee 8 bytes big-endian. Los valores con el bit mas significativo a 1
-     * (mayor o igual a 2^31) se interpretan como negativos, al ser <i>long</i>
-     * con signo en Java.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToLong() --> n: Z
+    //
+    // Lee 8 bytes big-endian. Los valores con el bit mas significativo a 1
+    // (mayor o igual a 2^31) se interpretan como negativos, al ser <i>long</i>
+    // con signo en Java.
+    //--------------------
     public static long bytesToLong(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_LONG > bytes.length) {
             return 0L;
@@ -233,11 +237,11 @@ public final class Utilidades {
         return n;
     }
 
-    /**
-     * n: Z --> dosLongToBytes() --> bytes: [Z]
-     *
-     * Empaqueta 2 enteros de 16 bits en 4 bytes big-endian.
-     */
+    //--------------------
+    // n: Z --> dosLongToBytes() --> bytes: [Z]
+    //
+    // Empaqueta 2 enteros de 16 bits en 4 bytes big-endian.
+    //--------------------
     public static byte[] dosLongToBytes(int masSignificativos, int menosSignificativos) {
         return new byte[]{
                 (byte) ((masSignificativos >> 8) & 0xFF),
@@ -247,11 +251,11 @@ public final class Utilidades {
         };
     }
 
-    /**
-     * bytes: [Z] --> bytesToShort() --> n: Z
-     *
-     * Lee un entero de 16 bits big-endian.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToShort() --> n: Z
+    //
+    // Lee un entero de 16 bits big-endian.
+    //--------------------
     public static int bytesToShort(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_SHORT > bytes.length) {
             return 0;
@@ -259,12 +263,12 @@ public final class Utilidades {
         return ((bytes[desde] & 0xFF) << 8) | (bytes[desde + 1] & 0xFF);
     }
 
-    /**
-     * bytes: [Z] --> bytesToShortLE() --> n: Z
-     *
-     * Lee un entero de 16 bits little-endian (byte menos significativo
-     * primero), que es como viajan los campos major y minor de un iBeacon.
-     */
+    //--------------------
+    // bytes: [Z] --> bytesToShortLE() --> n: Z
+    //
+    // Lee un entero de 16 bits little-endian (byte menos significativo
+    // primero), que es como viajan los campos major y minor de un iBeacon.
+    //--------------------
     public static int bytesToShortLE(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_SHORT > bytes.length) {
             return 0;
@@ -272,14 +276,14 @@ public final class Utilidades {
         return (bytes[desde] & 0xFF) | ((bytes[desde + 1] & 0xFF) << 8);
     }
 
-    /**
-     * texto: Text --> bytesDesdeTextoAscii() --> bytes: [Z]
-     *
-     * Toma los 16 caracteres del texto tal cual, guiones incluidos, y los
-     * devuelve como los bytes que el emisor mete en el campo UUID de la
-     * trama. No se elimina ningun caracter: el array beaconUUID del emisor
-     * tiene exactamente 16 entradas, y los guiones ocupan dos de ellas.
-     */
+    //--------------------
+    // texto: Text --> bytesDesdeTextoAscii() --> bytes: [Z]
+    //
+    // Toma los 16 caracteres del texto tal cual, guiones incluidos, y los
+    // devuelve como los bytes que el emisor mete en el campo UUID de la
+    // trama. No se elimina ningun caracter: el array beaconUUID del emisor
+    // tiene exactamente 16 entradas, y los guiones ocupan dos de ellas.
+    //--------------------
     public static byte[] bytesDesdeTextoAscii(String texto) {
         if (texto == null) {
             return null;
@@ -296,19 +300,23 @@ public final class Utilidades {
         return bytes;
     }
 
-    /**
-     * texto: Text --> uuidDesdeTextoAscii() --> uuid: UUID
-     *
-     * Muchos emisores de coursework no usan una UUID hexadecimal, sino que
-     * meten 16 caracteres ASCII en el campo UUID. Esta funcion traduce el
-     * texto a los bytes que realmente viajan por el aire, de modo que
-     * "EPSG-GTI-PROY-3A" se convierta en su UUID equivalente.
-     */
+    //--------------------
+    // texto: Text --> uuidDesdeTextoAscii() --> uuid: UUID
+    //
+    // Muchos emisores de coursework no usan una UUID hexadecimal, sino que
+    // meten 16 caracteres ASCII en el campo UUID. Esta funcion traduce el
+    // texto a los bytes que realmente viajan por el aire, de modo que
+    // "EPSG-GTI-PROY-3A" se convierta en su UUID equivalente.
+    //--------------------
     public static UUID uuidDesdeTextoAscii(String texto) {
         return bytesToUUID(bytesDesdeTextoAscii(texto));
     }
 
-    // convierte los 32 caracteres hexadecimales de un UUID en su objeto UUID.
+    //--------------------
+    // hex: Text --> uuidFromHex() --> uuid: UUID --x
+    //
+    // Convierte los 32 caracteres hexadecimales de un UUID en su objeto UUID.
+    //--------------------
     private static UUID uuidFromHex(String hex) {
         if (hex.length() != TAM_UUID * 2) {
             throw new IllegalArgumentException("Un UUID requiere 32 caracteres hexadecimales: " + hex);

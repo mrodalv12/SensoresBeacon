@@ -127,12 +127,12 @@ public class TramaIBeacon {
     private final byte iBeaconLength;
     private final byte txPower;
 
-    /**
-     * bytes: [Z] --> TramaIBeacon() -->
-     *
-     * Localiza la trama iBeacon dentro del anuncio y la descompone en sus
-     * campos.
-     */
+    //--------------------
+    // bytes: [Z] --> TramaIBeacon() -->
+    //
+    // Localiza la trama iBeacon dentro del anuncio y la descompone en sus
+    // campos.
+    //--------------------
     public TramaIBeacon(byte[] bytes) {
         int encontrada = localizarTrama(bytes);
         if (encontrada == NO_ENCONTRADA) {
@@ -159,26 +159,26 @@ public class TramaIBeacon {
         this.txPower = bytes[inicio + POS_TX_POWER];
     }
 
-    /**
-     * bytes: [Z] --> esTramaIBeacon() --> B --x
-     *
-     * Indica si el anuncio contiene una trama iBeacon.
-     */
+    //--------------------
+    // bytes: [Z] --> esTramaIBeacon() --> B --x
+    //
+    // Indica si el anuncio contiene una trama iBeacon.
+    //--------------------
     public static boolean esTramaIBeacon(byte[] bytes) {
         return localizarTrama(bytes) != NO_ENCONTRADA;
     }
 
-    /**
-     * bytes: [Z] --> localizarTrama() --> inicio: Z --x
-     *
-     * Devuelve la posicion del primer byte de la trama (companyID) dentro del
-     * anuncio, o NO_ENCONTRADA si no hay ninguna.
-     *
-     * Primero recorre las estructuras AD buscando los datos de fabricante
-     * (tipo 0xFF); si el anuncio no sigue esa estructura, busca la marca
-     * 02 15 en cualquier posicion, lo que cubre la trama desnuda del
-     * laboratorio (con cabecera advFlags/advHeader delante).
-     */
+    //--------------------
+    // bytes: [Z] --> localizarTrama() --> inicio: Z --x
+    //
+    // Devuelve la posicion del primer byte de la trama (companyID) dentro del
+    // anuncio, o NO_ENCONTRADA si no hay ninguna.
+    //
+    // Primero recorre las estructuras AD buscando los datos de fabricante
+    // (tipo 0xFF); si el anuncio no sigue esa estructura, busca la marca
+    // 02 15 en cualquier posicion, lo que cubre la trama desnuda del
+    // laboratorio (con cabecera advFlags/advHeader delante).
+    //--------------------
     public static int localizarTrama(byte[] bytes) {
         if (bytes == null || bytes.length < TAM_DATOS) {
             return NO_ENCONTRADA;
@@ -205,15 +205,15 @@ public class TramaIBeacon {
         return NO_ENCONTRADA;
     }
 
-    /**
-     * bytes: [Z], companyId: N --> localizarManufacturerData() --> inicio: Z --x
-     *
-     * Devuelve la posicion de los datos de un fabricante concreto dentro del
-     * anuncio, o NO_ENCONTRADA si el anuncio no los lleva. Sirve para
-     * diagnosticar: si el beacon esta cerca pero la app no lo reconoce, hay
-     * que distinguir "no hay ningun iBeacon cerca" de "hay uno pero la trama
-     * no se parece a la que esperamos".
-     */
+    //--------------------
+    // bytes: [Z], companyId: N --> localizarManufacturerData() --> inicio: Z --x
+    //
+    // Devuelve la posicion de los datos de un fabricante concreto dentro del
+    // anuncio, o NO_ENCONTRADA si el anuncio no los lleva. Sirve para
+    // diagnosticar: si el beacon esta cerca pero la app no lo reconoce, hay
+    // que distinguir "no hay ningun iBeacon cerca" de "hay uno pero la trama
+    // no se parece a la que esperamos".
+    //--------------------
     public static int localizarManufacturerData(byte[] bytes, int companyId) {
         if (bytes == null) {
             return NO_ENCONTRADA;
@@ -238,17 +238,22 @@ public class TramaIBeacon {
         return NO_ENCONTRADA;
     }
 
-    /**
-     * bytes: [Z] --> esAnuncioConIBeaconDeApple() --> B
-     *
-     * Indica si el anuncio lleva datos de fabricante de Apple, paso previo a
-     * comprobar si ademas es una trama iBeacon valida.
-     */
+    //--------------------
+    // bytes: [Z] --> esAnuncioConIBeaconDeApple() --> B
+    //
+    // Indica si el anuncio lleva datos de fabricante de Apple, paso previo a
+    // comprobar si ademas es una trama iBeacon valida.
+    //--------------------
     public static boolean esAnuncioConIBeaconDeApple(byte[] bytes) {
         return localizarManufacturerData(bytes, COMPANY_ID_APPLE) != NO_ENCONTRADA;
     }
 
-    // comprueba que en la posicion indicada estan los dos bytes de cabecera iBeacon (0x02 y 0x15) y que caben los 25 bytes.
+    //--------------------
+    // bytes: [Z], inicio: Z --> tieneMarcaIBeacon() --> B --x
+    //
+    // Comprueba que en la posicion indicada estan los dos bytes de cabecera
+    // iBeacon (0x02 y 0x15) y que caben los 25 bytes.
+    //--------------------
     private static boolean tieneMarcaIBeacon(byte[] bytes, int inicio) {
         return inicio >= 0
                 && inicio + TAM_DATOS <= bytes.length
@@ -256,174 +261,174 @@ public class TramaIBeacon {
                 && (bytes[inicio + POS_IBEACON_LENGTH] & 0xFF) == IBEACON_LENGTH;
     }
 
-    /**
-     * --> getInicio() <--
-      *
-      * devuelve la posicion del anuncio donde empieza la trama iBeacon.
-     */
+    //--------------------
+    // --> getInicio() <--
+    //
+    // devuelve la posicion del anuncio donde empieza la trama iBeacon.
+    //--------------------
     public int getInicio() {
         return inicio;
     }
 
-    /**
-     * --> getLosBytes() <--
-      *
-      * devuelve una copia de los bytes completos del anuncio.
-     */
+    //--------------------
+    // --> getLosBytes() <--
+    //
+    // devuelve una copia de los bytes completos del anuncio.
+    //--------------------
     public byte[] getLosBytes() {
         return losBytes.clone();
     }
 
-    /**
-     * --> getAdvFlags() <--
-      *
-      * devuelve una copia del byte de banderas del anuncio.
-     */
+    //--------------------
+    // --> getAdvFlags() <--
+    //
+    // devuelve una copia del byte de banderas del anuncio.
+    //--------------------
     public byte[] getAdvFlags() {
         return advFlags.clone();
     }
 
-    /**
-     * --> getAdvHeader() <--
-      *
-      * devuelve una copia del byte de cabecera del anuncio.
-     */
+    //--------------------
+    // --> getAdvHeader() <--
+    //
+    // devuelve una copia del byte de cabecera del anuncio.
+    //--------------------
     public byte[] getAdvHeader() {
         return advHeader.clone();
     }
 
-    /**
-     * --> getCompanyID() <--
-      *
-      * devuelve una copia de los dos bytes del identificador de fabricante.
-     */
+    //--------------------
+    // --> getCompanyID() <--
+    //
+    // devuelve una copia de los dos bytes del identificador de fabricante.
+    //--------------------
     public byte[] getCompanyID() {
         return companyID.clone();
     }
 
-    /**
-     * --> getCompanyIDComoInt() <--
-     *
-     * El company identifier viaja en orden little-endian (4C 00 = 0x004C).
-     */
+    //--------------------
+    // --> getCompanyIDComoInt() <--
+    //
+    // El company identifier viaja en orden little-endian (4C 00 = 0x004C).
+    //--------------------
     public int getCompanyIDComoInt() {
         return (companyID[0] & 0xFF) | ((companyID[1] & 0xFF) << 8);
     }
 
-    /**
-     * --> getPrefijo() <--
-      *
-      * devuelve una copia del prefijo que debe tener la UUID buscada.
-     */
+    //--------------------
+    // --> getPrefijo() <--
+    //
+    // devuelve una copia del prefijo que debe tener la UUID buscada.
+    //--------------------
     public byte[] getPrefijo() {
         return prefijo.clone();
     }
 
-    /**
-     * --> getiBeaconType() <--
-      *
-      * devuelve el byte de tipo iBeacon, que debe valer 0x02.
-     */
+    //--------------------
+    // --> getiBeaconType() <--
+    //
+    // devuelve el byte de tipo iBeacon, que debe valer 0x02.
+    //--------------------
     public byte getiBeaconType() {
         return iBeaconType;
     }
 
-    /**
-     * --> getiBeaconLength() <--
-      *
-      * devuelve el byte de longitud iBeacon, que debe valer 0x15.
-     */
+    //--------------------
+    // --> getiBeaconLength() <--
+    //
+    // devuelve el byte de longitud iBeacon, que debe valer 0x15.
+    //--------------------
     public byte getiBeaconLength() {
         return iBeaconLength;
     }
 
-    /**
-     * --> getUUID() <--
-      *
-      * devuelve una copia de los 16 bytes de la UUID.
-     */
+    //--------------------
+    // --> getUUID() <--
+    //
+    // devuelve una copia de los 16 bytes de la UUID.
+    //--------------------
     public byte[] getUUID() {
         return uuid.clone();
     }
 
-    /**
-     * --> getUUIDComoUUID() <--
-      *
-      * devuelve la UUID de la trama ya como objeto UUID.
-     */
+    //--------------------
+    // --> getUUIDComoUUID() <--
+    //
+    // devuelve la UUID de la trama ya como objeto UUID.
+    //--------------------
     public UUID getUUIDComoUUID() {
         return Utilidades.bytesToUUID(uuid);
     }
 
-    /**
-     * --> getMajor() <--
-      *
-      * devuelve una copia de los dos bytes del campo major.
-     */
+    //--------------------
+    // --> getMajor() <--
+    //
+    // devuelve una copia de los dos bytes del campo major.
+    //--------------------
     public byte[] getMajor() {
         return major.clone();
     }
 
-    /**
-     * --> getMajorComoInt() <--
-     *
-     * El campo major viaja little-endian, como todos los iBeacon.
-     */
+    //--------------------
+    // --> getMajorComoInt() <--
+    //
+    // El campo major viaja little-endian, como todos los iBeacon.
+    //--------------------
     public int getMajorComoInt() {
         return Utilidades.bytesToShortLE(major, 0);
     }
 
-    /**
-     * --> getTipoDeMedicionComoInt() <--
-     *
-     * El emisor codifica el tipo en el byte alto del major y el numero de
-     * iteracion en el byte bajo: major = (tipo << 8) + contador.
-     */
+    //--------------------
+    // --> getTipoDeMedicionComoInt() <--
+    //
+    // El emisor codifica el tipo en el byte alto del major y el numero de
+    // iteracion en el byte bajo: major = (tipo << 8) + contador.
+    //--------------------
     public int getTipoDeMedicionComoInt() {
         return getMajorComoInt() >> 8;
     }
 
-    /**
-     * --> getContadorComoInt() <--
-     *
-     * Byte bajo del major: numero de iteracion de la medicion.
-     */
+    //--------------------
+    // --> getContadorComoInt() <--
+    //
+    // Byte bajo del major: numero de iteracion de la medicion.
+    //--------------------
     public int getContadorComoInt() {
         return getMajorComoInt() & 0xFF;
     }
 
-    /**
-     * --> getMinor() <--
-      *
-      * devuelve una copia de los dos bytes del campo minor.
-     */
+    //--------------------
+    // --> getMinor() <--
+    //
+    // devuelve una copia de los dos bytes del campo minor.
+    //--------------------
     public byte[] getMinor() {
         return minor.clone();
     }
 
-    /**
-     * --> getMinorComoInt() <--
-     *
-     * El campo minor también viaja little-endian. Contiene el valor medido.
-     */
+    //--------------------
+    // --> getMinorComoInt() <--
+    //
+    // El campo minor también viaja little-endian. Contiene el valor medido.
+    //--------------------
     public int getMinorComoInt() {
         return Utilidades.bytesToShortLE(minor, 0);
     }
 
-    /**
-     * --> getTxPower() <--
-      *
-      * devuelve el byte de potencia de transmision, en dBm con signo.
-     */
+    //--------------------
+    // --> getTxPower() <--
+    //
+    // devuelve el byte de potencia de transmision, en dBm con signo.
+    //--------------------
     public byte getTxPower() {
         return txPower;
     }
 
-    /**
-     * --> getBytes() <--
-      *
-      * devuelve una copia de los bytes de la trama.
-     */
+    //--------------------
+    // --> getBytes() <--
+    //
+    // devuelve una copia de los bytes de la trama.
+    //--------------------
     public byte[] getBytes() {
         return bytes.clone();
     }

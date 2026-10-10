@@ -37,27 +37,27 @@ public class TransporteHttpReal implements TransporteHttp {
 
     private final int tiempoLecturaMs;
 
-    /**
-     * --> TransporteHttpReal() -->
-     *
-     * Usa el tiempo de lectura por defecto.
-     */
+    //--------------------
+    // --> TransporteHttpReal() -->
+    //
+    // Usa el tiempo de lectura por defecto.
+    //--------------------
     public TransporteHttpReal() {
         this(TIEMPO_LECTURA_MS);
     }
 
-    /**
-     * tiempoLecturaMs: Z --> TransporteHttpReal() -->
-     *
-     * Fija cuantos milisegundos espera como maximo a la respuesta del servidor.
-     */
+    //--------------------
+    // tiempoLecturaMs: Z --> TransporteHttpReal() -->
+    //
+    // Fija cuantos milisegundos espera como maximo a la respuesta del servidor.
+    //--------------------
     public TransporteHttpReal(int tiempoLecturaMs) {
         this.tiempoLecturaMs = tiempoLecturaMs;
     }
 
-    /**
-     * metodo: Text, urlDestino: Text, cuerpo: Text --> enviar() --> laRespuesta: RespuestaREST
-     */
+    //--------------------
+    // metodo: Text, urlDestino: Text, cuerpo: Text --> enviar() --> laRespuesta: RespuestaREST
+    //--------------------
     @Override
     public RespuestaREST enviar(String metodo, String urlDestino, String cuerpo) {
         HttpURLConnection conexion = null;
@@ -90,7 +90,12 @@ public class TransporteHttpReal implements TransporteHttp {
         }
     }
 
-    // convierte el flujo de bytes de la respuesta en una cadena, o devuelve cadena vacia si es null.
+    //--------------------
+    // flujo: InputStream --> leerFlujo() --> texto: Text
+    //
+    // Convierte el flujo de bytes de la respuesta en una cadena, o devuelve
+    // cadena vacia si es null.
+    //--------------------
     private String leerFlujo(InputStream flujo) throws IOException {
         if (flujo == null) {
             return "";

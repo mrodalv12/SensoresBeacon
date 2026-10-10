@@ -45,55 +45,55 @@ public class RespuestaREST {
     private int codigoRespuesta;
     private String cuerpoRespuesta;
 
-    /**
-     * --> RespuestaREST() -->
-     *
-     * Crea una respuesta vacia, sin codigo ni cuerpo.
-     */
+    //--------------------
+    // --> RespuestaREST() -->
+    //
+    // Crea una respuesta vacia, sin codigo ni cuerpo.
+    //--------------------
     public RespuestaREST() {
         this(SIN_CODIGO, "");
     }
 
-    /**
-     * codigoRespuesta: Z, cuerpoRespuesta: Text --> RespuestaREST() -->
-     *
-     * Guarda el codigo y el cuerpo recibidos; un cuerpo nulo se deja vacio.
-     */
+    //--------------------
+    // codigoRespuesta: Z, cuerpoRespuesta: Text --> RespuestaREST() -->
+    //
+    // Guarda el codigo y el cuerpo recibidos; un cuerpo nulo se deja vacio.
+    //--------------------
     public RespuestaREST(int codigoRespuesta, String cuerpoRespuesta) {
         this.codigoRespuesta = codigoRespuesta;
         this.cuerpoRespuesta = cuerpoRespuesta == null ? "" : cuerpoRespuesta;
     }
 
-    /**
-     * --> getCodigoRespuesta() <--
-      *
-      * devuelve el codigo de respuesta.
-     */
+    //--------------------
+    // --> getCodigoRespuesta() <--
+    //
+    // devuelve el codigo de respuesta.
+    //--------------------
     public int getCodigoRespuesta() {
         return codigoRespuesta;
     }
 
-    /**
-     * --> getCuerpoRespuesta() <--
-      *
-      * devuelve el cuerpo de la respuesta.
-     */
+    //--------------------
+    // --> getCuerpoRespuesta() <--
+    //
+    // devuelve el cuerpo de la respuesta.
+    //--------------------
     public String getCuerpoRespuesta() {
         return cuerpoRespuesta;
     }
 
-    /**
-     * --> comoFue() <--
-     *
-     * Indica si el servidor respondio con un codigo de la familia 2xx/3xx.
-     */
+    //--------------------
+    // --> comoFue() <--
+    //
+    // Indica si el servidor respondio con un codigo de la familia 2xx/3xx.
+    //--------------------
     public boolean comoFue() {
         return codigoRespuesta >= 200 && codigoRespuesta < 400;
     }
 
-    /**
-     * --> toString() <--
-     */
+    //--------------------
+    // --> toString() <--
+    //--------------------
     // describe la respuesta con su codigo y su cuerpo.
     @Override
     public String toString() {

@@ -104,12 +104,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
 
     public static final String DISPOSITIVO_BUSCADO = "GTI-3A-MJ";
 
-    /**
-     * Texto que el emisor mete como UUID en sus 16 bytes: Publicador.h declara
-     * beaconUUID = {'E','P','S','G','-','G','T','I','-','P','R','O','Y','-','3','A'}.
-     * No es una UUID hexadecimal, sino 16 caracteres ASCII. Su equivalente
-     * hexadecimal (el valor real que viaja por el aire) es el de abajo.
-     */
+    //--------------------
+    // Texto que el emisor mete como UUID en sus 16 bytes: Publicador.h declara
+    // beaconUUID = {'E','P','S','G','-','G','T','I','-','P','R','O','Y','-','3','A'}.
+    // No es una UUID hexadecimal, sino 16 caracteres ASCII. Su equivalente
+    // hexadecimal (el valor real que viaja por el aire) es el de abajo.
+    //--------------------
     public static final String UUID_EMISORA_TEXTO = "EPSG-GTI-PROY-MJ";
     public static final String UUID_BUSCADA = "45505347-2D47-5449-2D50-524F592D4D4A";
 
@@ -146,11 +146,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     private final List<String> beaconsVistos = new ArrayList<>();
     private final Set<String> avisosAppleVistos = new HashSet<>();
 
-    /**
-     * savedInstanceState: Bundle --> onCreate() -->
-     *
-     * Prepara la interfaz, el escaner BLE y la logica fake.
-     */
+    //--------------------
+    // savedInstanceState: Bundle --> onCreate() -->
+    //
+    // Prepara la interfaz, el escaner BLE y la logica fake.
+    //--------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,11 +199,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    /**
-     * --> solicitarPermisosSiFaltan() -->
-     *
-     * Pide los permisos de Bluetooth/Locacion segun la version de Android.
-     */
+    //--------------------
+    // --> solicitarPermisosSiFaltan() -->
+    //
+    // Pide los permisos de Bluetooth/Locacion segun la version de Android.
+    //--------------------
     private void solicitarPermisosSiFaltan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions = new String[]{
@@ -225,11 +225,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    /**
-     * --> inicializarBluetooth() -->
-     *
-     * Obtiene el adaptador y el escaner BLE del sistema.
-     */
+    //--------------------
+    // --> inicializarBluetooth() -->
+    //
+    // Obtiene el adaptador y el escaner BLE del sistema.
+    //--------------------
     private void inicializarBluetooth() {
         BluetoothManager gestor = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter adaptador = gestor == null ? null : gestor.getAdapter();
@@ -242,9 +242,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         Log.i(ETIQUETA_LOG, "Bluetooth inicializado, escaner=" + elEscaner);
     }
 
-    /**
-     * requestCode: Z, permissions: [Text], grantResults: [Z] --> onRequestPermissionsResult() -->
-     */
+    //--------------------
+    // requestCode: Z, permissions: [Text], grantResults: [Z] --> onRequestPermissionsResult() -->
+    //--------------------
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -266,11 +266,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         escribirEnPantalla("Permisos concedidos");
     }
 
-    /**
-     * --> puedeEscanear() --> permitido: B
-     *
-     * Comprueba que estan concedidos los permisos de Bluetooth/Locacion.
-     */
+    //--------------------
+    // --> puedeEscanear() --> permitido: B
+    //
+    // Comprueba que estan concedidos los permisos de Bluetooth/Locacion.
+    //--------------------
     public boolean puedeEscanear() {
         if (permissions == null) {
             return false;
@@ -283,41 +283,41 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return true;
     }
 
-    /**
-     * --> botonBuscarDispositivosBTLEPulsado() -->
-     *
-     * Empieza la busqueda de todos los iBeacons.
-     */
+    //--------------------
+    // --> botonBuscarDispositivosBTLEPulsado() -->
+    //
+    // Empieza la busqueda de todos los iBeacons.
+    //--------------------
     public void botonBuscarDispositivosBTLEPulsado() {
         Log.i(ETIQUETA_LOG, "Boton buscar todos los dispositivos pulsado");
         buscarTodosLosDispositivosBTLE();
     }
 
-    /**
-     * --> botonBuscarNuestroDispositivoBTLEPulsado() -->
-     *
-     * Empieza la busqueda filtrando solo por el nombre del dispositivo buscado.
-     */
+    //--------------------
+    // --> botonBuscarNuestroDispositivoBTLEPulsado() -->
+    //
+    // Empieza la busqueda filtrando solo por el nombre del dispositivo buscado.
+    //--------------------
     public void botonBuscarNuestroDispositivoBTLEPulsado() {
         Log.i(ETIQUETA_LOG, "Boton buscar nuestro beacon por UUID (" + uuidBuscada + ") pulsado");
         buscarEsteDispositivoBTLE();
     }
 
-    /**
-     * --> botonDetenerBusquedaDeDispositivosBTLEPulsado() -->
-     *
-     * Detiene cualquier busqueda en curso.
-     */
+    //--------------------
+    // --> botonDetenerBusquedaDeDispositivosBTLEPulsado() -->
+    //
+    // Detiene cualquier busqueda en curso.
+    //--------------------
     public void botonDetenerBusquedaDeDispositivosBTLEPulsado() {
         Log.i(ETIQUETA_LOG, "Boton detener busqueda pulsado");
         detenerBusquedaDispositivosBTLE();
     }
 
-    /**
-     * --> buscarTodosLosDispositivosBTLE() -->
-     *
-     * Registra el ScanCallback que procesa todas las tramas iBeacon recibidas.
-     */
+    //--------------------
+    // --> buscarTodosLosDispositivosBTLE() -->
+    //
+    // Registra el ScanCallback que procesa todas las tramas iBeacon recibidas.
+    //--------------------
     public void buscarTodosLosDispositivosBTLE() {
         if (!prepararEscaneo()) {
             return;
@@ -326,12 +326,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         iniciarEscaneo("Buscando todos los iBeacons (escaneo SIN filtro)...", null);
     }
 
-    /**
-     * --> buscarEsteDispositivoBTLE() -->
-     *
-     * Registra el ScanCallback que solo acepta los beacons cuya UUID coincide
-     * con "uuidBuscada".
-     */
+    //--------------------
+    // --> buscarEsteDispositivoBTLE() -->
+    //
+    // Registra el ScanCallback que solo acepta los beacons cuya UUID coincide
+    // con "uuidBuscada".
+    //--------------------
     public void buscarEsteDispositivoBTLE() {
         if (!uuidBuscadaEsValida()) {
             escribirEnPantalla("ERROR: la UUID buscada no es valida. Pulsa '"
@@ -345,11 +345,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         iniciarEscaneo("Buscando beacons con UUID " + uuidBuscada + "...", crearScanFilter());
     }
 
-    /**
-     * --> uuidBuscadaEsValida() --> valida: B
-     *
-     * Una UUID son 32 digitos hexadecimales en formato 8-4-4-4-12.
-     */
+    //--------------------
+    // --> uuidBuscadaEsValida() --> valida: B
+    //
+    // Una UUID son 32 digitos hexadecimales en formato 8-4-4-4-12.
+    //--------------------
     public boolean uuidBuscadaEsValida() {
         try {
             Utilidades.stringToUUID(uuidBuscada);
@@ -361,11 +361,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    /**
-     * uuid: Text --> coincideConLaUuidBuscada() --> coincide: B
-     *
-     * Compara ignorando mayusculas y guiones.
-     */
+    //--------------------
+    // uuid: Text --> coincideConLaUuidBuscada() --> coincide: B
+    //
+    // Compara ignorando mayusculas y guiones.
+    //--------------------
     public boolean coincideConLaUuidBuscada(String uuid) {
         if (uuid == null) {
             return false;
@@ -373,18 +373,22 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return normalizar(uuid).equals(normalizar(uuidBuscada));
     }
 
-    // quita guiones, dos puntos y espacios, y pasa a mayusculas, para comparar UUID.
+    //--------------------
+    // texto: Text --> normalizar() --> texto: Text --x
+    //
+    // Quita guiones, dos puntos y espacios, y pasa a mayusculas, para comparar UUID.
+    //--------------------
     private static String normalizar(String texto) {
         return texto.replace("-", "").replace(":", "").replace(" ", "").toUpperCase();
     }
 
-    /**
-     * --> crearScanFilter() --> filtros: [ScanFilter]
-     *
-     * iBeacon no anuncia un Service UUID, por lo que un ScanFilter por servicio
-     * devolveria cero resultados. Lo que si funciona es filtrar por los datos
-     * de fabricante de Apple, que empiezan por la marca iBeacon 02 15.
-     */
+    //--------------------
+    // --> crearScanFilter() --> filtros: [ScanFilter]
+    //
+    // iBeacon no anuncia un Service UUID, por lo que un ScanFilter por servicio
+    // devolveria cero resultados. Lo que si funciona es filtrar por los datos
+    // de fabricante de Apple, que empiezan por la marca iBeacon 02 15.
+    //--------------------
     public List<ScanFilter> crearScanFilter() {
         ScanFilter filtro = new ScanFilter.Builder()
                 .setManufacturerData(TramaIBeacon.COMPANY_ID_APPLE,
@@ -395,12 +399,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return filtros;
     }
 
-    /**
-     * --> prepararEscaneo() --> preparado: B
-     *
-     * Comprueba adaptador y permisos, detiene el escaneo anterior y reinicia
-     * el contador de iBeacons. Devuelve false si no se puede escanear.
-     */
+    //--------------------
+    // --> prepararEscaneo() --> preparado: B
+    //
+    // Comprueba adaptador y permisos, detiene el escaneo anterior y reinicia
+    // el contador de iBeacons. Devuelve false si no se puede escanear.
+    //--------------------
     private boolean prepararEscaneo() {
         if (elEscaner == null) {
             inicializarBluetooth();
@@ -424,9 +428,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return true;
     }
 
-    /**
-     * soloElBuscado: B --> crearCallback() --> callback: ScanCallback
-     */
+    //--------------------
+    // soloElBuscado: B --> crearCallback() --> callback: ScanCallback
+    //--------------------
     private ScanCallback crearCallback(final boolean soloElBuscado) {
         return new ScanCallback() {
             // procesa el anuncio BLE recibido de uno en uno.
@@ -452,9 +456,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         };
     }
 
-    /**
-     * mensaje: Text --> iniciarEscaneo() -->
-     */
+    //--------------------
+    // mensaje: Text --> iniciarEscaneo() -->
+    //--------------------
     private void iniciarEscaneo(String mensaje, List<ScanFilter> filtros) {
         if (serviciosDeUbicacionDesactivados()) {
             escribirEnPantalla("AVISO: activa la ubicacion, si no el escaneo BLE no ve nada");
@@ -478,11 +482,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    /**
-     * --> serviciosDeUbicacionDesactivados() --> desactivados: B
-     *
-     * Hasta Android 11 el escaneo BLE exige ademas ubicacion activada.
-     */
+    //--------------------
+    // --> serviciosDeUbicacionDesactivados() --> desactivados: B
+    //
+    // Hasta Android 11 el escaneo BLE exige ademas ubicacion activada.
+    //--------------------
     private boolean serviciosDeUbicacionDesactivados() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return false;
@@ -492,11 +496,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
                 && !ubicacion.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    /**
-     * --> detenerBusquedaDispositivosBTLE() -->
-     *
-     * Detiene el escaneo BLE registrado en "callbackDelEscaneo".
-     */
+    //--------------------
+    // --> detenerBusquedaDispositivosBTLE() -->
+    //
+    // Detiene el escaneo BLE registrado en "callbackDelEscaneo".
+    //--------------------
     public void detenerBusquedaDispositivosBTLE() {
         boolean habiaEscaneo = detenerEscaneoSilencioso();
         busquedaEnCurso = false;
@@ -504,12 +508,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
                 + "iBeacons encontrados: " + contadorBeacons);
     }
 
-    /**
-     * --> detenerEscaneoSilencioso() --> habiaEscaneo: B
-     *
-     * Detiene el escaneo sin escribir en pantalla, para reutilizarlo al
-     * reiniciar la busqueda.
-     */
+    //--------------------
+    // --> detenerEscaneoSilencioso() --> habiaEscaneo: B
+    //
+    // Detiene el escaneo sin escribir en pantalla, para reutilizarlo al
+    // reiniciar la busqueda.
+    //--------------------
     private boolean detenerEscaneoSilencioso() {
         if (elEscaner == null || callbackDelEscaneo == null || !puedeEscanear()) {
             return false;
@@ -524,12 +528,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return true;
     }
 
-    /**
-     * resultado: ScanResult --> bytesDe() --> bytes: [Z]
-     *
-     * Extrae los bytes de la trama anunciada. ScanResult.getBytes() solo
-     * existe a partir de Android 13, por lo que se usa ScanRecord.
-     */
+    //--------------------
+    // resultado: ScanResult --> bytesDe() --> bytes: [Z]
+    //
+    // Extrae los bytes de la trama anunciada. ScanResult.getBytes() solo
+    // existe a partir de Android 13, por lo que se usa ScanRecord.
+    //--------------------
     public byte[] bytesDe(ScanResult resultado) {
         if (resultado == null) {
             return null;
@@ -538,12 +542,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return registro == null ? null : registro.getBytes();
     }
 
-    /**
-     * resultado: ScanResult --> mostrarInformacionDelDispositivoBTLE() -->
-     *
-     * Filtra la trama, registra el beacon en el LogCat, incrementa el contador
-     * mostrado en pantalla y lanza la logica fake.
-     */
+    //--------------------
+    // resultado: ScanResult --> mostrarInformacionDelDispositivoBTLE() -->
+    //
+    // Filtra la trama, registra el beacon en el LogCat, incrementa el contador
+    // mostrado en pantalla y lanza la logica fake.
+    //--------------------
     public void mostrarInformacionDelDispositivoBTLE(ScanResult resultado, boolean soloElBuscado) {
         byte[] bytes = bytesDe(resultado);
         if (!TramaIBeacon.esTramaIBeacon(bytes)) {
@@ -604,23 +608,23 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         enviarMedicion(medicion, nombre);
     }
 
-    /**
-     * texto: Text --> uuidComoHexadecimal() --> hexadecimal: Text
-     *
-     * Traduce el texto ASCII de 16 caracteres que declara el emisor a la UUID
-     * hexadecimal (8-4-4-4-12) que realmente viaja en la trama.
-     */
+    //--------------------
+    // texto: Text --> uuidComoHexadecimal() --> hexadecimal: Text
+    //
+    // Traduce el texto ASCII de 16 caracteres que declara el emisor a la UUID
+    // hexadecimal (8-4-4-4-12) que realmente viaja en la trama.
+    //--------------------
     public static String uuidComoHexadecimal(String texto) {
         return Utilidades.bytesToHexString(Utilidades.bytesDesdeTextoAscii(texto));
     }
 
-    /**
-     * medicion: Medicion, nombre: Text --> enviarMedicion() -->
-     *
-     * Delega en la logica fake la peticion POST, sin bloquear la interfaz. Solo
-     * se envian tipo, valor y nombre: uuid, txPower, major y minor se quedan en
-     * la app (la uuid ya se ha usado para filtrar el iBeacon).
-     */
+    //--------------------
+    // medicion: Medicion, nombre: Text --> enviarMedicion() -->
+    //
+    // Delega en la logica fake la peticion POST, sin bloquear la interfaz. Solo
+    // se envian tipo, valor y nombre: uuid, txPower, major y minor se quedan en
+    // la app (la uuid ya se ha usado para filtrar el iBeacon).
+    //--------------------
     private void enviarMedicion(final Medicion medicion, final String nombre) {
         new Thread(new Runnable() {
             // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
@@ -631,14 +635,14 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }, "guardarMedicion").start();
     }
 
-    /**
-     * resultado: ScanResult --> nombreDelDispositivo() --> nombre: Text
-     *
-     * Un iBeacon no siempre anuncia su nombre: en la mayoria de los casos
-     * llega en el propio anuncio (ScanRecord.getDeviceName()) y no en el
-     * BluetoothDevice. Se consulta primero el anuncio y despues el dispositivo,
-     * porque el segundo requiere permiso BLUETOOTH_CONNECT desde Android 12.
-     */
+    //--------------------
+    // resultado: ScanResult --> nombreDelDispositivo() --> nombre: Text
+    //
+    // Un iBeacon no siempre anuncia su nombre: en la mayoria de los casos
+    // llega en el propio anuncio (ScanRecord.getDeviceName()) y no en el
+    // BluetoothDevice. Se consulta primero el anuncio y despues el dispositivo,
+    // porque el segundo requiere permiso BLUETOOTH_CONNECT desde Android 12.
+    //--------------------
     public String nombreDelDispositivo(ScanResult resultado) {
         if (resultado == null) {
             return "desconocido";
@@ -650,9 +654,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return nombreDelDispositivo(resultado.getDevice());
     }
 
-    /**
-     * dispositivo: BluetoothDevice --> nombreDelDispositivo() --> nombre: Text
-     */
+    //--------------------
+    // dispositivo: BluetoothDevice --> nombreDelDispositivo() --> nombre: Text
+    //--------------------
     public String nombreDelDispositivo(android.bluetooth.BluetoothDevice dispositivo) {
         if (dispositivo == null) {
             return "desconocido";
@@ -666,7 +670,12 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    // devuelve el nombre de dispositivo que viaja en el propio anuncio BLE, o null si no lo incluye.
+    //--------------------
+    // resultado: ScanResult --> nombreEnElAnuncio() --> nombre: Text
+    //
+    // Devuelve el nombre de dispositivo que viaja en el propio anuncio BLE, o
+    // null si no lo incluye.
+    //--------------------
     private String nombreEnElAnuncio(ScanResult resultado) {
         ScanRecord registro = resultado.getScanRecord();
         if (registro == null) {
@@ -676,24 +685,24 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return nombre == null || nombre.trim().isEmpty() ? null : nombre;
     }
 
-    /**
-     * resultado: ScanResult, nombre: Text --> claveDelDispositivo() --> clave: Text
-     *
-     * Identifica el beacon para no contarlo varias veces. Se usa la direccion
-     * MAC; si no es accesible, se recurre a uuid+major+minor.
-     */
+    //--------------------
+    // resultado: ScanResult, nombre: Text --> claveDelDispositivo() --> clave: Text
+    //
+    // Identifica el beacon para no contarlo varias veces. Se usa la direccion
+    // MAC; si no es accesible, se recurre a uuid+major+minor.
+    //--------------------
     public String claveDelDispositivo(ScanResult resultado, String nombre) {
         return direccionMac(resultado, nombre) + "@" + Utilidades.bytesToString(bytesDe(resultado));
     }
 
-    /**
-     * resultado: ScanResult, nombre: Text --> direccionMac() --> direccion: Text
-     *
-     * La direccion MAC identifica fisicamente a la emisora. Se usa sola para
-     * nombrar el dispositivo, nunca para descartar anuncios: la misma placa
-     * emite CO2 y temperatura con la misma MAC, asi que deduplicar solo por
-     * MAC haria desaparecer todas las mediciones menos la primera.
-     */
+    //--------------------
+    // resultado: ScanResult, nombre: Text --> direccionMac() --> direccion: Text
+    //
+    // La direccion MAC identifica fisicamente a la emisora. Se usa sola para
+    // nombrar el dispositivo, nunca para descartar anuncios: la misma placa
+    // emite CO2 y temperatura con la misma MAC, asi que deduplicar solo por
+    // MAC haria desaparecer todas las mediciones menos la primera.
+    //--------------------
     public String direccionMac(ScanResult resultado, String nombre) {
         try {
             android.bluetooth.BluetoothDevice dispositivo = resultado.getDevice();
@@ -709,38 +718,38 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         return nombre;
     }
 
-    /**
-     * resultado: ScanResult --> claveDeMedicion() --> clave: Text
-     *
-     * Identifica una medicion concreta para no contarla miles de veces por
-     * segundo: el mismo anuncio se repite en cada evento de escaneo, asi que
-     * se descartan los repetidos. La clave incluye la MAC, el major (tipo y
-     * contador de iteracion) y el minor (valor medido), de modo que cada
-     * medicion nueva de la placa se procesa y solo se filtran sus duplicados.
-     */
+    //--------------------
+    // resultado: ScanResult --> claveDeMedicion() --> clave: Text
+    //
+    // Identifica una medicion concreta para no contarla miles de veces por
+    // segundo: el mismo anuncio se repite en cada evento de escaneo, asi que
+    // se descartan los repetidos. La clave incluye la MAC, el major (tipo y
+    // contador de iteracion) y el minor (valor medido), de modo que cada
+    // medicion nueva de la placa se procesa y solo se filtran sus duplicados.
+    //--------------------
     public String claveDeMedicion(ScanResult resultado, TramaIBeacon trama) {
         return claveDeMedicion(direccionMac(resultado, nombreDelDispositivo(resultado)),
                 trama.getMajorComoInt(), trama.getMinorComoInt());
     }
 
-    /**
-     * direccion: Text, major: N, minor: N --> claveDeMedicion() --> clave: Text
-     *
-     * Version sin dependencias de Android, para poder probarla.
-     */
+    //--------------------
+    // direccion: Text, major: N, minor: N --> claveDeMedicion() --> clave: Text
+    //
+    // Version sin dependencias de Android, para poder probarla.
+    //--------------------
     public static String claveDeMedicion(String direccion, int major, int minor) {
         return direccion + "|major=" + major + "|minor=" + minor;
     }
 
-    /**
-     * --> actualizarContador() -->
-     *
-     * Muestra los dos contadores que permiten diagnosticar una deteccion
-     * fallida: cuantos iBeacons se han reconocido y cuantos anuncios BLE se han
-     * visto sin ser iBeacon. Si el primero es 0 pero el segundo no, el
-     * escaner funciona y el problema es reconocer la trama; si los dos son 0,
-     * el problema es que no llega nada.
-     */
+    //--------------------
+    // --> actualizarContador() -->
+    //
+    // Muestra los dos contadores que permiten diagnosticar una deteccion
+    // fallida: cuantos iBeacons se han reconocido y cuantos anuncios BLE se han
+    // visto sin ser iBeacon. Si el primero es 0 pero el segundo no, el
+    // escaner funciona y el problema es reconocer la trama; si los dos son 0,
+    // el problema es que no llega nada.
+    //--------------------
     public void actualizarContador() {
         final int total = contadorBeacons;
         final int otros = contadorOtros;
@@ -758,14 +767,14 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         });
     }
 
-    /**
-     * bytes: [Z] --> avisarDeAppleNoBeacon() -->
-     *
-     * Un anuncio con datos de Apple que no es un iBeacon es normal (son los
-     * mensajes Continuity de Auriculares, relojes y telefonos). Se avisa solo
-     * de los anuncios distintos y como mucho de los primeros MAX_AVISOS_APPLE,
-     * porque volcar cientos de lineas en pantalla haria la app inutilizable.
-     */
+    //--------------------
+    // bytes: [Z] --> avisarDeAppleNoBeacon() -->
+    //
+    // Un anuncio con datos de Apple que no es un iBeacon es normal (son los
+    // mensajes Continuity de Auriculares, relojes y telefonos). Se avisa solo
+    // de los anuncios distintos y como mucho de los primeros MAX_AVISOS_APPLE,
+    // porque volcar cientos de lineas en pantalla haria la app inutilizable.
+    //--------------------
     private void avisarDeAppleNoBeacon(String direccion, byte[] bytes) {
         String firma = direccion + "|"
                 + Utilidades.bytesToString(bytes).substring(0, Math.min(20, bytes.length));
@@ -782,10 +791,10 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         }
     }
 
-    /**
-     * El escaneo puede entregar cientos de anuncios por segundo. Solo se
-     * repinta el contador como mucho una vez cada REFRESCO_CONTADOR milisegundos.
-     */
+    //--------------------
+    // El escaneo puede entregar cientos de anuncios por segundo. Solo se
+    // repinta el contador como mucho una vez cada REFRESCO_CONTADOR milisegundos.
+    //--------------------
     private void actualizarContadorSiToca() {
         long ahora = System.currentTimeMillis();
         if (ahora - ultimaActualizacionContador < REFRESCO_CONTADOR) {
@@ -795,9 +804,9 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         actualizarContador();
     }
 
-    /**
-     * texto: Text --> escribirEnPantalla() -->
-     */
+    //--------------------
+    // texto: Text --> escribirEnPantalla() -->
+    //--------------------
     public void escribirEnPantalla(final String texto) {
         Log.i(ETIQUETA_LOG, texto);
         // se ejecuta en un hilo aparte del de la interfaz para no bloquearla.
@@ -812,45 +821,45 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         });
     }
 
-    /**
-     * --> getContadorBeacons() <--
-      *
-      * devuelve cuantos iBeacons de nuestro emisor se han detectado.
-     */
+    //--------------------
+    // --> getContadorBeacons() <--
+    //
+    // devuelve cuantos iBeacons de nuestro emisor se han detectado.
+    //--------------------
     public int getContadorBeacons() {
         return contadorBeacons;
     }
 
-    /**
-     * --> getDispositivoBuscado() <--
-      *
-      * devuelve el nombre del dispositivo que se esta buscando.
-     */
+    //--------------------
+    // --> getDispositivoBuscado() <--
+    //
+    // devuelve el nombre del dispositivo que se esta buscando.
+    //--------------------
     public String getDispositivoBuscado() {
         return dispositivoBuscado;
     }
 
-    /**
-     * --> getUuidBuscada() <--
-      *
-      * devuelve la UUID por la que se filtra el escaneo.
-     */
+    //--------------------
+    // --> getUuidBuscada() <--
+    //
+    // devuelve la UUID por la que se filtra el escaneo.
+    //--------------------
     public String getUuidBuscada() {
         return uuidBuscada;
     }
 
-    /**
-     * uuidBuscada: Text --> setUuidBuscada() -->
-     */
+    //--------------------
+    // uuidBuscada: Text --> setUuidBuscada() -->
+    //--------------------
     public void setUuidBuscada(String uuidBuscada) {
         this.uuidBuscada = uuidBuscada;
     }
 
-    /**
-     * --> isBusquedaEnCurso() <--
-      *
-      * indica si el escaneo de dispositivos esta activo.
-     */
+    //--------------------
+    // --> isBusquedaEnCurso() <--
+    //
+    // indica si el escaneo de dispositivos esta activo.
+    //--------------------
     public boolean isBusquedaEnCurso() {
         return busquedaEnCurso;
     }

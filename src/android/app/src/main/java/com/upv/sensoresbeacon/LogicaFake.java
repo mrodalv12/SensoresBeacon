@@ -60,37 +60,37 @@ public class LogicaFake {
     private TransporteHttp transporte;
     private PeticionarioREST peticionario;
 
-    /**
-     * --> LogicaFake() -->
-     *
-     * Logica fake apuntando al servidor REST local del emulador.
-     */
+    //--------------------
+    // --> LogicaFake() -->
+    //
+    // Logica fake apuntando al servidor REST local del emulador.
+    //--------------------
     public LogicaFake() {
         this(URL_POR_DEFECTO);
     }
 
-    /**
-     * urlServidor: Text --> LogicaFake() -->
-     */
+    //--------------------
+    // urlServidor: Text --> LogicaFake() -->
+    //--------------------
     public LogicaFake(String urlServidor) {
         this(urlServidor, new TransporteHttpReal());
     }
 
-    /**
-     * urlServidor: Text --> LogicaFake() -->
-     */
+    //--------------------
+    // urlServidor: Text --> LogicaFake() -->
+    //--------------------
     public LogicaFake(String urlServidor, TransporteHttp transporte) {
         this.urlServidor = urlServidor;
         this.transporte = transporte;
         this.medicion = new Medicion();
     }
 
-    /**
-     * medicion: Medicion, nombre_emisora: Text --> guardarMedicion() -->
-     *
-     * Realiza el POST /mediciones con los tres campos del contrato: tipo, valor
-     * y nombre_emisora. Los datos del beacon no viajan en la peticion.
-     */
+    //--------------------
+    // medicion: Medicion, nombre_emisora: Text --> guardarMedicion() -->
+    //
+    // Realiza el POST /mediciones con los tres campos del contrato: tipo, valor
+    // y nombre_emisora. Los datos del beacon no viajan en la peticion.
+    //--------------------
     public void guardarMedicion(Medicion medicion, String nombre_emisora) {
         this.medicion = medicion == null ? new Medicion() : medicion;
         String cuerpo = construirCuerpo(nombre_emisora);
@@ -102,11 +102,11 @@ public class LogicaFake {
         Log.i(ETIQUETA, "guardarMedicion: " + cuerpo + " -> " + respuesta);
     }
 
-    /**
-     * nombre_emisora: Text --> construirCuerpo() --> cuerpo: Text
-     *
-     * Serializa en JSON la medicion (tipo y valor) con el nombre de la emisora.
-     */
+    //--------------------
+    // nombre_emisora: Text --> construirCuerpo() --> cuerpo: Text
+    //
+    // Serializa en JSON la medicion (tipo y valor) con el nombre de la emisora.
+    //--------------------
     public String construirCuerpo(String nombre_emisora) {
         JSONObject cuerpo = new JSONObject();
         try {
@@ -120,45 +120,45 @@ public class LogicaFake {
         return cuerpo.toString();
     }
 
-    /**
-     * --> getMedicion() <--
-      *
-      * devuelve la ultima medicion que se ha guardado en la logica.
-     */
+    //--------------------
+    // --> getMedicion() <--
+    //
+    // devuelve la ultima medicion que se ha guardado en la logica.
+    //--------------------
     public Medicion getMedicion() {
         return medicion;
     }
 
-    /**
-     * --> getUrlServidor() <--
-      *
-      * devuelve la URL del servidor REST configurada.
-     */
+    //--------------------
+    // --> getUrlServidor() <--
+    //
+    // devuelve la URL del servidor REST configurada.
+    //--------------------
     public String getUrlServidor() {
         return urlServidor;
     }
 
-    /**
-     * --> getUltimaPeticion() <--
-      *
-      * devuelve la ultima peticion HTTP realizada.
-     */
+    //--------------------
+    // --> getUltimaPeticion() <--
+    //
+    // devuelve la ultima peticion HTTP realizada.
+    //--------------------
     public PeticionarioREST getUltimaPeticion() {
         return peticionario;
     }
 
-    /**
-     * urlServidor: Text --> setUrlServidor() -->
-     */
+    //--------------------
+    // urlServidor: Text --> setUrlServidor() -->
+    //--------------------
     public void setUrlServidor(String urlServidor) {
         this.urlServidor = urlServidor;
     }
 
-    /**
-     * peticionario: PeticionarioREST --> setTransporte() -->
-     *
-     * Permite inyectar un doble de prueba en lugar del cliente HTTP real.
-     */
+    //--------------------
+    // peticionario: PeticionarioREST --> setTransporte() -->
+    //
+    // Permite inyectar un doble de prueba en lugar del cliente HTTP real.
+    //--------------------
     public void setTransporte(TransporteHttp transporte) {
         this.transporte = transporte;
     }
