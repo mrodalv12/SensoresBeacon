@@ -1,5 +1,5 @@
 //=============================================================================================
-//Nombre: HolaMundoIBeacon.ino
+//Nombre: emisor.ino
 //Descripcion: Programa principal: inicializa la placa y la emisora BLE y, en cada
 //              iteracion del loop(), publica la medicion de CO2 y la de temperatura
 //              como dos anuncios iBeacon distintos.

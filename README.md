@@ -33,7 +33,7 @@ software:
 ### 1.2 Arquitectura y módulos
 
 ```
-   HolaMundoIBeacon/          proyecto/            src/communication/    src/business_logic/  src/database/
+   src/emisor/      src/android/        src/communication/    src/business_logic/  src/database/
      (placa Bluefruit)      (app Android)          (REST Node.js)        (Node.js)        (SQLite)
            |                     |                      |                      |               |
            |  anuncio iBeacon     |  POST /mediciones   |                      |               |
@@ -56,8 +56,8 @@ software:
 
 | Módulo | Ruta | Tecnología | Responsabilidad |
 |---|---|---|---|
-| Emisor | `HolaMundoIBeacon/` | Arduino (C++) | Publicar CO₂ y temperatura como iBeacon |
-| App Android | `proyecto/` | Java + Gradle | Escanear BLE, decodificar la trama, enviar el `POST` |
+| Emisor | `src/emisor/` | Arduino (C++) | Publicar CO₂ y temperatura como iBeacon |
+| App Android | `src/android/` | Java + Gradle | Escanear BLE, decodificar la trama, enviar el `POST` |
 | Comunicación (REST) | `src/communication/` | Node.js (`http`) | Enrutado, validación HTTP y códigos de respuesta |
 | Lógica de negocio | `src/business_logic/` | Node.js | `guardarMedicion()` / `obtenerMedicion()`, sin HTTP ni SQL |
 | Base de datos | `src/database/` | SQLite 3 | Tabla `Mediciones` |
@@ -84,66 +84,68 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
 │   ├── business_logic_design.md
 │   ├── database_design.md
 │   ├── frontend_business_logic_design.md
-│   └── gui_design.md
+│   ├── gui_design.md
+│   ├── android_design.md
+│   └── emisor_design.md
 │
-├── src/                       # Código, organizado por capas (backend y frontend)
-│   ├── communication/              # Capa de comunicación: servidor REST (Node.js)
-│   │   ├── src/server.js           #   arranque y puerto
-│   │   ├── src/app.js              #   servidor HTTP + 404
-│   │   ├── src/routes/medicionesRoutes.js   # POST y GET /mediciones
-│   │   ├── src/logica/medicionesLogica.js   # puente con la lógica de negocio
-│   │   └── tests/mediciones.test.js         # 6 pruebas HTTP reales
-│   │
-│   ├── business_logic/             # Lógica de negocio (Node.js, sin HTTP)
-│   │   ├── src/logicaNegocio.js                    # núcleo, sin BD
-│   │   ├── src/logicaNegocioConRepositorio.js      # con repositorio inyectado
-│   │   ├── src/logicaNegocioSqlitePy.js            # + SQLite vía Python (sync)
-│   │   ├── src/logicaNegocioSqlitePyAsync.js       # + SQLite vía Python (async)
-│   │   ├── src/repositorioMemoria.js               # doble en memoria
-│   │   ├── src/repositorioSqlitePython.js          # SQLite (sync)
-│   │   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
-│   │   └── tests/                                  # 11 pruebas
-│   │
-│   ├── database/                        # Base de datos (SQLite 3)
-│   │   ├── mediciones.sql               # CREATE TABLE + fila de ejemplo
-│   │   └── mediciones.db               # base de datos generada (no versionada)
-│   │
-│   ├── frontend_business_logic/        # Lógica de negocio de cliente (proxy)
-│   │   ├── logicaWeb.php               #   obtenerMedicion(): GET al REST
-│   │   ├── api/mediciones.php          #   endpoint JSON para el refresco
-│   │   └── js/mediciones.js            #   proxy JS que encapsula fetch/RUTA_API
-│   │
-│   └── gui/                        # GUI web (PHP + HTML/CSS/JS)
-│       ├── index.php              #   renderizado en servidor
-│       ├── includes/mediciones.php
-│       ├── js/app.js              #   actualiza tarjetas y tabla cada 5 min
-│       ├── css/variables.css      #   paleta y medidas, todo en variables CSS
-│       ├── css/style.css          #   usa las variables de variables.css
-│       └── tests/                 #   11 pruebas JS + 2 comprobaciones PHP
-│
-├── HolaMundoIBeacon/          # Firmware del emisor (Arduino IDE)
-│   ├── HolaMundoIBeacon.ino   #   setup() / loop() y orquestación
-│   ├── Publicador.h           #   publicaCO2() / publicarTemperatura()
-│   ├── EmisoraBLE.h           #   control del hardware BLE (Bluefruit)
-│   ├── Medidor.h              #   leer sensores analógicos (CO₂ y temperatura)
-│   ├── LED.h                  #   LED de feedback
-│   ├── PuertoSerie.h          #   salida por consola
-│   └── ServicioEnEmisora.h    #   definición del servicio BLE
-│
-└── proyecto/                  # App Android (Gradle)
-    ├── app/src/main/java/com/upv/sensoresbeacon/
-    │   ├── MainActivity.java  #   escaneo BLE, 3 botones, contadores, LogCat
-    │   ├── TramaIBeacon.java  #   decodificación de la trama iBeacon
-    │   ├── Medicion.java      #   tipoDeMedicion + valor
-    │   ├── MedicionesID.java  #   enumeración co2=11, temperatura=12, ruido=13
-    │   ├── LogicaFake.java    #   lógica "fake": POST al servidor REST
-    │   ├── PeticionarioREST.java
-    │   ├── TransporteHttp.java    # interfaz (permite dobles de prueba)
-    │   ├── TransporteHttpReal.java# implementación con HttpURLConnection
-    │   ├── RespuestaREST.java
-    │   └── Utilidades.java    #   conversión de bytes, UUID, hex
-    ├── app/src/test/java/...  #   108 pruebas unitarias JUnit
-    └── app/build.gradle
+└── src/                       # Código, organizado por capas (backend y frontend)
+    ├── communication/              # Capa de comunicación: servidor REST (Node.js)
+    │   ├── src/server.js           #   arranque y puerto
+    │   ├── src/app.js              #   servidor HTTP + 404
+    │   ├── src/routes/medicionesRoutes.js   # POST y GET /mediciones
+    │   ├── src/logica/medicionesLogica.js   # puente con la lógica de negocio
+    │   └── tests/mediciones.test.js         # 6 pruebas HTTP reales
+    │
+    ├── business_logic/             # Lógica de negocio (Node.js, sin HTTP)
+    │   ├── src/logicaNegocio.js                    # núcleo, sin BD
+    │   ├── src/logicaNegocioConRepositorio.js      # con repositorio inyectado
+    │   ├── src/logicaNegocioSqlitePy.js            # + SQLite vía Python (sync)
+    │   ├── src/logicaNegocioSqlitePyAsync.js       # + SQLite vía Python (async)
+    │   ├── src/repositorioMemoria.js               # doble en memoria
+    │   ├── src/repositorioSqlitePython.js          # SQLite (sync)
+    │   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
+    │   └── tests/                                  # 11 pruebas
+    │
+    ├── database/                        # Base de datos (SQLite 3)
+    │   ├── mediciones.sql               # CREATE TABLE + fila de ejemplo
+    │   └── mediciones.db               # base de datos generada (no versionada)
+    │
+    ├── frontend_business_logic/        # Lógica de negocio de cliente (proxy)
+    │   ├── logicaWeb.php               #   obtenerMedicion(): GET al REST
+    │   ├── api/mediciones.php          #   endpoint JSON para el refresco
+    │   └── js/mediciones.js            #   proxy JS que encapsula fetch/RUTA_API
+    │
+    ├── gui/                        # GUI web (PHP + HTML/CSS/JS)
+    │   ├── index.php              #   renderizado en servidor
+    │   ├── includes/mediciones.php
+    │   ├── js/app.js              #   actualiza tarjetas y tabla cada 5 min
+    │   ├── css/variables.css      #   paleta y medidas, todo en variables CSS
+    │   ├── css/style.css          #   usa las variables de variables.css
+    │   └── tests/                 #   11 pruebas JS + 2 comprobaciones PHP
+    │
+    ├── emisor/          # Firmware del emisor (Arduino IDE)
+    │   ├── emisor.ino   #   setup() / loop() y orquestación
+    │   ├── Publicador.h           #   publicaCO2() / publicarTemperatura()
+    │   ├── EmisoraBLE.h           #   control del hardware BLE (Bluefruit)
+    │   ├── Medidor.h              #   leer sensores analógicos (CO₂ y temperatura)
+    │   ├── LED.h                  #   LED de feedback
+    │   ├── PuertoSerie.h          #   salida por consola
+    │   └── ServicioEnEmisora.h    #   definición del servicio BLE
+    │
+    └── android/                   # App Android (Gradle)
+        ├── app/src/main/java/com/upv/sensoresbeacon/
+        │   ├── MainActivity.java  #   escaneo BLE, 3 botones, contadores, LogCat
+        │   ├── TramaIBeacon.java  #   decodificación de la trama iBeacon
+        │   ├── Medicion.java      #   tipoDeMedicion + valor
+        │   ├── MedicionesID.java  #   enumeración co2=11, temperatura=12, ruido=13
+        │   ├── LogicaFake.java    #   lógica "fake": POST al servidor REST
+        │   ├── PeticionarioREST.java
+        │   ├── TransporteHttp.java    # interfaz (permite dobles de prueba)
+        │   ├── TransporteHttpReal.java# implementación con HttpURLConnection
+        │   ├── RespuestaREST.java
+        │   └── Utilidades.java    #   conversión de bytes, UUID, hex
+        ├── app/src/test/java/...  #   108 pruebas unitarias JUnit
+        └── app/build.gradle
 ```
 
 > La estructura sigue el layout de la revisión de sprint: `author.md` con el
@@ -379,7 +381,7 @@ las últimas 10 mediciones.
 
 ### 3.4 Emisor (placa Adafruit Bluefruit LE)
 
-1. Abrir `HolaMundoIBeacon/HolaMundoIBeacon.ino` en el Arduino IDE.
+1. Abrir `src/emisor/emisor.ino` en el Arduino IDE.
 2. Seleccionar la placa **Adafruit Bluefruit LE** y el puerto USB correspondiente.
 3. Instalar las bibliotecas `BluefruitLE` y `Adafruit_TinyUSB`.
 4. Verificar en `Publicador.h` el nombre de la emisora (`"GTI-3A-MJ"`, el mismo
@@ -389,23 +391,23 @@ las últimas 10 mediciones.
 
 Al arrancar, el `loop()` publica CO₂ y temperatura cada 2 segundos con valores
 fijos de prueba (`56.78` y `12.34`). Para leer sensores reales, descomentar
-`elMedidor.medirCO2()` y `elMedidor.medirTemperatura()` en `HolaMundoIBeacon.ino`.
+`elMedidor.medirCO2()` y `elMedidor.medirTemperatura()` en `emisor.ino`.
 
 La salida por puerto serie (115200 baudios) informa de cada iteración y de los
 valores publicados.
 
 ### 3.5 App Android
 
-1. Configurar la ruta del SDK en `proyecto/local.properties` (no se versiona):
+1. Configurar la ruta del SDK en `src/android/local.properties` (no se versiona):
    ```properties
    sdk.dir=/Users/<tu-usuario>/Library/Android/sdk
    ```
 2. Compilar el APK de depuración:
    ```bash
-   cd proyecto
+   cd src/android
    ./gradlew assembleDebug
    ```
-   El APK queda en `proyecto/app/build/outputs/apk/debug/app-debug.apk`.
+   El APK queda en `src/android/app/build/outputs/apk/debug/app-debug.apk`.
 3. Instalar en el emulador o en un dispositivo:
    ```bash
    ./gradlew installDebug
@@ -471,7 +473,7 @@ runner integrado de Node.js (`node --test`).
 | Comunicación (REST) | `cd src/communication && npm test` | 6 | 6 ✅ |
 | GUI web (estructura) | `cd src/gui && node --test` | 11 | 11 ✅ |
 | GUI web (PHP) | `cd src/gui && php tests/logicaWeb.test.php` | 2 | requiere PHP + REST |
-| App Android | `cd proyecto && ./gradlew test` | 108 × 2 variantes | 108 ✅ |
+| App Android | `cd src/android && ./gradlew test` | 108 × 2 variantes | 108 ✅ |
 | Emisor | — | — | sin pruebas automáticas |
 
 **Total verificado: 136 pruebas automáticas en verde** (28 de Node.js + 108 de
@@ -573,7 +575,7 @@ Todos los tests pasaron
 ### 4.5 App Android — 108 pruebas
 
 ```bash
-cd proyecto
+cd src/android
 ./gradlew test
 ```
 
@@ -585,7 +587,7 @@ variante:
 ./gradlew testDebugUnitTest
 ```
 
-Informe HTML: `proyecto/app/build/reports/tests/testDebugUnitTest/index.html`.
+Informe HTML: `src/android/app/build/reports/tests/testDebugUnitTest/index.html`.
 
 | Clase de prueba | Pruebas | Qué cubre |
 |---|---|---|
@@ -633,4 +635,4 @@ comunicación + 11 de la GUI web).
 | `iBeacons: 0` pero `otros BLE: N` | Llegan anuncios pero no se reconocen como iBeacon | Revisar el LogCat: el contador `Apple` distingue datos de Apple que no son iBeacon |
 | La app no recibe nada del REST | `10.0.2.2` solo funciona en el emulador | Cambiar la URL en `LogicaFake.java` por la IP del ordenador |
 | `adb: no devices/emulators found` | No hay dispositivo conectado | Arrancar un emulador o conectar el dispositivo por USB con depuración activada |
-| `SDK location not found` | Falta `local.properties` | Crear `proyecto/local.properties` con `sdk.dir=...` |
+| `SDK location not found` | Falta `local.properties` | Crear `src/android/local.properties` con `sdk.dir=...` |

@@ -2,7 +2,7 @@
 
 ## 1. Component Design
 
-**Component:** Aplicación Android del receptor (`proyecto/`, paquete
+**Component:** Aplicación Android del receptor (`src/android/`, paquete
 `com.upv.sensoresbeacon`).
 
 Escanea anuncios BLE, reconoce la trama iBeacon de la emisora, decodifica la

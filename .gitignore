@@ -16,6 +16,9 @@ npm-debug.log*
 
 # --- Herramientas ---
 *.sqbpro
+# Scripts locales de arranque/parada de servidores (llevan rutas absolutas
+# de mi maquina, no sirven a los demas).
+*.command
 
 # --- Secretos y entorno local ---
 .env

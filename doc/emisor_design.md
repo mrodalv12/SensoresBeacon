@@ -2,7 +2,7 @@
 
 ## 1. Component Design
 
-**Component:** Emisor Arduino/Bluefruit (`HolaMundoIBeacon/`).
+**Component:** Emisor Arduino/Bluefruit (`src/emisor/`).
 
 Es la placa que mide y emite. En cada iteración del `loop()` toma la lectura de
 CO2 y la de temperatura y publica **cada una como un anuncio iBeacon distinto**,
@@ -32,7 +32,7 @@ minor = valorMedido
 ### 1.2 Class Diagram
 
 ```text
-       ------------ HolaMundoIBeacon.ino (programa principal) ------------
+       ------------ emisor.ino (programa principal) ------------
        |
        | Globales:: elLED: LED(7), elPuerto: PuertoSerie(115200)
        |            elPublicador: Publicador, elMedidor: Medidor
@@ -75,14 +75,14 @@ minor = valorMedido
 ### 1.3 Class/Method Logical Designs
 
 ```text
---> HolaMundoIBeacon.inicializarPlaquita() -->
+--> emisor.inicializarPlaquita() -->
 ```
 
 - Punto reservado para la configuración inicial del hardware de la placa. Hoy
   el cuerpo está vacío. No recibe ni devuelve nada.
 
 ```text
---> HolaMundoIBeacon.setup() -->
+--> emisor.setup() -->
 ```
 
 - Espera al puerto serie, inicializa la placa, enciende la emisora
@@ -90,7 +90,7 @@ minor = valorMedido
   (`elMedidor.iniciarMedidor()`).
 
 ```text
---> HolaMundoIBeacon.loop() -->
+--> emisor.loop() -->
 ```
 
 - Incrementa `Loop::cont`, avisa por consola, mide CO2 y temperatura y publica
