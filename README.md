@@ -1,8 +1,9 @@
 # Sensores Beacon
 
 Sistema de medida de sensores mediante iBeacon BLE: un emisor publica las lecturas
-por Bluetooth Low Energy, una app Android las escucha y las envía por HTTP, un
-servidor REST las valida y las guarda, y una página web las muestra.
+por Bluetooth Low Energy (BLE), una app Android las escucha y las envía por HTTP, un
+servidor REST las valida y las guarda con la logica de negocio en una base de datos,
+y una página web las muestra.
 
 ---
 
@@ -10,7 +11,7 @@ servidor REST las valida y las guarda, y una página web las muestra.
 
 ### 1.1 Qué hace
 
-El proyecto mide **CO₂ (ppm)**, **temperatura (°C)** y **ruido** con una placa
+El proyecto mide **Ozono (ppm)**, **temperatura (°C)** y **ruido** con una placa
 Adafruit Bluefruit LE y difunde cada lectura dentro del propio anuncio BLE, sin
 necesidad de conexión ni de emparejamiento. El resto del sistema es puramente
 software:
