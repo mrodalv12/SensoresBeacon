@@ -145,11 +145,20 @@ class EmisoraBLE {
 		//le pones todos los parametros
 		Bluefruit.setTxPower( (*this).txPower ); 
 		Bluefruit.setName( (*this).nombreEmisora );
+
+		// el nombre no cabe en el paquete de anuncio (lo llena el iBeacon), va
+		// en el scan response. Hay que limpiarlo antes de anadirlo o se iria
+		// acumulando en cada emision hasta desbordar.
+		Bluefruit.ScanResponse.clearData(); 
 		Bluefruit.ScanResponse.addName(); 
 	
 		// pongo el beacon
 
 	Bluefruit.Advertising.setBeacon( elBeacon );
+
+	// un iBeacon debe ser non-connectable; por defecto la libreria anuncia
+	// como connectable y muchas apps detectoras de beacons ignoran esos anuncios
+	Bluefruit.Advertising.setType( BLE_GAP_ADV_TYPE_NONCONNECTABLE_SCANNABLE_UNDIRECTED );
 
 	Bluefruit.Advertising.restartOnDisconnect(true); // no hace falta, pero lo pongo
 	Bluefruit.Advertising.setInterval(100, 100);    // in unit of 0.625 ms

@@ -47,8 +47,8 @@ minor = valorMedido
   --- LED ---            --- PuertoSerie ---         --- Publicador ---
   | numeroLED |          | baudios       |           | laEmisora      |
   | encendido |          ------------------           | beaconUUID     |
-  | encender  |          | esperarDisp.  |           | RSSI           |
-  | apagar    |          | escribir      |           | MedicionesID   |
+  | encender  |          | escribir      |           | RSSI           |
+  | apagar    |          |               |           | MedicionesID   |
   | alternar  |          ------------------           | publicarCO2    |
   | brillar   |                                       | publicarTemp.  |
   ------------                                        -----------------
@@ -85,7 +85,7 @@ minor = valorMedido
 --> emisor.setup() -->
 ```
 
-- Espera al puerto serie, inicializa la placa, enciende la emisora
+- Inicializa la placa, enciende la emisora
   (`elPublicador.encenderEmisora()`) e inicia el medidor
   (`elMedidor.iniciarMedidor()`).
 
@@ -112,12 +112,11 @@ tiempo: N --> esperar() -->
 
 ```text
 baudios: N --> PuertoSerie.PuertoSerie() -->
---> PuertoSerie.esperarDisponible() -->
 mensaje: [ Type ] --> PuertoSerie.escribir() -->
 ```
 
-- Abren el puerto serie a `baudios`, esperan a que esté listo y escriben
-  cualquier mensaje genérico por consola.
+- Abren el puerto serie a `baudios` y escriben cualquier mensaje genérico por
+  consola.
 
 ```text
 nombreEmisora: Text, fabricanteID: N, txPower: Z --> EmisoraBLE.EmisoraBLE() -->

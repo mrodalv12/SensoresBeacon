@@ -415,8 +415,10 @@ valores publicados.
    ```
    o bien `adb install -r app/build/outputs/apk/debug/app-debug.apk`.
 4. Conceder los permisos de Bluetooth/Locación cuando la app los solicite, y
-   activar la ubicación si se usa Android 11 o anterior (el escaneo BLE no ve
-   nada sin ella).
+   activar la ubicación (GPS) en **todas** las versiones: en Android 12+ el
+   sistema filtra los iBeacon si la ubicación está apagada. Además, en Android
+   12+ hay que conceder ubicación **precisa** (no aproximada); si no, los
+   iBeacon se descartan aunque el resto de anuncios BLE sí lleguen.
 
 **Dirección del servidor.** `LogicaFake` apunta por defecto a
 `http://10.0.2.2:8080/mediciones`. `10.0.2.2` es el alias que el emulador usa
@@ -632,7 +634,7 @@ comunicación + 11 de la GUI web).
 | `OperationalError: no such table: Mediciones` | La base de datos existe pero está vacía, o no se creó | Ejecutar el paso 3.1 |
 | `python3: command not found` al hacer `POST` | Falta el intérprete que usa el repositorio | Instalar Python 3 y reiniciar el servidor REST |
 | La página web muestra el aviso de error | El servidor REST no está levantado, o PHP no tiene `curl` | Levantar el REST (3.2) y verificar `php -m \| grep curl` |
-| La app no detecta ningún iBeacon | Permisos sin conceder o ubicación desactivada | Conceder permisos; activar la ubicación en Android ≤ 11 |
+| La app no detecta ningún iBeacon | Ubicación apagada (o aproximada en Android 12+), permisos sin conceder, o `neverForLocation` en `BLUETOOTH_SCAN` | Activar la ubicación (GPS) y conceder ubicación **precisa**; dar los permisos; no usar `neverForLocation` |
 | `iBeacons: 0` pero `otros BLE: N` | Llegan anuncios pero no se reconocen como iBeacon | Revisar el LogCat: el contador `Apple` distingue datos de Apple que no son iBeacon |
 | La app no recibe nada del REST | `10.0.2.2` solo funciona en el emulador | Cambiar la URL en `LogicaFake.java` por la IP del ordenador |
 | `adb: no devices/emulators found` | No hay dispositivo conectado | Arrancar un emulador o conectar el dispositivo por USB con depuración activada |

@@ -208,7 +208,8 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissions = new String[]{
                     Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_CONNECT
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.ACCESS_FINE_LOCATION
             };
         } else {
             permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
@@ -461,7 +462,11 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     //--------------------
     private void iniciarEscaneo(String mensaje, List<ScanFilter> filtros) {
         if (serviciosDeUbicacionDesactivados()) {
-            escribirEnPantalla("AVISO: activa la ubicacion, si no el escaneo BLE no ve nada");
+            escribirEnPantalla("AVISO: activa la ubicacion (GPS); si no, Android filtra los iBeacon");
+        }
+        if (!ubicacionPrecisaConcedida()) {
+            escribirEnPantalla("AVISO: concede ubicacion PRECISA a la app; con la aproximada "
+                    + "Android filtra los iBeacon");
         }
         try {
             // filtros == null significa escaneo SIN filtro: llegan todos los
@@ -485,15 +490,29 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     //--------------------
     // --> serviciosDeUbicacionDesactivados() --> desactivados: B
     //
-    // Hasta Android 11 el escaneo BLE exige ademas ubicacion activada.
+    // Android exige la ubicacion activada para ver iBeacon: hasta Android 11
+    // para escanear en general y en Android 12+ (sin neverForLocation) porque,
+    // si esta apagada, el sistema filtra los formatos de beacon y solo deja
+    // pasar los anuncios que no son iBeacon.
     //--------------------
     private boolean serviciosDeUbicacionDesactivados() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return false;
-        }
         LocationManager ubicacion = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return ubicacion == null || !ubicacion.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 && !ubicacion.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    //--------------------
+    // --> ubicacionPrecisaConcedida() --> concedida: B
+    //
+    // En Android 12+ el sistema solo entrega los iBeacon si la ubicacion
+    // concedida es la precisa; con la aproximada (solo COARSE) los filtra.
+    //--------------------
+    private boolean ubicacionPrecisaConcedida() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return true;
+        }
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     //--------------------

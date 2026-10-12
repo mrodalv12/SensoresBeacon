@@ -62,26 +62,23 @@ void inicializarPlaquita () {
 
 void setup() {
 
-  //1. esperas a que el puerto este disponible para enviar datos
-  Globales::elPuerto.esperarDisponible(); //el Globales: asi llamas al namespace
-
-  //2. Inicializa la placa
+  //1. Inicializa la placa
   inicializarPlaquita();
 
   // Suspend Loop() to save power
   // suspendLoop();
 
-  //3. enciende la emisora Bluetooth 
+  //2. enciende la emisora Bluetooth 
   Globales::elPublicador.encenderEmisora();
 
   // Globales::elPublicador.laEmisora.pruebaEmision(); //aqui se haria una prueba
   
-  //4. prepara e inicia el sensor para medir
+  //3. prepara e inicia el sensor para medir
   Globales::elMedidor.iniciarMedidor();
 
   esperar( 1000 ); //pausa de 1 segundo
 
-  //5. escribe por consola (puerto serie) que la fase de inicio termino
+  //4. escribe por consola (puerto serie) que la fase de inicio termino
   Globales::elPuerto.escribir( "esto a terminado\n " );
 
 } 

@@ -89,8 +89,10 @@ savedInstanceState: Bundle --> MainActivity.onCreate() -->
 --> MainActivity.solicitarPermisosSiFaltan() -->
 ```
 
-- Pide `BLUETOOTH_SCAN`/`BLUETOOTH_CONNECT` en Android 12+ o
-  `ACCESS_FINE_LOCATION` antes; solo solicita los no concedidos.
+- Pide `BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT` y `ACCESS_FINE_LOCATION` en
+  Android 12+, o solo `ACCESS_FINE_LOCATION` antes; solo solicita los no
+  concedidos. No se declara `neverForLocation` en `BLUETOOTH_SCAN` porque el
+  sistema filtraría los resultados de los iBeacon.
 
 ```text
 --> MainActivity.buscarEsteDispositivoBTLE() -->

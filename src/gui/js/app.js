@@ -146,9 +146,9 @@ async function cargarMediciones() {
 // durante mas tiempo.
 //
 //   30 000 -> medio minuto (refresco rapido, para pruebas)
-//  300 000 -> 5 minutos (valor por defecto)
-// 600 000 -> 10 minutos (refresco lento, ahorra bateria y peticiones)
-const INTERVALO_REFRESCO_MS = 300000;
+//   60 000 -> 1 minuto (valor por defecto)
+//  300 000 -> 5 minutos (refresco lento, ahorra bateria y peticiones)
+const INTERVALO_REFRESCO_MS = 60000;
 
 // Convertimos a segundos para poder ponerlo en el texto de la pagina:
 // Math.floor(300000 / 1000) son 300 segundos, y 300 / 60 son 5 minutos.

@@ -1,8 +1,8 @@
 //=============================================================================================
 //Nombre: PuertoSerie.h
 //Descripcion: Clase que simplifica el uso del puerto serie (consola) de la placa. 
-//              Se encarga de abrir el puerto a una velocidad dada, esperar a que 
-//              este disponible y escribir mensajes (de cualquier tipo) por consola.
+//              Se encarga de abrir el puerto a una velocidad dada y escribir mensajes
+//              (de cualquier tipo) por consola.
 //Copyright:
 //Fecha de creacion: 2019-07-05
 //Fecha de modificacion: 2026-10-04
@@ -32,24 +32,6 @@ public:
   // baudios: N --> PuertoSerie() -->
   PuertoSerie (long baudios) {
 	Serial.begin( baudios ); 
-  } // ()
-
-  // .........................................................
-  //esperarDisponible(): bloquea el programa hasta que el 
-  //          puerto serie este listo para enviar datos.
-  // .........................................................
-// ------------------------------------------------------------------
-// DISENO de esperarDisponible():
-//   No recibe datos ni devuelve datos: bloquea el programa hasta que
-//   el puerto serie esta listo para enviar.
-// ------------------------------------------------------------------
-  // --> esperarDisponible() -->
-  void esperarDisponible() {
-
-	while ( !Serial ) {
-	  delay(10);   
-	}
-
   } // ()
 
   // .........................................................
