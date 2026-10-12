@@ -372,10 +372,11 @@ public class TramaIBeacon {
     //--------------------
     // --> getMajorComoInt() <--
     //
-    // El campo major viaja little-endian, como todos los iBeacon.
+    // El campo major viaja big-endian (byte mas significativo primero), como
+    // marca el estandar iBeacon y como lo emite BLEBeacon (Bluefruit).
     //--------------------
     public int getMajorComoInt() {
-        return Utilidades.bytesToShortLE(major, 0);
+        return Utilidades.bytesToShort(major, 0);
     }
 
     //--------------------
@@ -409,10 +410,10 @@ public class TramaIBeacon {
     //--------------------
     // --> getMinorComoInt() <--
     //
-    // El campo minor también viaja little-endian. Contiene el valor medido.
+    // El campo minor tambien viaja big-endian. Contiene el valor medido.
     //--------------------
     public int getMinorComoInt() {
-        return Utilidades.bytesToShortLE(minor, 0);
+        return Utilidades.bytesToShort(minor, 0);
     }
 
     //--------------------

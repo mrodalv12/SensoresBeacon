@@ -27,8 +27,8 @@ import org.junit.Test;
  *   02 01 06                    estructura "Flags"
  *   1A FF 4C 00 02 15           "Manufacturer Specific Data" de Apple
  *   <16 bytes de UUID>          big-endian, en el orden del array
- *   <2 bytes de major>          little-endian
- *   <2 bytes de minor>          little-endian
+ *   <2 bytes de major>          big-endian
+ *   <2 bytes de minor>          big-endian
  *   <1 byte de txPower>
  */
 public class DeteccionRealTest {
@@ -56,10 +56,10 @@ public class DeteccionRealTest {
         bytes[i++] = 0x15;  // iBeaconLength
         System.arraycopy(uuid, 0, bytes, i, 16);
         i += 16;
-        bytes[i++] = (byte) (major & 0xFF);        // major little-endian
-        bytes[i++] = (byte) ((major >> 8) & 0xFF);
-        bytes[i++] = (byte) (minor & 0xFF);        // minor little-endian
-        bytes[i++] = (byte) ((minor >> 8) & 0xFF);
+        bytes[i++] = (byte) ((major >> 8) & 0xFF); // major big-endian
+        bytes[i++] = (byte) (major & 0xFF);
+        bytes[i++] = (byte) ((minor >> 8) & 0xFF); // minor big-endian
+        bytes[i++] = (byte) (minor & 0xFF);
         bytes[i] = (byte) txPower;
         return bytes;
     }
@@ -88,9 +88,9 @@ public class DeteccionRealTest {
         assertEquals(0x004C, trama.getCompanyIDComoInt());
     }
 
-    // major y minor se interpretan en little-endian.
+    // major y minor se interpretan en big-endian.
     @Test
-    public void elMajorYElMinorSeLeenLittleEndian() {
+    public void elMajorYElMinorSeLeenBigEndian() {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 7, 2450, 4));
         assertEquals(2823, trama.getMajorComoInt());
         assertEquals(2450, trama.getMinorComoInt());

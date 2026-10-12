@@ -71,11 +71,11 @@ public class TramaIBeaconTest {
         bytes[inicio + 2] = TramaIBeacon.IBEACON_TYPE;
         bytes[inicio + 3] = TramaIBeacon.IBEACON_LENGTH;
         System.arraycopy(Utilidades.stringToBytes(UUID_HEX), 0, bytes, inicio + 4, 16);
-        // major y minor viajan little-endian, como en cualquier iBeacon
-        bytes[inicio + 20] = (byte) (major & 0xFF);
-        bytes[inicio + 21] = (byte) ((major >> 8) & 0xFF);
-        bytes[inicio + 22] = (byte) (minor & 0xFF);
-        bytes[inicio + 23] = (byte) ((minor >> 8) & 0xFF);
+        // major y minor viajan big-endian, como en cualquier iBeacon
+        bytes[inicio + 20] = (byte) ((major >> 8) & 0xFF);
+        bytes[inicio + 21] = (byte) (major & 0xFF);
+        bytes[inicio + 22] = (byte) ((minor >> 8) & 0xFF);
+        bytes[inicio + 23] = (byte) (minor & 0xFF);
         bytes[inicio + 24] = (byte) txPower;
         return bytes;
     }

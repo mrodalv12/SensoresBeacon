@@ -267,7 +267,8 @@ public final class Utilidades {
     // bytes: [Z] --> bytesToShortLE() --> n: Z
     //
     // Lee un entero de 16 bits little-endian (byte menos significativo
-    // primero), que es como viajan los campos major y minor de un iBeacon.
+    // primero). Utilidad generica; los campos major y minor de un iBeacon
+    // NO van en este orden, sino big-endian (ver bytesToShort()).
     //--------------------
     public static int bytesToShortLE(byte[] bytes, int desde) {
         if (bytes == null || desde < 0 || desde + TAM_SHORT > bytes.length) {

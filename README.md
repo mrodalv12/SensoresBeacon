@@ -173,8 +173,9 @@ anuncio:
 - El tipo de medición viaja en el **byte alto** del `major`
   (`getTipoDeMedicionComoInt()`) y el número de iteración en el byte bajo
   (`getContadorComoInt()`).
-- `major` y `minor` son **little-endian**, como en cualquier iBeacon; la app lo
-  tiene en cuenta en `Utilidades.bytesToShortLE()`.
+- `major` y `minor` son **big-endian**, como en cualquier iBeacon (es el orden
+  que emite `BLEBeacon` de Bluefruit); la app lo tiene en cuenta en
+  `Utilidades.bytesToShort()`.
 - La tabla de asignación es `MedicionesID`: `co2 = 11`, `temperatura = 12`,
   `ruido = 13`. Cualquier otro valor devuelve `"desconocido"`.
 
@@ -420,14 +421,19 @@ valores publicados.
    12+ hay que conceder ubicación **precisa** (no aproximada); si no, los
    iBeacon se descartan aunque el resto de anuncios BLE sí lleguen.
 
-**Dirección del servidor.** `LogicaFake` apunta por defecto a
-`http://10.0.2.2:8080/mediciones`. `10.0.2.2` es el alias que el emulador usa
-para alcanzar el `localhost` de la máquina anfitriona:
+**Dirección del servidor.** `LogicaFake` apunta por defecto a la IP del
+ordenador que ejecuta el REST, `http://192.168.0.135:8080/mediciones`:
 
 | Ejecución | URL correcta |
 |---|---|
-| Emulador Android | `http://10.0.2.2:8080/mediciones` (valor por defecto) |
-| Dispositivo físico | `http://<IP-del-ordenador>:8080/mediciones` |
+| Dispositivo físico (valor por defecto) | `http://<IP-del-ordenador>:8080/mediciones` |
+| Emulador Android | `http://10.0.2.2:8080/mediciones` |
+
+`10.0.2.2` es el alias del host solo en el emulador. Si el router cambia la IP
+del ordenador, actualiza la constante en `LogicaFake.java` y reconstruye. Para no
+depender de la IP, se puede usar un nombre mDNS (`<mac>.local`) o un tailnet de
+Tailscale; conviene comprobar antes con `curl` que el nombre resuelve, porque el
+mDNS no funciona en todas las redes.
 
 Para usar un dispositivo físico hay que cambiar la constante en
 `LogicaFake.java` y reconstruir la app; el manifiesto ya permite tráfico en
