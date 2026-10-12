@@ -40,6 +40,12 @@ package com.upv.sensoresbeacon;
  */
 public class Medicion {
 
+    // Factor fijo de escala del valor medido. El emisor NO puede meter
+    // decimales en el campo minor (son 2 bytes enteros), asi que envia el
+    // valor multiplicado por FACTOR_ESCALA; aqui se divide por el mismo numero
+    // para recuperar el valor real. Debe coincidir con Publicador.h del emisor.
+    public static final double FACTOR_ESCALA = 10.0;
+
     private String tipoDeMedicion;
     private double valor;
 
@@ -106,9 +112,13 @@ public class Medicion {
     // El tipo de medicion va en el byte alto del campo "major" y el valor
     // medido en el "minor", segun codifica el emisor:
     // major = (tipo << 8) + contador.
+    // El minor trae el valor multiplicado por FACTOR_ESCALA (sin decimales),
+    // asi que se divide entre el para recuperar el valor real. Se interpreta
+    // con signo (16 bits), para admitir temperaturas negativas.
     //--------------------
     public static Medicion desdeTrama(TramaIBeacon trama) {
-        Medicion medicion = new Medicion(trama.getMinorComoInt());
+        double valorReal = ((short) trama.getMinorComoInt()) / FACTOR_ESCALA;
+        Medicion medicion = new Medicion(valorReal);
         medicion.asignarTipo(trama.getTipoDeMedicionComoInt());
         return medicion;
     }

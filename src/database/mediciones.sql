@@ -40,18 +40,20 @@ CREATE TABLE Mediciones (
     valor            REAL    NOT NULL,
 
     -- La Seccion 1 del PDF no define un tipo fecha/hora y SQLite no tiene
-    -- tipo temporal nativo. CURRENT_TIMESTAMP produce 'YYYY-MM-DD HH:MM:SS';
-    -- declararlo DATETIME le da afinidad NUMERIC y, al no ser un numero
-    -- bien formado, el valor queda almacenado como texto.
+    -- tipo temporal nativo. datetime('now','localtime') produce
+    -- 'YYYY-MM-DD HH:MM:SS' en hora LOCAL del sistema; declararlo DATETIME le
+    -- da afinidad NUMERIC y, al no ser un numero bien formado, el valor queda
+    -- almacenado como texto. No usar CURRENT_TIMESTAMP: devuelve UTC y
+    -- desfasa la hora (p. ej. 2 h en verano en Espana).
     
-    fecha_y_hora     DATETIME DEFAULT CURRENT_TIMESTAMP
+    fecha_y_hora     DATETIME DEFAULT (datetime('now','localtime'))
 );
 
 -- ----------------------------------------------------------------------------
 -- Datos de ejemplo
 -- ----------------------------------------------------------------------------
 -- id y fecha_y_hora se omiten: los genera SQLite (AUTOINCREMENT y
--- CURRENT_TIMESTAMP). Reconstruir la base desde cero:
+-- datetime('now','localtime')). Reconstruir la base desde cero:
 --     sqlite3 mediciones.db < mediciones.sql
 INSERT INTO Mediciones
     (tipo_de_medicion, nombre_cliente, valor)

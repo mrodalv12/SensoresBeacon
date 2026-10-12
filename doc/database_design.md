@@ -25,7 +25,7 @@ COLUMNS:
 + tipo_de_medicion | TEXT     | NOT NULL
 + nombre_cliente   | TEXT     | NOT NULL
 + valor            | REAL     | NOT NULL
-+ fecha_y_hora     | DATETIME | NULL     | CURRENT_TIMESTAMP
++ fecha_y_hora     | DATETIME | NULL     | datetime('now','localtime')
 
 PRIMARY KEY: id
 
@@ -37,7 +37,7 @@ CONSTRAINTS:
 
 + NOT NULL en tipo_de_medicion, nombre_cliente y valor
 + id AUTOINCREMENT (generado por SQLite)
-+ fecha_y_hora generado por CURRENT_TIMESTAMP si no se indica
++ fecha_y_hora generado por datetime('now','localtime') si no se indica
 ====================================================================================
 
 ### Notas sobre el diseño
@@ -50,7 +50,9 @@ CONSTRAINTS:
   envía la app: en la base de datos se llama `nombre_cliente` y es igual al
   nombre del cliente.
 - **`fecha_y_hora`** se autogenera: SQLite no tiene tipo temporal nativo y
-  `CURRENT_TIMESTAMP` produce texto `'YYYY-MM-DD HH:MM:SS'`.
+  `datetime('now','localtime')` produce texto `'YYYY-MM-DD HH:MM:SS'` en hora
+  **local** del sistema. No se usa `CURRENT_TIMESTAMP` porque devuelve UTC y
+  desfasa la hora mostrada.
 
 ## 2. Design Clarifications
 

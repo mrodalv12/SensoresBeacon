@@ -145,11 +145,11 @@ void loop () {
 
   lucecitas(); //lo llamamos para indicar que va a empezar con las mediciones
 
+ //float valorTemperatura = elMedidor.medirTemperatura();
+  float valorTemperatura = 1233;
   //float valorCO2 = elMedidor.medirCO2();
-  float valorCO2 = 56.78;
-  //float valorTemperatura = elMedidor.medirTemperatura();
-  float valorTemperatura = 12.34;
-
+  float valorCO2 = 22.2;
+ 
   //publicas todo
 
   elPublicador.publicarCO2( valorCO2,

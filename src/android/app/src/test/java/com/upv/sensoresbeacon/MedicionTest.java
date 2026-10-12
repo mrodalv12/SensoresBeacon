@@ -68,9 +68,10 @@ public class MedicionTest {
     // desdeTrama(): el byte alto del major da el tipo y el minor da el valor.
     @Test
     public void desdeTramaTomaElTipoDelByteAltoDelMajorYElValorDelMinor() {
-        // major = (TEMPERATURA << 8) + 3, segun codifica el emisor
+        // major = (TEMPERATURA << 8) + 3, segun codifica el emisor.
+        // El minor viaja escalado x10 (230 = 23.0 grados).
         TramaIBeacon trama = new TramaIBeacon(
-                TramaIBeaconTest.tramaCompleta((12 << 8) + 3, 23, -59));
+                TramaIBeaconTest.tramaCompleta((12 << 8) + 3, 230, -59));
         Medicion medicion = Medicion.desdeTrama(trama);
         assertEquals("temperatura", medicion.getTipoDeMedicion());
         assertEquals(23.0, medicion.getValor(), 0.0001);
@@ -80,7 +81,7 @@ public class MedicionTest {
     @Test
     public void desdeTramaConCo2YCO2DaElValorEnPpm() {
         TramaIBeacon trama = new TramaIBeacon(
-                TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 812, -70));
+                TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 8120, -70));
         Medicion medicion = Medicion.desdeTrama(trama);
         assertEquals("co2", medicion.getTipoDeMedicion());
         assertEquals(812.0, medicion.getValor(), 0.0001);
@@ -90,10 +91,26 @@ public class MedicionTest {
     @Test
     public void desdeTramaConRuidoDaElValor() {
         TramaIBeacon trama = new TramaIBeacon(
-                TramaIBeaconTest.tramaCompleta((13 << 8) + 7, 68, -55));
+                TramaIBeaconTest.tramaCompleta((13 << 8) + 7, 680, -55));
         Medicion medicion = Medicion.desdeTrama(trama);
         assertEquals("ruido", medicion.getTipoDeMedicion());
         assertEquals(68.0, medicion.getValor(), 0.0001);
+    }
+
+    // desdeTrama(): el minor viene escalado x10 y se recupera con 1 decimal.
+    @Test
+    public void desdeTramaRecuperaUnDecimalDelMinorEscalado() {
+        TramaIBeacon trama = new TramaIBeacon(
+                TramaIBeaconTest.tramaCompleta((12 << 8) + 3, 234, -59));
+        assertEquals(23.4, Medicion.desdeTrama(trama).getValor(), 0.0001);
+    }
+
+    // desdeTrama(): el minor se interpreta con signo (temperaturas negativas).
+    @Test
+    public void desdeTramaAdmiteValoresNegativos() {
+        TramaIBeacon trama = new TramaIBeacon(
+                TramaIBeaconTest.tramaCompleta((12 << 8) + 3, -25, -59));
+        assertEquals(-2.5, Medicion.desdeTrama(trama).getValor(), 0.0001);
     }
 
     // desdeTrama(): un major con tipo no registrado deja la medicion como desconocida.

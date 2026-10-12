@@ -36,6 +36,23 @@ private:
 	'-', 'P', 'R', 'O', 'Y', '-', 'M', 'J'
 	};
 
+  // Factor fijo de escala del valor medido. El campo minor de un iBeacon son
+  // 2 bytes enteros (no admite decimales), asi que el valor viaja multiplicado
+  // por este factor; la app Android lo divide por el mismo numero para
+  // recuperarlo. Con 10 se conserva 1 decimal (56.7 -> minor 567 -> 56.7).
+  static const int FACTOR_ESCALA = 10;
+
+  // ------------------------------------------------------------------
+  // DISENO de codificarValor( valor ):
+  //   Convierte el valor real medido al entero que cabe en el campo minor,
+  //   multiplicandolo por FACTOR_ESCALA y redondeando al entero mas cercano.
+  // ------------------------------------------------------------------
+  // valor: R --> codificarValor() --> minor: Z
+  int16_t codificarValor( float valor ) {
+	float escalado = valor * FACTOR_ESCALA;
+	return (int16_t) (escalado >= 0 ? escalado + 0.5f : escalado - 0.5f);
+  } // ()
+
   // ............................................................
   // ............................................................
 public:
@@ -112,7 +129,7 @@ public:
 	uint16_t major = (MedicionesID::CO2 << 8) + contador;
 	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
 											major,
-											valorCO2, // minor
+											(*this).codificarValor( valorCO2 ), // minor
 											(*this).RSSI // rssi
 									);
 
@@ -157,7 +174,7 @@ public:
 	uint16_t major = (MedicionesID::TEMPERATURA << 8) + contador;
 	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
 											major,
-											valorTemperatura, // minor
+											(*this).codificarValor( valorTemperatura ), // minor
 											(*this).RSSI // rssi
 									);
 	delay( tiempoEspera );

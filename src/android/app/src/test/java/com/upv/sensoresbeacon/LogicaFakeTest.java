@@ -193,7 +193,7 @@ public class LogicaFakeTest {
     @Test
     public void elFlujoCompletoDesdeLaTramaEnviaLaMedicion() throws Exception {
         TramaIBeacon trama = new TramaIBeacon(
-                TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 612, -65));
+                TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 6120, -65));
         Medicion medicion = Medicion.desdeTrama(trama);
 
         logica.guardarMedicion(medicion, EMISORA);

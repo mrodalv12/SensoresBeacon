@@ -26,9 +26,11 @@ TramaIBeacon  = ( uuid: [ Byte ]_16, major: Z, minor: Z, txPower: Z )
 RespuestaREST = ( codigoRespuesta: Z, cuerpoRespuesta: Text )
 ```
 
-El emisor codifica `major = (tipo << 8) + contador` y el valor medido en
-`minor` (ver `emisor_design.md`); la app lo deshace con
-`getTipoDeMedicionComoInt()` y `getMinorComoInt()`.
+El emisor codifica `major = (tipo << 8) + contador` y el valor medido
+multiplicado por 10 en `minor` (el `minor` es entero y no admite decimales; ver
+`emisor_design.md`). La app lo deshace con `getTipoDeMedicionComoInt()` y
+`getMinorComoInt()`, y `Medicion.desdeTrama()` divide el `minor` entre
+`FACTOR_ESCALA` (10) para recuperar el valor real con 1 decimal.
 
 ### 1.2 Class Diagram
 

@@ -38,8 +38,8 @@ software:
      (placa Bluefruit)      (app Android)          (REST Node.js)        (Node.js)        (SQLite)
            |                     |                      |                      |               |
            |  anuncio iBeacon     |  POST /mediciones   |                      |               |
-           |  major = tipo        +--------------------->+                      |               |
-           |  minor = valor       |                      |  guardarMedicion()   |               |
+            |  major = tipo        +--------------------->+                      |               |
+            |  minor = valor*10    |                      |  guardarMedicion()   |               |
            |                      |                      +--------------------->+               |
            |                      |                      |                      |  guardar()    |
            |                      |                      |                      +-------------->+
@@ -164,7 +164,7 @@ anuncio:
 | Marca iBeacon | `iBeaconType` + `iBeaconLength` | `02 15` |
 | `uuid` (16 bytes) | 16 caracteres **ASCII**, no una UUID hexadecimal | `EPSG-GTI-PROY-MJ` |
 | `major` | `(tipoMedición << 8) + contador` | `0x0B07` → CO₂, iteración 7 |
-| `minor` | **valor medido** (16 bits) | `2450` → 2450 ppm |
+| `minor` | **valor medido ×10** (16 bits, con signo) | `2458` → 245.8 ppm |
 | `txPower` | Potencia de referencia en dBm | `-53` |
 
 - La UUID de 16 caracteres ASCII equivale en hexadecimal a
@@ -176,6 +176,10 @@ anuncio:
 - `major` y `minor` son **big-endian**, como en cualquier iBeacon (es el orden
   que emite `BLEBeacon` de Bluefruit); la app lo tiene en cuenta en
   `Utilidades.bytesToShort()`.
+- El `minor` es un entero de 16 bits y no admite decimales, así que el emisor
+  manda el valor **multiplicado por 10** (`Publicador.FACTOR_ESCALA`) y la app
+  lo **divide entre 10** (`Medicion.FACTOR_ESCALA`), conservando 1 decimal. Los
+  dos factores deben coincidir.
 - La tabla de asignación es `MedicionesID`: `co2 = 11`, `temperatura = 12`,
   `ruido = 13`. Cualquier otro valor devuelve `"desconocido"`.
 
@@ -238,7 +242,7 @@ documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 | `tipo_de_medicion` | `TEXT NOT NULL` | no | `tipo` del POST |
 | `nombre_cliente` | `TEXT NOT NULL` | no | `nombre_emisora` del POST |
 | `valor` | `REAL NOT NULL` | no | `valor` del POST |
-| `fecha_y_hora` | `DATETIME DEFAULT CURRENT_TIMESTAMP` | sí | generado por SQLite |
+| `fecha_y_hora` | `DATETIME DEFAULT (datetime('now','localtime'))` | sí | generado por SQLite en hora **local** |
 
 > **Nombre de emisora = nombre del cliente.** La app envía el nombre de la
 > emisora en el campo `nombre_emisora` de la petición; en la base de datos ese

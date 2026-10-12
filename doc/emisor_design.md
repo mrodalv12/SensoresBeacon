@@ -24,8 +24,12 @@ El campo `major` se compone así:
 
 ```text
 major = ( codigoTipo << 8 ) + contador
-minor = valorMedido
+minor = redondear( valorMedido * 10 )
 ```
+
+El `minor` es un entero de 16 bits y no admite decimales: el valor viaja
+multiplicado por 10 (`Publicador.FACTOR_ESCALA`) y la app Android lo divide por
+el mismo factor (`Medicion.FACTOR_ESCALA`), conservando 1 decimal.
 
 `uuid` es siempre el mismo en todos los anuncios; `txPower` es fijo.
 
@@ -178,7 +182,8 @@ valorTemperatura: R, contador: N, tiempoEspera: N --> Publicador.publicarTempera
 
 - Construyen `major = (MedicionesID << 8) + contador` con el código de CO2
   (11) o de temperatura (12), emiten el iBeacon con el UUID fijo y el valor
-  como `minor`, esperan `tiempoEspera` ms y detienen el anuncio.
+  medido **escalado ×10** (`codificarValor()`) como `minor`, esperan
+  `tiempoEspera` ms y detienen el anuncio.
 
 ```text
 --> Medidor.Medidor() -->
@@ -233,7 +238,7 @@ cb: Callback --> Caracteristica.instalarCallbackCaracteristicaEscrita() -->
 1A FF 4C 00 02 15                datos de fabricante (Apple + marca iBeacon)
 <uuid: 16 bytes>                 "EPSG-GTI-PROY-MJ" (ASCII)
 <major: 2 bytes>                 (tipo << 8) + contador
-<minor: 2 bytes>                 valor medido
+<minor: 2 bytes>                 valor medido * 10
 <txPower: 1 byte>                potencia en dBm
 ```
 
@@ -246,8 +251,9 @@ cb: Callback --> Caracteristica.instalarCallbackCaracteristicaEscrita() -->
   la app Android (`android_design.md`).
 - **Codificación tipo + valor:** el byte alto del `major` lleva el tipo
   (`co2 = 11`, `temperatura = 12`, `ruido = 13`) y el byte bajo el contador de
-  iteración; el `minor` lleva el valor medido. Dos anuncios por iteración (CO2
-  y temperatura), no uno con dos valores.
+  iteración; el `minor` lleva el valor medido multiplicado por 10 (`minor` es
+  entero y no admite decimales). Dos anuncios por iteración (CO2 y temperatura),
+  no uno con dos valores.
 - **Lecturas actuales de prueba:** en `loop()` las llamadas a
   `elMedidor.medirCO2()` y `elMedidor.medirTemperatura()` están comentadas y se
   usan valores fijos (`56.78`, `12.34`) hasta conectar los sensores reales.

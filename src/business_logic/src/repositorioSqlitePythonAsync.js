@@ -31,8 +31,11 @@ function guardar(datos) {
         const valor = datos.valor || 0;
         const nombre = datos.nombre_cliente || datos.nombre_emisora || datos.nombreEmisora || '';
 
-        const sql = `INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor) 
-                     VALUES ('${tipo.replace(/'/g, "''")}', '${nombre.replace(/'/g, "''")}', ${valor});`;
+        // fecha_y_hora se genera explicitamente en hora LOCAL del sistema
+        // (datetime('now','localtime')). El DEFAULT de la tabla usa
+        // CURRENT_TIMESTAMP, que en SQLite devuelve UTC y desfase la hora.
+        const sql = `INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor, fecha_y_hora) 
+                     VALUES ('${tipo.replace(/'/g, "''")}', '${nombre.replace(/'/g, "''")}', ${valor}, datetime('now','localtime'));`;
         
         const script = `
 import sqlite3
