@@ -1,13 +1,13 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert');
-const { LogicaNegocioSQLitePy } = require('../src/logicaNegocioSqlitePy');
-const repo = require('../src/repositorioSqlitePython');
+const { LogicaNegocioSQLitePhp } = require('../src/logicaNegocioSqlitePhp');
+const repo = require('../src/repositorioSqlitePhp');
 
-describe('Lógica de Negocio - Integración con BD (Python)', () => {
+describe('Lógica de Negocio - Integración con BD (PHP)', () => {
     test('guardarMedicion y obtenerMedicion funcionan con BD', async () => {
-        const logica = new LogicaNegocioSQLitePy(repo);
+        const logica = new LogicaNegocioSQLitePhp(repo);
         const res = await logica.guardarMedicion(
-            { tipo: 'distancia', valor: 2.5, nombre_emisora: 'TEST-PY-123' }
+            { tipo: 'distancia', valor: 2.5, nombre_emisora: 'TEST-PHP-123' }
         );
         assert.strictEqual(res.ok, true);
         assert.ok(res.id);

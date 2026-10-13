@@ -25,7 +25,7 @@ Repositorio = ( guardar(), obtenerUltimas10() )   // interfaz de acceso a datos
 ### 1.2 Class Diagram
 
 ```text
-         --------- LogicaNegocio (SQLiteP y *Async) -------------
+         --------- LogicaNegocio (SQLitePhp y *Async) ---------
          |
          | repositorio: Repositorio
          |
@@ -97,13 +97,14 @@ definida en `database_design.md`:
   solo tipos de dominio; ningún transporte ni cabecera.
 - **Varias implementaciones, un solo contrato:** existen variantes
   (`logicaNegocio.js`, `logicaNegocioConRepositorio.js`,
-  `logicaNegocioSqlitePy.js`, `logicaNegocioSqlitePyAsync.js`) con la misma
+  `logicaNegocioSqlitePhp.js`, `logicaNegocioSqlitePhpAsync.js`) con la misma
   firma lógica; las sincrónicas/asíncronas se diferencian solo en cómo
   esperan el resultado del repositorio (para pruebas).
 - **Repositorio intercambiable:** `repositorioMemoria.js` se usa en pruebas
-  (sin base de datos) y `repositorioSqlitePython*.js` en producción; este
-  último invoca `python3` (proceso externo, no un framework de transporte)
-  con el módulo `sqlite3` de la biblioteca estándar.
+  (sin base de datos) y `repositorioSqlitePhp*.js` en producción; este
+  último invoca `php` (proceso externo, no un framework de transporte)
+  con la extensión `PDO` + `sqlite3`. El binario se toma de la variable de
+  entorno `PHP_BIN` o, si no, del XAMPP instalado.
 - **Independencia de comunicación:** ningún archivo de `src/business_logic/`
   importa `src/communication/`, ni módulos HTTP/red, ni frameworks web.
   Únicas dependencias de la biblioteca estándar de Node:

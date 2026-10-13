@@ -1,21 +1,20 @@
 //==============================================================================================
-//Nombre: logicaNegocioSqlitePy.js
-//Descripcion: Logica de negocio sincrona preparada para trabajar con un repositorio SQLite
-//              (Python).
+//Nombre: logicaNegocioSqlitePhpAsync.js
+//Descripcion: Logica de negocio asincrona preparada para trabajar con un repositorio SQLite
+//              (PHP).
 //Copyright:
 //Fecha de creacion: 2026-10-02
-//Fecha de modificacion: 2026-10-04
+//Fecha de modificacion: 2026-10-13
 //Autores: Jordi Bataller y Maria Jose Rodriguez
 //Autor: Maria Jose Rodriguez
 //Aportacion: limpieza y mas comentarios
 //==============================================================================================
 
 /**
- * Lógica de Negocio con acceso a Base de Datos (vía Python)
- * Mantiene separación de capas
+ * Lógica de Negocio con acceso a Base de Datos (async)
  */
 
-class LogicaNegocioSQLitePy {
+class LogicaNegocioSQLitePhpAsync {
     //--------------------
     // repositorio: Repositorio --> constructor() --> nueva instancia
     //   Guarda el repositorio en el que se apoyara la logica.
@@ -58,4 +57,4 @@ class LogicaNegocioSQLitePy {
     }
 }
 
-module.exports = { LogicaNegocioSQLitePy };
+module.exports = { LogicaNegocioSQLitePhpAsync };

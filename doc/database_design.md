@@ -57,9 +57,10 @@ CONSTRAINTS:
 ## 2. Design Clarifications
 
 - La capa de acceso a datos **no** usa driver nativo de Node (`node-sqlite3`):
-  el repositorio (en `src/business_logic/`) invoca `python3` con el módulo
-  `sqlite3` de la biblioteca estándar (ver `business_logic_design.md`), lo que
-  evita dependencias binarias.
+  el repositorio (en `src/business_logic/`) invoca un proceso `php` con la
+  extensión `PDO` + `sqlite3` (ver `business_logic_design.md`), lo que evita
+  dependencias binarias. El binario PHP se toma de la variable de entorno
+  `PHP_BIN` o, si no, del XAMPP instalado.
 - Para reconstruir la base desde cero:
   `sqlite3 src/database/mediciones.db < src/database/mediciones.sql`.
 - El fichero `src/database/mediciones.sqbpro` es el proyecto de DB Browser for
@@ -72,7 +73,7 @@ CONSTRAINTS:
 ## 3. General Rules
 
 - **Programming Language:** SQL (SQLite 3) para el esquema; acceso desde Node
-  vía proceso `python3` con `sqlite3`.
+  vía proceso `php` con `PDO` + `sqlite3`.
 - **Function/Method Headers:** cada acceso a datos en el repositorio lleva su
   diseño lógico en un bloque de comentario con línea de guiones (`-----------`)
   y tipos abstractos, de acuerdo con `business_logic_design.md`.

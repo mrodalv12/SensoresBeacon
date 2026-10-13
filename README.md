@@ -69,7 +69,7 @@ La separación entre capas es estricta: la capa de comunicación **no** contiene
 lógica de negocio ni accede a la base de datos, y la lógica de negocio **no**
 conoce HTTP (cero dependencias de la capa de comunicación ni de frameworks web).
 El acceso a datos se aísla detrás de un *repositorio* intercambiable
-(`repositorioMemoria.js` en pruebas, `repositorioSqlitePythonAsync.js` en
+(`repositorioMemoria.js` en pruebas, `repositorioSqlitePhpAsync.js` en
 producción), lo que permite probar la lógica sin base de datos y la base de datos
 sin HTTP. La GUI tampoco hace transporte: se comunica solo con
 `src/frontend_business_logic/`.
@@ -100,11 +100,11 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
     ├── business_logic/             # Lógica de negocio (Node.js, sin HTTP)
     │   ├── src/logicaNegocio.js                    # núcleo, sin BD
     │   ├── src/logicaNegocioConRepositorio.js      # con repositorio inyectado
-    │   ├── src/logicaNegocioSqlitePy.js            # + SQLite vía Python (sync)
-    │   ├── src/logicaNegocioSqlitePyAsync.js       # + SQLite vía Python (async)
+    │   ├── src/logicaNegocioSqlitePhp.js           # + SQLite vía PHP (sync)
+    │   ├── src/logicaNegocioSqlitePhpAsync.js      # + SQLite vía PHP (async)
     │   ├── src/repositorioMemoria.js               # doble en memoria
-    │   ├── src/repositorioSqlitePython.js          # SQLite (sync)
-    │   ├── src/repositorioSqlitePythonAsync.js     # SQLite (async)
+    │   ├── src/repositorioSqlitePhp.js             # SQLite (sync)
+    │   ├── src/repositorioSqlitePhpAsync.js        # SQLite (async)
     │   └── tests/                                  # 11 pruebas
     │
     ├── database/                        # Base de datos (SQLite 3)
@@ -252,9 +252,9 @@ documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 
 El script incluye además una fila de ejemplo.
 
-La capa de acceso a datos **no** usa `node-sqlite3`: el repositorio invoca
-`python3` con el módulo `sqlite3` de la biblioteca estándar
-(`repositorioSqlitePythonAsync.js`). Así el proyecto no necesita ninguna
+La capa de acceso a datos **no** usa `node-sqlite3`: el repositorio invoca el
+PHP del XAMPP con la extensión `PDO` + `sqlite3`
+(`repositorioSqlitePhpAsync.js`). Así el proyecto no necesita ninguna
 dependencia nativa ni `npm install`.
 
 ### 1.7 Convención de documentación del código
@@ -282,16 +282,18 @@ estado o con otro sistema.
 | Componente | Requisito | Notas |
 |---|---|---|
 | Servidor REST y lógica de negocio | **Node.js ≥ 18** | Probado con v22.13.1. Sin dependencias: no hace falta `npm install` |
-| Base de datos | **Python 3** con el módulo `sqlite3` | Incluido en Python de serie |
+| Base de datos | **PHP 8** con las extensiones `PDO` y `sqlite3` | El PHP del XAMPP (ruta por defecto) o la indicada en `PHP_BIN` |
 | Crear la base de datos | **Cliente `sqlite3`** (opcional) | Solo para el paso 3.1 |
 | Página web | **PHP ≥ 7.4** con la extensión **curl** | Necesario para `logicaWeb.php` |
 | App Android | **JDK 17+** y **Android SDK** (compileSdk 34) | Se usa el *Gradle Wrapper* incluido |
 | Emisor | **Arduino IDE 2.x** + soporte de placa **Adafruit Bluefruit LE** | Bibliotecas `BluefruitLE` y `Adafruit_TinyUSB` |
 
 > **Nota:** las pruebas de Node.js y de Android se ejecutan sin instalar nada.
-> En la máquina donde se generó este README, **PHP no estaba instalado**, por lo
-> que la página web y `src/gui/tests/logicaWeb.test.php` no se pudieron
-> ejecutar; los comandos están documentados en los apartados 3.3 y 4.4.
+> El acceso a la base de datos usa el PHP del XAMPP, que no queda en el `PATH`:
+> los repositorios lo localizan automáticamente
+> (`/Applications/XAMPP/xamppfiles/bin/php`) o toman la ruta de `PHP_BIN`. La
+> página web y `src/gui/tests/logicaWeb.test.php` requieren llamar a ese mismo
+> `php` (comandos en los apartados 3.3 y 4.4).
 
 ---
 
@@ -505,7 +507,7 @@ Tres archivos, todos con el runner de Node:
 |---|---|---|
 | `tests/logicaNegocio.test.js` | 7 | `guardarMedicion()` normaliza tipo, valor y nombre de emisora sin procesar ningún dato del beacon; `obtenerMedicion()` devuelve un array de como mucho 10 elementos con `fecha_y_hora`, `tipo` y `valor` |
 | `tests/logicaConRepositorio.test.js` | 3 | La lógica con repositorio inyectado: guarda, devuelve las últimas y procesa la medición sin datos del beacon |
-| `tests/logicaSqlitePy.test.js` | 1 | Integración real contra `src/database/mediciones.db`: guarda una fila y la recupera |
+| `tests/logicaSqlitePhp.test.js` | 1 | Integración real contra `src/database/mediciones.db`: guarda una fila y la recupera |
 
 Para ver el detalle de cada caso:
 
@@ -642,7 +644,7 @@ comunicación + 11 de la GUI web).
 | Síntoma | Causa probable | Solución |
 |---|---|---|
 | `OperationalError: no such table: Mediciones` | La base de datos existe pero está vacía, o no se creó | Ejecutar el paso 3.1 |
-| `python3: command not found` al hacer `POST` | Falta el intérprete que usa el repositorio | Instalar Python 3 y reiniciar el servidor REST |
+| `php: command not found` al hacer `POST` | No se encuentra el intérprete PHP que usa el repositorio | Instalar XAMPP o definir `PHP_BIN` con la ruta del `php` y reiniciar el servidor REST |
 | La página web muestra el aviso de error | El servidor REST no está levantado, o PHP no tiene `curl` | Levantar el REST (3.2) y verificar `php -m \| grep curl` |
 | La app no detecta ningún iBeacon | Ubicación apagada (o aproximada en Android 12+), permisos sin conceder, o `neverForLocation` en `BLUETOOTH_SCAN` | Activar la ubicación (GPS) y conceder ubicación **precisa**; dar los permisos; no usar `neverForLocation` |
 | `iBeacons: 0` pero `otros BLE: N` | Llegan anuncios pero no se reconocen como iBeacon | Revisar el LogCat: el contador `Apple` distingue datos de Apple que no son iBeacon |

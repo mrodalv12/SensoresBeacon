@@ -17,10 +17,10 @@
  * Tipos de datos abstractos utilizados: N, Z, R, Text, [Tipo]
  */
 
-const { LogicaNegocioSQLitePyAsync } = require('../../../business_logic/src/logicaNegocioSqlitePyAsync');
-const repo = require('../../../business_logic/src/repositorioSqlitePythonAsync');
+const { LogicaNegocioSQLitePhpAsync } = require('../../../business_logic/src/logicaNegocioSqlitePhpAsync');
+const repo = require('../../../business_logic/src/repositorioSqlitePhpAsync');
 
-const logica = new LogicaNegocioSQLitePyAsync(repo);
+const logica = new LogicaNegocioSQLitePhpAsync(repo);
 
 class LogicaNegocioMediciones {
     //--------------------
