@@ -8,7 +8,7 @@
 //Fecha de modificacion: 2026-10-04
 //Autores: Jordi Bataller y Maria Jose Rodriguez
 //Autor: Jordi Bataller
-//Aportacion: limpieza y mas comentarios
+//Aportacion: agregar cosas, limpieza y mas comentarios
 //=============================================================================================
 
 #include <bluefruit.h>

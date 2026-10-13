@@ -97,9 +97,10 @@ function guardar(datos) {
     const valor = datos.valor || 0;
     const nombre = datos.nombre_cliente || datos.nombre_emisora || datos.nombreEmisora || '';
 
-    // fecha_y_hora se genera explicitamente en hora LOCAL del sistema
-    // (datetime('now','localtime')), igual que el DEFAULT de la tabla. No se
-    // usa CURRENT_TIMESTAMP porque devuelve UTC y desfasaria la hora.
+    // fecha_y_hora se genera explicitamente en hora LOCAL del sistema con
+    // strftime('%Y-%m-%d %H:%M:%f','now','localtime') (con milisegundos),
+    // igual que el DEFAULT de la tabla. No se usa CURRENT_TIMESTAMP porque
+    // devuelve UTC y desfasaria la hora.
     const entrada = JSON.stringify({
         accion: 'guardar',
         datos: { tipo_de_medicion: tipo, nombre_cliente: nombre, valor: valor }

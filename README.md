@@ -145,7 +145,7 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
         │   ├── TransporteHttpReal.java# implementación con HttpURLConnection
         │   ├── RespuestaREST.java
         │   └── Utilidades.java    #   conversión de bytes, UUID, hex
-        ├── app/src/test/java/...  #   108 pruebas unitarias JUnit
+        ├── app/src/test/java/...  #   110 pruebas unitarias JUnit
         └── app/build.gradle
 ```
 
@@ -220,7 +220,7 @@ la base de datos como `nombre_cliente`. El `POST` **no** lleva `rssi`,
 
 ```json
 [
-  { "fecha_y_hora": "2026-09-15 10:23:41", "tipo": "ozono", "valor": 812.0 }
+  { "fecha_y_hora": "2026-09-15 10:23:41.123", "tipo": "ozono", "valor": 812.0 }
 ]
 ```
 
@@ -492,11 +492,11 @@ runner integrado de Node.js (`node --test`).
 | Comunicación (REST) | `cd src/communication && npm test` | 6 | 6 ✅ |
 | GUI web (estructura) | `cd src/gui && node --test` | 11 | 11 ✅ |
 | GUI web (PHP) | `cd src/gui && php tests/logicaWeb.test.php` | 2 | requiere PHP + REST |
-| App Android | `cd src/android && ./gradlew test` | 108 × 2 variantes | 108 ✅ |
+| App Android | `cd src/android && ./gradlew test` | 110 × 2 variantes | 110 ✅ |
 | Emisor | — | — | sin pruebas automáticas |
 
-**Total verificado: 136 pruebas automáticas en verde** (28 de Node.js + 108 de
-Android), más 2 comprobaciones en PHP pendientes de instalar PHP.
+**Total verificado: 248 pruebas automáticas en verde** (28 de Node.js + 220 de
+Android), más 2 comprobaciones en PHP (requieren PHP + REST en marcha).
 
 ### 4.1 Lógica de negocio — 11 pruebas
 
@@ -591,7 +591,7 @@ test_obtenerMedicion_maximo_10: OK
 Todos los tests pasaron
 ```
 
-### 4.5 App Android — 108 pruebas
+### 4.5 App Android — 110 pruebas
 
 ```bash
 cd src/android
@@ -599,7 +599,7 @@ cd src/android
 ```
 
 Ejecuta las pruebas unitarias de las dos variantes (`testDebugUnitTest` y
-`testReleaseUnitTest`), es decir **108 pruebas × 2 = 216**. Para lanzar solo una
+`testReleaseUnitTest`), es decir **110 pruebas × 2 = 220**. Para lanzar solo una
 variante:
 
 ```bash
@@ -615,7 +615,7 @@ Informe HTML: `src/android/app/build/reports/tests/testDebugUnitTest/index.html`
 | `DeteccionRealTest` | 15 | Tramas reales: localización, `major`/`minor`/`txPower`, decodificación del tipo, deduplicación, anuncios de Apple que no son iBeacon |
 | `TramaIBeaconTest` | 14 | Localización de la trama dentro del anuncio AD completo y de la trama desnuda, campos, casos límite |
 | `LogicaFakeTest` | 14 | Cuerpo JSON del `POST`: los tres campos del contrato, ausencia de datos del beacon (`uuid`, `txPower`, `major`, `minor`, `rssi`), tipos, valores extremos (`65535`, `-72.5`), `null` |
-| `MedicionTest` | 14 | `asignarTipo()` con los códigos 11/12/13 y desconocidos, `Medicion.desdeTrama()` |
+| `MedicionTest` | 16 | `asignarTipo()` con los códigos 11/12/13 y desconocidos, `Medicion.desdeTrama()` |
 | `PeticionarioRESTTest` | 11 | Método, URL y cuerpo, códigos 2xx/3xx frente a 4xx/5xx, `TransporteHttp` inyectado |
 | `LogicaFakeIntegracionTest` | 3 | **Integración real**: levanta un `ServerSocket` en un puerto efímero y comprueba que el `POST` llega con método, ruta, `Content-Type` y un JSON de solo tres campos (`tipo`, `valor`, `nombre_emisora`); y que un servidor ilegible devuelve código `-1` sin excepción |
 

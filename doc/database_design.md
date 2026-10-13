@@ -9,8 +9,9 @@ móvil a través del servidor REST y de la lógica de negocio. Motor: SQLite 3
 (fichero `src/database/mediciones.db`, esquema en `src/database/mediciones.sql`).
 
 Se usan los tipos SQLite acordes a los abstractos del
-`Software_Engineering_Spec`: `INTEGER` (**N**), `REAL` (**R**), `TEXT`
-(**Text**) y `DATETIME` (texto `'YYYY-MM-DD HH:MM:SS.SSS'`).
+`Software_Engineering_Spec`: `REAL` (**R**), `TEXT` (**Text**) y `DATETIME`
+(texto `'YYYY-MM-DD HH:MM:SS.SSS'`). No hay columnas enteras: la clave primaria
+es compuesta y no existe una columna `id` autonumerica.
 
 ====================================================================================
 TABLE: Mediciones
