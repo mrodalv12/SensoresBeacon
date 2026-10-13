@@ -1,6 +1,6 @@
 //=============================================================================================
 //Nombre: Publicador.h
-//Descripcion: Publica las mediciones de CO2 y temperatura como anuncios iBeacon.
+//Descripcion: Publica las mediciones de Ozono y temperatura como anuncios iBeacon.
 //              El tipo de medicion va codificado en el campo major y el valor
 //              medido en el campo minor, con un UUID fijo en todos los anuncios.
 //Copyright:
@@ -74,7 +74,7 @@ public:
   //          para codificarla en el campo major del iBeacon.
   // ............................................................
   enum MedicionesID  {
-	CO2 = 11,
+	OZONO = 11,
 	TEMPERATURA = 12,
 	RUIDO = 13
   };
@@ -108,34 +108,34 @@ public:
   } // ()
 
   // ............................................................
-  //publicarCO2(): publica el valor de CO2 recibido como un 
+  //publicarOzono(): publica el valor de Ozono recibido como un 
   //          iBeacon durante el tiempo indicado (en ms).
-  //          El campo major lleva el ID del CO2 y el contador,
+  //          El campo major lleva el ID del Ozono y el contador,
   //          el campo minor lleva el valor medido.
   // ............................................................
 // ------------------------------------------------------------------
-// DISENO de publicarCO2( valorCO2, contador, tiempoEspera ):
+// DISENO de publicarOzono( valorOzono, contador, tiempoEspera ):
 //   El valor medido y el numero de iteracion viajan codificados en el
 //   anuncio (minor y major); el intervalo solo controla la duracion.
 //   No devuelve nada.
 // ------------------------------------------------------------------
-  // valorCO2: R, contador: N, tiempoEspera: N --> publicarCO2() -->
-  void publicarCO2( float valorCO2, uint8_t contador,
+  // valorOzono: R, contador: N, tiempoEspera: N --> publicarOzono() -->
+  void publicarOzono( float valorOzono, uint8_t contador,
 					long tiempoEspera ) {
 
 	//
 	// 1. empezamos anuncio
 	//
-	uint16_t major = (MedicionesID::CO2 << 8) + contador;
+	uint16_t major = (MedicionesID::OZONO << 8) + contador;
 	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
 											major,
-											(*this).codificarValor( valorCO2 ), // minor
+											(*this).codificarValor( valorOzono ), // minor
 											(*this).RSSI // rssi
 									);
 
 	/*
-	Globales::elPuerto.escribir( "   publicarCO2(): valor=" );
-	Globales::elPuerto.escribir( valorCO2 );
+	Globales::elPuerto.escribir( "   publicarOzono(): valor=" );
+	Globales::elPuerto.escribir( valorOzono );
 	Globales::elPuerto.escribir( "   contador=" );
 	Globales::elPuerto.escribir( contador );
 	Globales::elPuerto.escribir( "   todo="  );
@@ -157,13 +157,13 @@ public:
   // ............................................................
   //publicarTemperatura(): publica el valor de temperatura como 
   //          un iBeacon durante el tiempo indicado (en ms).
-  //          Funciona igual que publicarCO2() pero con el ID
+  //          Funciona igual que publicarOzono() pero con el ID
   //          de TEMPERATURA.
   // ............................................................
 // ------------------------------------------------------------------
 // DISENO de publicarTemperatura( valorTemperatura, contador,
 //                                tiempoEspera ):
-//   Igual que publicarCO2(), pero con el ID de medicion de temperatura.
+//   Igual que publicarOzono(), pero con el ID de medicion de temperatura.
 //   No devuelve nada.
 // ------------------------------------------------------------------
   // valorTemperatura: R, contador: N, tiempoEspera: N

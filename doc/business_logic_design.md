@@ -13,7 +13,7 @@ contrato definido en `database_design.md`).
 ### 1.1 Abstract Data Types
 
 ```text
-TipoMedicion = { co2, temperatura, ruido }
+TipoMedicion = { ozono, temperatura, ruido }
 
 MedicionNueva = ( tipo: TipoMedicion, valor: R, nombre_cliente: Text )
 

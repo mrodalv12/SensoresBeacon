@@ -1,7 +1,7 @@
 //=============================================================================================
 //Nombre: Medidor.h
 //Descripcion: Clase que lee los sensores analogos de la placa y convierte las
-//              lecturas en CO2 (ppm) y temperatura (°C).
+//              lecturas en Ozono (ppm) y temperatura (°C).
 //Copyright:
 //Fecha de creacion: 2019-07-07
 //Fecha de modificacion: 2026-10-04
@@ -18,7 +18,7 @@
 #include <Arduino.h>
 
 // ------------------------------------------------------
-//Clase Medidor: lee el sensor de gas (CO2) y el de temperatura
+//Clase Medidor: lee el sensor de gas (Ozono) y el de temperatura
 // ------------------------------------------------------
 class Medidor {
 
@@ -31,8 +31,8 @@ private:
   // GPIO: el numero GPIO que hay detras de cada uno depende de la placa
   // y del paquete concreto de Adafruit, asi que el nombre es la forma
   // segura de no colgar el codigo de una tabla que puede cambiar.
-  const int PIN_VGAS  = A4; // Sensor de CO2 (salida analogica del gas)
-  const int PIN_VREF  = A5; // Referencia de tension del sensor de CO2
+  const int PIN_VGAS  = A4; // Sensor de Ozono (salida analogica del gas)
+  const int PIN_VREF  = A5; // Referencia de tension del sensor de Ozono
   const int PIN_VTEMP = A3; // Sensor de temperatura
 
   // Parámetros de conversión ADC
@@ -61,7 +61,7 @@ public:
   // .....................................................
   // iniciarMedidor( )
   //   Prepara el conversor analogico-digital: fija la resolucion
-  //   del ADC a 10 bits, que es la que espera el calculo de medirCO2().
+  //   del ADC a 10 bits, que es la que espera el calculo de medirOzono().
   // DISENO de iniciarMedidor():
   //   No recibe datos ni devuelve datos.
   // ------------------------------------------
@@ -73,16 +73,16 @@ public:
   } // ()
 
   // .....................................................
-  // medirCO2( )
+  // medirOzono( )
   //   Lee el sensor de gas y el de referencia, convierte ambos a voltios,
   //   les resta la referencia y aplica la sensibilidad del sensor para
-  //   obtener la concentracion de CO2 en ppm. Los negativos se recortan a 0.
-  // DISENO de medirCO2():
+  //   obtener la concentracion de Ozono en ppm. Los negativos se recortan a 0.
+  // DISENO de medirOzono():
   //   No recibe datos; devuelve la concentracion medida.
   // ------------------------------------------
-  // --> medirCO2() --> ppm: R
+  // --> medirOzono() --> ppm: R
   // ------------------------------------------
-  float medirCO2() {
+  float medirOzono() {
 
   int rawVgas  = analogRead(PIN_VGAS); //medicion de gas del sensor directo
   int rawVref  = analogRead(PIN_VREF);  //medicion de gas del sensor directo

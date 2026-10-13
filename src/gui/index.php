@@ -22,7 +22,7 @@ $mediciones = obtenerUltimasMediciones();
     <!-- =====================================================================
          CABECERA: metadata del documento, no se ve en pantalla.
          charset UTF-8 es obligatorio para que se vean bien los acentos y
-         los simbolos (CO2, grados C). viewport hace que la pagina se
+         los simbolos (Ozono, grados C). viewport hace que la pagina se
          adapte al ancho del movil.
          ===================================================================== -->
     <meta charset="UTF-8">
@@ -62,12 +62,12 @@ $mediciones = obtenerUltimasMediciones();
         <!-- ---------- Tarjetas: las dos cifras principales ----------
              Muestran la ultima lectura de cada magnitud. El "--" es lo que se
              ve hasta que llegan datos: el guion indica "todavia no hay valor".
-             Los id co2-value y temp-value los usa js/app.js para rellenarlas. -->
+             Los id ozono-value y temp-value los usa js/app.js para rellenarlas. -->
         <section class="cards-container">
             <article class="card">
-                <div class="card-label">CO₂</div>
+                <div class="card-label">Ozono</div>
                 <div class="card-value">
-                    <span id="co2-value">--</span>
+                    <span id="ozono-value">--</span>
                     <span class="card-unit">ppm</span>
                 </div>
             </article>
@@ -148,7 +148,7 @@ $mediciones = obtenerUltimasMediciones();
     <!-- =====================================================================
          SCRIPT: va al final del body a proposito. Asi el HTML ya esta
          completo cuando se ejecuta, y la GUI puede buscar los elementos
-         del DOM (co2-value, temp-value, tabla-body) sin esperar a ningun
+         del DOM (ozono-value, temp-value, tabla-body) sin esperar a ningun
          evento.
 
          Primero se carga el proxy de logica de negocio de cliente

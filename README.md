@@ -57,7 +57,7 @@ software:
 
 | Módulo | Ruta | Tecnología | Responsabilidad |
 |---|---|---|---|
-| Emisor | `src/emisor/` | Arduino (C++) | Publicar CO₂ y temperatura como iBeacon |
+| Emisor | `src/emisor/` | Arduino (C++) | Publicar Ozono y temperatura como iBeacon |
 | App Android | `src/android/` | Java + Gradle | Escanear BLE, decodificar la trama, enviar el `POST` |
 | Comunicación (REST) | `src/communication/` | Node.js (`http`) | Enrutado, validación HTTP y códigos de respuesta |
 | Lógica de negocio | `src/business_logic/` | Node.js | `guardarMedicion()` / `obtenerMedicion()`, sin HTTP ni SQL |
@@ -126,9 +126,9 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
     │
     ├── emisor/          # Firmware del emisor (Arduino IDE)
     │   ├── emisor.ino   #   setup() / loop() y orquestación
-    │   ├── Publicador.h           #   publicaCO2() / publicarTemperatura()
+    │   ├── Publicador.h           #   publicarOzono() / publicarTemperatura()
     │   ├── EmisoraBLE.h           #   control del hardware BLE (Bluefruit)
-    │   ├── Medidor.h              #   leer sensores analógicos (CO₂ y temperatura)
+    │   ├── Medidor.h              #   leer sensores analógicos (Ozono y temperatura)
     │   ├── LED.h                  #   LED de feedback
     │   ├── PuertoSerie.h          #   salida por consola
     │   └── ServicioEnEmisora.h    #   definición del servicio BLE
@@ -138,7 +138,7 @@ sin HTTP. La GUI tampoco hace transporte: se comunica solo con
         │   ├── MainActivity.java  #   escaneo BLE, 3 botones, contadores, LogCat
         │   ├── TramaIBeacon.java  #   decodificación de la trama iBeacon
         │   ├── Medicion.java      #   tipoDeMedicion + valor
-        │   ├── MedicionesID.java  #   enumeración co2=11, temperatura=12, ruido=13
+        │   ├── MedicionesID.java  #   enumeración ozono=11, temperatura=12, ruido=13
         │   ├── LogicaFake.java    #   lógica "fake": POST al servidor REST
         │   ├── PeticionarioREST.java
         │   ├── TransporteHttp.java    # interfaz (permite dobles de prueba)
@@ -163,7 +163,7 @@ anuncio:
 | `companyID` | Fabricante (Apple) | `0x004C` |
 | Marca iBeacon | `iBeaconType` + `iBeaconLength` | `02 15` |
 | `uuid` (16 bytes) | 16 caracteres **ASCII**, no una UUID hexadecimal | `EPSG-GTI-PROY-MJ` |
-| `major` | `(tipoMedición << 8) + contador` | `0x0B07` → CO₂, iteración 7 |
+| `major` | `(tipoMedición << 8) + contador` | `0x0B07` → Ozono, iteración 7 |
 | `minor` | **valor medido ×10** (16 bits, con signo) | `2458` → 245.8 ppm |
 | `txPower` | Potencia de referencia en dBm | `-53` |
 
@@ -180,10 +180,10 @@ anuncio:
   manda el valor **multiplicado por 10** (`Publicador.FACTOR_ESCALA`) y la app
   lo **divide entre 10** (`Medicion.FACTOR_ESCALA`), conservando 1 decimal. Los
   dos factores deben coincidir.
-- La tabla de asignación es `MedicionesID`: `co2 = 11`, `temperatura = 12`,
+- La tabla de asignación es `MedicionesID`: `ozono = 11`, `temperatura = 12`,
   `ruido = 13`. Cualquier otro valor devuelve `"desconocido"`.
 
-La app **no** deduplica por MAC: la misma placa emite CO₂ y temperatura con la
+La app **no** deduplica por MAC: la misma placa emite Ozono y temperatura con la
 misma dirección, así que la clave de duplicación combina MAC + `major` +
 `minor` (`MainActivity.claveDeMedicion()`). Además muestra tres contadores
 diferentes —iBeacons reconocidos, anuncios de Apple que no son iBeacon y otros
@@ -220,7 +220,7 @@ la base de datos como `nombre_cliente`. El `POST` **no** lleva `rssi`,
 
 ```json
 [
-  { "fecha_y_hora": "2026-09-15 10:23:41", "tipo": "co2", "valor": 812.0 }
+  { "fecha_y_hora": "2026-09-15 10:23:41", "tipo": "ozono", "valor": 812.0 }
 ]
 ```
 
@@ -348,7 +348,7 @@ curl http://localhost:8080/mediciones
 
 curl -X POST http://localhost:8080/mediciones \
   -H 'Content-Type: application/json' \
-  -d '{"tipo":"co2","valor":812,"nombre_emisora":"GTI-3A-MJ"}'
+  -d '{"tipo":"ozono","valor":812,"nombre_emisora":"GTI-3A-MJ"}'
 ```
 
 La segunda orden debe responder `201 Created` con `{"status":"ok",...}`, y la
@@ -366,7 +366,7 @@ php -S localhost:8000 -t src
 ```
 
 Abre <http://localhost:8000/gui/index.php> en el navegador. Verás las dos
-tarjetas superiores (último CO₂ en ppm y última temperatura en °C) y la tabla con
+tarjetas superiores (último Ozono en ppm y última temperatura en °C) y la tabla con
 las últimas 10 mediciones.
 
 - El renderizado inicial lo hace `src/gui/index.php` en el servidor.
@@ -395,9 +395,9 @@ las últimas 10 mediciones.
    `nombre_cliente`, el nombre del cliente) y el `beaconUUID`.
 5. Subir el programa con el botón de upload.
 
-Al arrancar, el `loop()` publica CO₂ y temperatura cada 2 segundos con valores
+Al arrancar, el `loop()` publica Ozono y temperatura cada 2 segundos con valores
 fijos de prueba (`56.78` y `12.34`). Para leer sensores reales, descomentar
-`elMedidor.medirCO2()` y `elMedidor.medirTemperatura()` en `emisor.ino`.
+`elMedidor.medirOzono()` y `elMedidor.medirTemperatura()` en `emisor.ino`.
 
 La salida por puerto serie (115200 baudios) informa de cada iteración y de los
 valores publicados.

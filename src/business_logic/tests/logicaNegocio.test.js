@@ -32,7 +32,7 @@ describe('Lógica de Negocio - guardarMedicion', () => {
     });
 
     test('guardarMedicion no procesa ningún dato del beacon', () => {
-        const resultado = guardarMedicion({ tipo: 'co2', valor: 812 });
+        const resultado = guardarMedicion({ tipo: 'ozono', valor: 812 });
 
         assert.strictEqual(resultado.procesados.uuid, undefined);
         assert.strictEqual(resultado.procesados.txPower, undefined);

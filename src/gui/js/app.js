@@ -66,7 +66,7 @@ function formatearFecha(fechaYHora) {
 
 //--------------------
 // mediciones: [ Medicion ] --> actualizarTarjetas() -->
-//   Busca la ultima medicion de CO2 y la de temperatura y las muestra en sus
+//   Busca la ultima medicion de Ozono y la de temperatura y las muestra en sus
 //   tarjetas.
 //--------------------
 function actualizarTarjetas(mediciones) {
@@ -74,25 +74,25 @@ function actualizarTarjetas(mediciones) {
     
     const ultima = mediciones[mediciones.length - 1];
     
-    // Buscar últimas mediciones de CO2 y Temperatura
-    let ultimaCO2 = null;
+    // Buscar últimas mediciones de Ozono y Temperatura
+    let ultimaOzono = null;
     let ultimaTemp = null;
     
     for (let i = mediciones.length - 1; i >= 0; i--) {
         const m = mediciones[i];
         const tipo = (m.tipo || '').toLowerCase();
-        if (ultimaCO2 === null && (tipo.includes('co2') || tipo.includes('co₂') || tipo.includes('co'))) {
-            ultimaCO2 = m;
+        if (ultimaOzono === null && tipo.includes('ozono')) {
+            ultimaOzono = m;
         }
         if (ultimaTemp === null && (tipo.includes('temp') || tipo.includes('temperatura'))) {
             ultimaTemp = m;
         }
-        if (ultimaCO2 !== null && ultimaTemp !== null) break;
+        if (ultimaOzono !== null && ultimaTemp !== null) break;
     }
     
-    if (ultimaCO2) {
-        const co2Value = document.getElementById('co2-value');
-        if (co2Value) co2Value.textContent = Math.round(ultimaCO2.valor);
+    if (ultimaOzono) {
+        const ozonoValue = document.getElementById('ozono-value');
+        if (ozonoValue) ozonoValue.textContent = Math.round(ultimaOzono.valor);
     }
     
     if (ultimaTemp) {
@@ -156,7 +156,7 @@ const REFRESCO_SEGUNDOS = INTERVALO_REFRESCO_MS / 1000;
 const REFRESCO_MINUTOS = INTERVALO_REFRESCO_MS / 60000;
 
 // El script se carga al final del <body> (ver index.php), con lo que el HTML
-// ya esta completo cuando se ejecuta este codigo: los elementos #co2-value,
+// ya esta completo cuando se ejecuta este codigo: los elementos #ozono-value,
 // #temp-value, #tabla-body y #error-container ya existen y se pueden usar
 // directamente, sin esperar a ningun evento.
 cargarMediciones();

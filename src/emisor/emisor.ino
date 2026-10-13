@@ -1,7 +1,7 @@
 //=============================================================================================
 //Nombre: emisor.ino
 //Descripcion: Programa principal: inicializa la placa y la emisora BLE y, en cada
-//              iteracion del loop(), publica la medicion de CO2 y la de temperatura
+//              iteracion del loop(), publica la medicion de Ozono y la de temperatura
 //              como dos anuncios iBeacon distintos.
 //Copyright:
 //Fecha de creacion: 2019-07-05
@@ -121,13 +121,12 @@ namespace Loop {
 
 //...................................
 
-// loop(): ejecuta una serie de instrucciones en bucle. En cada
-// iteracion incrementa el contador, avisa por consola, mide el CO2 y
-// la temperatura y publica los dos valores como anuncios iBeacon,
-// manteniendo cada anuncio 1 segundo.
-// No recibe datos ni devuelve datos.
 // ------------------------------------------------------------------
 // DISENO de loop():
+//   Ejecuta una serie de instrucciones en bucle. En cada iteracion
+//   incrementa el contador, avisa por consola, mide el ozono y la
+//   temperatura y publica los dos valores como anuncios iBeacon,
+//   manteniendo cada anuncio 1 segundo. No recibe ni devuelve datos.
 // ------------------------------------------------------------------
 // --> loop() -->
 void loop () {
@@ -147,12 +146,12 @@ void loop () {
 
  //float valorTemperatura = elMedidor.medirTemperatura();
   float valorTemperatura = 1233;
-  //float valorCO2 = elMedidor.medirCO2();
-  float valorCO2 = 22.2;
+  //float valorOzono = elMedidor.medirOzono();
+  float valorOzono = 22.2;
  
   //publicas todo
 
-  elPublicador.publicarCO2( valorCO2,
+  elPublicador.publicarOzono( valorOzono,
 							cont, //el contador de la iteracion
 						  1000 // intervalo de emisión
 							);
@@ -164,8 +163,8 @@ void loop () {
 
   elPuerto.escribir( "\n valor de temperatura " );
   elPuerto.escribir( valorTemperatura );
-  elPuerto.escribir( "\n valor de CO2 " );
-  elPuerto.escribir( valorCO2);                
+  elPuerto.escribir( "\n valor de Ozono " );
+  elPuerto.escribir( valorOzono);                
   
   //.......................................................
   //esta parte es una prueba para poder mandar mensajes personalizados 

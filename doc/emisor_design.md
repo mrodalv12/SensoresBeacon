@@ -5,7 +5,7 @@
 **Component:** Emisor Arduino/Bluefruit (`src/emisor/`).
 
 Es la placa que mide y emite. En cada iteración del `loop()` toma la lectura de
-CO2 y la de temperatura y publica **cada una como un anuncio iBeacon distinto**,
+Ozono y la de temperatura y publica **cada una como un anuncio iBeacon distinto**,
 codificando el tipo de medición en el campo `major` y el valor medido en el
 `minor`, con un UUID fijo. El público receptor es la aplicación Android
 (`android_design.md`).
@@ -13,7 +13,7 @@ codificando el tipo de medición en el campo `major` y el valor medido en el
 ### 1.1 Abstract Data Types
 
 ```text
-TipoMedicion = { co2(11), temperatura(12), ruido(13) }
+TipoMedicion = { ozono(11), temperatura(12), ruido(13) }
 
 Medicion   = ( tipo: Text, valor: R )
 
@@ -53,7 +53,7 @@ el mismo factor (`Medicion.FACTOR_ESCALA`), conservando 1 decimal.
   | encendido |          ------------------           | beaconUUID     |
   | encender  |          | escribir      |           | RSSI           |
   | apagar    |          |               |           | MedicionesID   |
-  | alternar  |          ------------------           | publicarCO2    |
+  | alternar  |          ------------------           | publicarOzono    |
   | brillar   |                                       | publicarTemp.  |
   ------------                                        -----------------
                                                               |
@@ -64,7 +64,7 @@ el mismo factor (`Medicion.FACTOR_ESCALA`), conservando 1 decimal.
   | PIN_VREF    |                                    | fabricanteID   |
   | PIN_VTEMP   |                                    | txPower        |
   | iniciar     |                                    | encenderEmisora|
-  | medirCO2    |                                    | emitirAnuncio  |
+  | medirOzono    |                                    | emitirAnuncio  |
   | medirTemp.  |                                    | detenerAnuncio |
   ---------------                                    -----------------
                                                               |
@@ -97,8 +97,8 @@ el mismo factor (`Medicion.FACTOR_ESCALA`), conservando 1 decimal.
 --> emisor.loop() -->
 ```
 
-- Incrementa `Loop::cont`, avisa por consola, mide CO2 y temperatura y publica
-  ambas con `publicarCO2()` y `publicarTemperatura()`, cada una durante
+- Incrementa `Loop::cont`, avisa por consola, mide Ozono y temperatura y publica
+  ambas con `publicarOzono()` y `publicarTemperatura()`, cada una durante
   `tiempoEspera` ms; finalmente detiene el anuncio.
 
 ```text
@@ -176,11 +176,11 @@ connHandle: N --> EmisoraBLE.getConexion() --> Conexion
   Bluetooth por separado.
 
 ```text
-valorCO2: R, contador: N, tiempoEspera: N --> Publicador.publicarCO2() -->
+valorOzono: R, contador: N, tiempoEspera: N --> Publicador.publicarOzono() -->
 valorTemperatura: R, contador: N, tiempoEspera: N --> Publicador.publicarTemperatura() -->
 ```
 
-- Construyen `major = (MedicionesID << 8) + contador` con el código de CO2
+- Construyen `major = (MedicionesID << 8) + contador` con el código de Ozono
   (11) o de temperatura (12), emiten el iBeacon con el UUID fijo y el valor
   medido **escalado ×10** (`codificarValor()`) como `minor`, esperan
   `tiempoEspera` ms y detienen el anuncio.
@@ -188,12 +188,12 @@ valorTemperatura: R, contador: N, tiempoEspera: N --> Publicador.publicarTempera
 ```text
 --> Medidor.Medidor() -->
 --> Medidor.iniciarMedidor() -->
---> Medidor.medirCO2() --> ppm: R
+--> Medidor.medirOzono() --> ppm: R
 --> Medidor.medirTemperatura() --> tempC: R
 ```
 
 - Configuran el ADC a 10 bits y convierten las lecturas analógicas de los
-  sensores en CO2 (ppm) y temperatura (°C).
+  sensores en Ozono (ppm) y temperatura (°C).
 
 ```text
 p: [ Type ]_n, n: N --> alReves() --> [ Type ]_n
@@ -250,12 +250,12 @@ cb: Callback --> Caracteristica.instalarCallbackCaracteristicaEscrita() -->
   hexadecimal es `45505347-2D47-5449-2D50-524F592D4D4A`, que es lo que filtra
   la app Android (`android_design.md`).
 - **Codificación tipo + valor:** el byte alto del `major` lleva el tipo
-  (`co2 = 11`, `temperatura = 12`, `ruido = 13`) y el byte bajo el contador de
+  (`ozono = 11`, `temperatura = 12`, `ruido = 13`) y el byte bajo el contador de
   iteración; el `minor` lleva el valor medido multiplicado por 10 (`minor` es
-  entero y no admite decimales). Dos anuncios por iteración (CO2 y temperatura),
+  entero y no admite decimales). Dos anuncios por iteración (Ozono y temperatura),
   no uno con dos valores.
 - **Lecturas actuales de prueba:** en `loop()` las llamadas a
-  `elMedidor.medirCO2()` y `elMedidor.medirTemperatura()` están comentadas y se
+  `elMedidor.medirOzono()` y `elMedidor.medirTemperatura()` están comentadas y se
   usan valores fijos (`56.78`, `12.34`) hasta conectar los sensores reales.
 - **Servicio BLE opcional:** `ServicioEnEmisora` (con sus características) es
   capacidad adicional de la emisora; el flujo principal de mediciones solo usa

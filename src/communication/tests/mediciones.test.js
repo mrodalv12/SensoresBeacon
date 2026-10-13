@@ -86,7 +86,7 @@ describe('Servidor REST - /mediciones', () => {
 
     test('POST /mediciones - campos faltantes retorna 400', async () => {
         const body = JSON.stringify({
-            tipo: 'co2'
+            tipo: 'ozono'
         });
         const res = await makeRequest('POST', '/mediciones', body);
         assert.strictEqual(res.statusCode, 400);

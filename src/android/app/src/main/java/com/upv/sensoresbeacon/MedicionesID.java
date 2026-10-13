@@ -3,7 +3,7 @@ package com.upv.sensoresbeacon;
 
 //==============================================================================================
 //Nombre: MedicionesID.java
-//Descripcion: Enumeracion de los tres tipos de medicion (co2, temperatura, ruido) y sus
+//Descripcion: Enumeracion de los tres tipos de medicion (ozono, temperatura, ruido) y sus
 //              codigos, que coinciden con el byte alto del campo major.
 //Copyright:
 //Fecha de creacion: 2026-10-01
@@ -18,14 +18,14 @@ package com.upv.sensoresbeacon;
  * ------------------ MedicionesID ------------------
  * Diseno logico (Logical_Design_RE_Rules_v3.pdf, seccion 2.1 - Enumerations):
  *
- * MedicionesID = { co2, temperatura, ruido }
+ * MedicionesID = { ozono, temperatura, ruido }
  *
  * Los codigos coinciden con el campo "major" de la trama iBeacon.
  * --------------------------------------------------
  */
 public enum MedicionesID {
 
-    co2(11),
+    ozono(11),
     temperatura(12),
     ruido(13);
 

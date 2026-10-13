@@ -15,7 +15,7 @@ conozca `HttpURLConnection`.
 ### 1.1 Abstract Data Types
 
 ```text
-TipoMedicion = { co2(11), temperatura(12), ruido(13), desconocido }
+TipoMedicion = { ozono(11), temperatura(12), ruido(13), desconocido }
 
 Medicion      = ( tipoDeMedicion: Text, valor: R )
 
@@ -66,7 +66,7 @@ usuario: lo intercambiable arriba
         ------------------------------------------------------------------
 
      --- TramaIBeacon ---        --- Medicion ---        --- MedicionesID (enum) ---
-     | bytes: [Z]       |        | tipoDeMedicion |      | co2(11)               |
+     | bytes: [Z]       |        | tipoDeMedicion |      | ozono(11)               |
      | uuid/major/minor |        | valor: R       |      | temperatura(12)       |
      | txPower          |        ------------------      | ruido(13)             |
      ---------------------------------------             | desconocido           |
@@ -175,7 +175,7 @@ codigo: Z --> MedicionesID.getTipo() --> Text   (--x)
 codigo: Z --> MedicionesID.existe() --> B   (--x)
 ```
 
-- Enumeración de los tipos (`co2 = 11`, `temperatura = 12`, `ruido = 13`) y su
+- Enumeración de los tipos (`ozono = 11`, `temperatura = 12`, `ruido = 13`) y su
   traducción a/desde el código numérico del `major`.
 
 ```text
@@ -218,7 +218,7 @@ Los datos del beacon no viajan en el `POST`.
   `0x2D`). Su equivalente hexadecimal, que es lo que viaja por el aire y lo que
   filtra la app, es `45505347-2D47-5449-2D50-524F592D4D4A`
   (`UUID_BUSCADA`).
-- **Deduplicación por medición, no por dispositivo:** la misma placa emite CO2
+- **Deduplicación por medición, no por dispositivo:** la misma placa emite Ozono
   y temperatura con la misma MAC; si se dedujera solo por MAC, solo se
   registraría la primera medición. Por eso la clave es
   `direccion | major | minor`.

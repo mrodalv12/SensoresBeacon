@@ -58,4 +58,4 @@ CREATE TABLE Mediciones (
 INSERT INTO Mediciones
     (tipo_de_medicion, nombre_cliente, valor)
 VALUES
-    ('co2', 'GTI-3A-MJ', 812);
+    ('ozono', 'GTI-3A-MJ', 812);

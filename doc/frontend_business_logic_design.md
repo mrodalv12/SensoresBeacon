@@ -63,7 +63,7 @@ obtenerMedicion() --> [ Medicion ]          (PHP, logicaWeb.php)
 ```
 
 - Hace una petición HTTP GET al servidor REST (`GET /mediciones`).
-- Filtra el subconjunto que la GUI muestra (`co2`, `temperatura`).
+- Filtra el subconjunto que la GUI muestra (`ozono`, `temperatura`).
 - Devuelve las últimas 10 mediciones; si el servidor no responde, devuelve
   `[ ]`.
 
@@ -93,7 +93,7 @@ errorActual() --> Text
 - **Encapsulated communication:** la GUI nunca ve `fetch`, `XMLHttpRequest` ni
   URL REST; solo llama a `mediciones.obtenerMedicion()`.
 - **Filtro de subconjunto:** la página web muestra únicamente
-  `co2` y `temperatura` (aunque la base de datos admita también `ruido`);
+  `ozono` y `temperatura` (aunque la base de datos admita también `ruido`);
   el filtro vive en esta capa, no en la GUI.
 - La URL del REST en el proxy PHP admite configuración por entorno; por defecto
   `localhost:8080`.

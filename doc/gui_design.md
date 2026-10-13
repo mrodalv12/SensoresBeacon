@@ -4,7 +4,7 @@
 
 **Component:** `gui` — Interfaz de usuario web en `src/gui/`.
 
-Muestra las mediciones de CO₂ y temperatura como una página web servida por
+Muestra las mediciones de Ozono y temperatura como una página web servida por
 PHP (HTML + CSS + JavaScript de cliente). La verificación de diseño de la GUI
 queda fuera del alcance de la revisión; aquí solo se documenta textualmente
 cada pantalla. La GUI consume exclusivamente la lógica de negocio de cliente
@@ -20,11 +20,11 @@ cada pantalla. La GUI consume exclusivamente la lógica de negocio de cliente
    - **Aviso de error** (`#error-container`, oculto): se rellena vía el proxy
      `mediciones.errorActual()` cuando el servidor REST no responde.
    - **Dos tarjetas** con la última lectura de cada magnitud:
-     - Tarjeta **CO₂** (ppm): valor redondeado.
+     - Tarjeta **Ozono** (ppm): valor redondeado.
      - Tarjeta **Temperatura** (°C): valor con 1 decimal.
      - Valor por defecto `--` hasta que llegan datos.
    - **Historial**: tabla con tres columnas — *Fecha y hora*, *Medición*,
-     *Valor* — con las últimas 10 mediciones (`co2`/`temperatura`).
+     *Valor* — con las últimas 10 mediciones (`ozono`/`temperatura`).
 3. **Barra inferior** — franja decorativa, pareja de la superior.
 4. **Nota de refresco** (`#proxima-actualizacion`): informa cada cuánto se
    actualizan los datos.
@@ -34,7 +34,7 @@ cada pantalla. La GUI consume exclusivamente la lógica de negocio de cliente
 - El renderizado inicial lo hace `index.php` (PHP) leyendo
   `frontend_business_logic` (primeras 10 filas como HTML, escapadas con
   `htmlspecialchars`).
-- `js/app.js` refresca tarjetas y tabla cada 5 minutos llamando al proxy
+- `js/app.js` refresca tarjetas y tabla cada 1 minuto llamando al proxy
   `mediciones.obtenerMedicion()` (sin `fetch` en la GUI). El intervalo se
   configura en `INTERVALO_REFRESCO_MS` (milisegundos).
 

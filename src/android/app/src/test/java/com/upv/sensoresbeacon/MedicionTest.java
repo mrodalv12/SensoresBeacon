@@ -22,11 +22,11 @@ import org.junit.Test;
  */
 public class MedicionTest {
 
-    // asignarTipo(): los codigos 11, 12 y 13 se traducen a co2, temperatura y ruido.
+    // asignarTipo(): los codigos 11, 12 y 13 se traducen a ozono, temperatura y ruido.
     @Test
     public void asignarTipoReconoceLosTresTiposDeMedicion() {
         Medicion medicion = new Medicion();
-        assertEquals("co2", medicion.asignarTipo(11));
+        assertEquals("ozono", medicion.asignarTipo(11));
         assertEquals("temperatura", medicion.asignarTipo(12));
         assertEquals("ruido", medicion.asignarTipo(13));
     }
@@ -36,7 +36,7 @@ public class MedicionTest {
     public void asignarTipoGuardaElResultadoEnLaVariable() {
         Medicion medicion = new Medicion(2450);
         medicion.asignarTipo(11);
-        assertEquals("co2", medicion.getTipoDeMedicion());
+        assertEquals("ozono", medicion.getTipoDeMedicion());
         assertEquals(2450.0, medicion.getValor(), 0.0001);
     }
 
@@ -51,7 +51,7 @@ public class MedicionTest {
     // MedicionesID: conserva los codigos 11, 12 y 13, y son los tres unicos.
     @Test
     public void laEnumeracionMantieneLosCodigosDelEnunciado() {
-        assertEquals(11, MedicionesID.co2.getCodigo());
+        assertEquals(11, MedicionesID.ozono.getCodigo());
         assertEquals(12, MedicionesID.temperatura.getCodigo());
         assertEquals(13, MedicionesID.ruido.getCodigo());
         assertEquals(3, MedicionesID.values().length);
@@ -77,13 +77,13 @@ public class MedicionTest {
         assertEquals(23.0, medicion.getValor(), 0.0001);
     }
 
-    // desdeTrama(): con major de CO2 el valor devuelto es el minor, en ppm.
+    // desdeTrama(): con major de Ozono el valor devuelto es el minor, en ppm.
     @Test
-    public void desdeTramaConCo2YCO2DaElValorEnPpm() {
+    public void desdeTramaConOzonoDaElValorEnPpm() {
         TramaIBeacon trama = new TramaIBeacon(
                 TramaIBeaconTest.tramaCompleta((11 << 8) + 1, 8120, -70));
         Medicion medicion = Medicion.desdeTrama(trama);
-        assertEquals("co2", medicion.getTipoDeMedicion());
+        assertEquals("ozono", medicion.getTipoDeMedicion());
         assertEquals(812.0, medicion.getValor(), 0.0001);
     }
 
@@ -127,7 +127,7 @@ public class MedicionTest {
         for (int contador = 0; contador < 256; contador++) {
             TramaIBeacon trama = new TramaIBeacon(
                     TramaIBeaconTest.tramaCompleta((11 << 8) + contador, 500, -60));
-            assertEquals("co2", Medicion.desdeTrama(trama).getTipoDeMedicion());
+            assertEquals("ozono", Medicion.desdeTrama(trama).getTipoDeMedicion());
         }
     }
 

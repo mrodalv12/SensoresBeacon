@@ -719,7 +719,7 @@ public class MainActivity extends androidx.appcompat.app.AppCompatActivity {
     //
     // La direccion MAC identifica fisicamente a la emisora. Se usa sola para
     // nombrar el dispositivo, nunca para descartar anuncios: la misma placa
-    // emite CO2 y temperatura con la misma MAC, asi que deduplicar solo por
+    // emite Ozono y temperatura con la misma MAC, asi que deduplicar solo por
     // MAC haria desaparecer todas las mediciones menos la primera.
     //--------------------
     public String direccionMac(ScanResult resultado, String nombre) {

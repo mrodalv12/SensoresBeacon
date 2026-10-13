@@ -102,15 +102,15 @@ public class DeteccionRealTest {
         TramaIBeacon trama = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 7, 2450, 4));
         assertEquals(11, trama.getTipoDeMedicionComoInt());
         assertEquals(7, trama.getContadorComoInt());
-        assertEquals("co2", Medicion.desdeTrama(trama).getTipoDeMedicion());
+        assertEquals("ozono", Medicion.desdeTrama(trama).getTipoDeMedicion());
     }
 
-    // la misma emisora publica tanto CO2 como temperatura.
+    // la misma emisora publica tanto Ozono como temperatura.
     @Test
-    public void laMismaEmisoraEmiteCO2YTemperatura() {
-        TramaIBeacon co2 = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 3, 812, 4));
+    public void laMismaEmisoraEmiteOzonoYTemperatura() {
+        TramaIBeacon ozono = new TramaIBeacon(anuncioDelEmisor((11 << 8) + 3, 812, 4));
         TramaIBeacon temperatura = new TramaIBeacon(anuncioDelEmisor((12 << 8) + 3, 23, 4));
-        assertEquals("co2", Medicion.desdeTrama(co2).getTipoDeMedicion());
+        assertEquals("ozono", Medicion.desdeTrama(ozono).getTipoDeMedicion());
         assertEquals("temperatura", Medicion.desdeTrama(temperatura).getTipoDeMedicion());
     }
 
@@ -119,9 +119,9 @@ public class DeteccionRealTest {
     public void dosMedicionesDistintasDeLaMismaPlacaNoSeDescartan() {
         // La placa tiene MAC fija: si la deduplicacion usara solo la MAC, la
         // temperatura se perderia siempre y la app pareceria apagada.
-        String co2 = MainActivity.claveDeMedicion(MAC, (11 << 8) + 3, 812);
+        String ozono = MainActivity.claveDeMedicion(MAC, (11 << 8) + 3, 812);
         String temperatura = MainActivity.claveDeMedicion(MAC, (12 << 8) + 3, 23);
-        assertNotEquals(co2, temperatura);
+        assertNotEquals(ozono, temperatura);
     }
 
     // un anuncio repetido se descarta, para no enviarlo dos veces.

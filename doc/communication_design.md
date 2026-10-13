@@ -92,7 +92,7 @@ handleGetMediciones() --> [ Medicion ]
 
 - La validación de tipos de esta capa es sintáctica (presencia y tipo de
   campo); el dominio del tipo de medición responde al enum
-  `TipoMedicion = { co2, temperatura, ruido }` documentado en
+  `TipoMedicion = { ozono, temperatura, ruido }` documentado en
   `business_logic_design.md` y lo aporta la aplicación móvil.
 - El campo `nombre_emisora` del POST es el **nombre del cliente**: la capa de
   comunicación lo reenvía dentro del `medicion` que entrega a la lógica, y la

@@ -22,7 +22,7 @@
 //--------------------
 // obtenerMedicion() --> [ Medicion ]
 //   Pide las mediciones al servidor REST por HTTP, se queda solo con los tipos
-//   que la pagina debe mostrar (co2 y temperatura) y devuelve las ultimas 10;
+//   que la pagina debe mostrar (ozono y temperatura) y devuelve las ultimas 10;
 //   si el servidor no responde o devuelve un error, devuelve una lista vacia.
 //--------------------
 function obtenerMedicion() {
@@ -52,9 +52,9 @@ function obtenerMedicion() {
         return [];
     }
 
-    // La pagina solo muestra mediciones de co2 y temperatura; el servidor REST
+    // La pagina solo muestra mediciones de ozono y temperatura; el servidor REST
     // acepta cualquier tipo (ruido, distancia, etc.), asi que se filtran aqui.
-    $tiposPermitidos = ['co2', 'temperatura'];
+    $tiposPermitidos = ['ozono', 'temperatura'];
     $data = array_values(array_filter($data, function ($m) use ($tiposPermitidos) {
         $tipo = isset($m['tipo']) ? strtolower(trim((string)$m['tipo'])) : '';
         return in_array($tipo, $tiposPermitidos, true);

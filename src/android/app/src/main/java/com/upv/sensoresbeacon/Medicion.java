@@ -3,7 +3,7 @@ package com.upv.sensoresbeacon;
 
 //==============================================================================================
 //Nombre: Medicion.java
-//Descripcion: Modelo de datos de una medicion: su tipo (CO2, temperatura o ruido) y su
+//Descripcion: Modelo de datos de una medicion: su tipo (Ozono, temperatura o ruido) y su
 //              valor, construida a partir de una trama iBeacon.
 //Copyright:
 //Fecha de creacion: 2026-10-01
@@ -84,7 +84,7 @@ public class Medicion {
     //--------------------
     // --> getTipoDeMedicion() <--
     //
-    // devuelve el tipo de la medicion: co2, temperatura o ruido.
+    // devuelve el tipo de la medicion: ozono, temperatura o ruido.
     //--------------------
     public String getTipoDeMedicion() {
         return tipoDeMedicion;

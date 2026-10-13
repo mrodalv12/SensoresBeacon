@@ -199,7 +199,7 @@ public class LogicaFakeTest {
         logica.guardarMedicion(medicion, EMISORA);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals("co2", cuerpo.getString("tipo"));
+        assertEquals("ozono", cuerpo.getString("tipo"));
         assertEquals(612.0, cuerpo.getDouble("valor"), 0.0001);
         assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
         assertFalse(cuerpo.has("uuid"));

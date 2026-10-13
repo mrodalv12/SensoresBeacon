@@ -45,7 +45,7 @@ CONSTRAINTS:
 - **`id`** es la clave primaria generada por SQLite; con ella se ordenan las
   lecturas en `obtenerUltimas10()`.
 - **`tipo_de_medicion`** responde al enum de la app móvil
-  `TipoMedicion = { co2, temperatura, ruido }` (ver `business_logic_design.md`).
+  `TipoMedicion = { ozono, temperatura, ruido }` (ver `business_logic_design.md`).
 - **`nombre_cliente`** guarda el *nombre de emisora* (`nombre_emisora`) que
   envía la app: en la base de datos se llama `nombre_cliente` y es igual al
   nombre del cliente.
@@ -65,7 +65,7 @@ CONSTRAINTS:
 - El fichero `src/database/mediciones.sqbpro` es el proyecto de DB Browser for
   SQLite (edición visual) y no afecta al funcionamiento.
 - **Sin `CHECK` en el esquema real:** el dominio finito de `tipo_de_medicion`
-  (`co2`, `temperatura`, `ruido`) y la no-negatividad de `valor` son convenciones
+  (`ozono`, `temperatura`, `ruido`) y la no-negatividad de `valor` son convenciones
   que aplica la aplicación/la lógica de negocio, no `CHECK` de la base de datos;
   el diseño refleja el esquema tal cual está implementado en `mediciones.sql`.
 
