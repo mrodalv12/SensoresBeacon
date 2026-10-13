@@ -54,10 +54,10 @@ $db = new PDO("sqlite:" . getenv("DB_PATH"));
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 if (($cmd["accion"] ?? "") === "guardar") {
     $d = $cmd["datos"] ?? [];
-    $st = $db->prepare("INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor, fecha_y_hora) VALUES (:tipo, :nombre, :valor, strftime('%Y-%m-%d %H:%M:%f','now','localtime'))");
-    $st->execute([":tipo" => $d["tipo_de_medicion"] ?? "", ":nombre" => $d["nombre_cliente"] ?? "", ":valor" => $d["valor"] ?? 0]);
+    $st = $db->prepare("INSERT INTO Mediciones (tipo_de_medicion, identificador_placa, valor, fecha_y_hora) VALUES (:tipo, :identificador, :valor, strftime('%Y-%m-%d %H:%M:%f','now','localtime'))");
+    $st->execute([":tipo" => $d["tipo_de_medicion"] ?? "", ":identificador" => $d["identificador_placa"] ?? "", ":valor" => $d["valor"] ?? 0]);
     $fecha = $db->query("SELECT fecha_y_hora FROM Mediciones WHERE rowid = last_insert_rowid()")->fetchColumn();
-    echo json_encode(["nombre_cliente" => $d["nombre_cliente"] ?? "", "fecha_y_hora" => $fecha]);
+    echo json_encode(["identificador_placa" => $d["identificador_placa"] ?? "", "fecha_y_hora" => $fecha]);
 } else {
     $rows = $db->query("SELECT fecha_y_hora, tipo_de_medicion, valor FROM Mediciones ORDER BY fecha_y_hora ASC")->fetchAll(PDO::FETCH_ASSOC);
     $out = [];
@@ -84,15 +84,15 @@ function ejecutarPhp(entrada) {
 }
 
 //--------------------
-// datos: MedicionNueva --> guardar() --> { nombre_cliente: Text, fecha_y_hora: Text }
+// datos: MedicionNueva --> guardar() --> { identificador_placa: Text, fecha_y_hora: Text }
 //   Inserta la medicion en SQLite a traves del puente PHP y devuelve la clave
-//   compuesta (emisora + fecha/hora con milisegundos). Solo guarda tipo, nombre
-//   de cliente (nombre_emisora = nombre_cliente), valor y fecha_y_hora.
+//   compuesta (identificador de placa + fecha/hora con milisegundos). Solo
+//   guarda tipo, identificador de placa, valor y fecha_y_hora.
 //--------------------
 function guardar(datos) {
     const tipo = datos.tipo_de_medicion || datos.tipo || '';
     const valor = datos.valor || 0;
-    const nombre = datos.nombre_cliente || datos.nombre_emisora || datos.nombreEmisora || '';
+    const identificador = datos.identificador_placa || datos.identificadorPlaca || '';
 
     // fecha_y_hora se genera explicitamente en hora LOCAL del sistema con
     // strftime('%Y-%m-%d %H:%M:%f','now','localtime') (con milisegundos),
@@ -100,7 +100,7 @@ function guardar(datos) {
     // devuelve UTC y desfasaria la hora.
     const entrada = JSON.stringify({
         accion: 'guardar',
-        datos: { tipo_de_medicion: tipo, nombre_cliente: nombre, valor: valor }
+        datos: { tipo_de_medicion: tipo, identificador_placa: identificador, valor: valor }
     });
 
     try {

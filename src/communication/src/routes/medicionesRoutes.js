@@ -29,7 +29,7 @@ const HTTP_INTERNAL_SERVER_ERROR = 500;
 
 //--------------------
 // cuerpo: Text --> handlePostMediciones() --> codigo: Z
-//   Recibe medicion = (tipo: Text, valor: R, nombre_emisora: Text?) por el
+//   Recibe medicion = (tipo: Text, valor: R, identificador_placa: Text?) por el
 //   cuerpo JSON, la valida y delega en la logica de negocio; responde
 //   201/400/500. Los datos del beacon (uuid, txPower, major, minor, rssi) no
 //   se envian en el POST.
@@ -52,7 +52,7 @@ function handlePostMediciones(req, res) {
             // Campos del contrato POST
             const tipo = parsed.tipo;
             const valor = parsed.valor;
-            const nombreEmisora = parsed.nombre_emisora;
+            const identificadorPlaca = parsed.identificador_placa;
 
             // Validación básica (tipos)
             if (tipo === undefined || valor === undefined) {
@@ -74,17 +74,17 @@ function handlePostMediciones(req, res) {
                 res.end(JSON.stringify({ error: 'valor debe ser R (número real)' }));
                 return;
             }
-            if (nombreEmisora !== undefined && typeof nombreEmisora !== 'string') {
+            if (identificadorPlaca !== undefined && typeof identificadorPlaca !== 'string') {
                 res.writeHead(HTTP_BAD_REQUEST, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'nombre_emisora debe ser Text' }));
+                res.end(JSON.stringify({ error: 'identificador_placa debe ser Text' }));
                 return;
             }
 
             // Preparar la medicion para la Lógica de Negocio (única
             // responsabilidad del servidor REST: validar y delegar)
             const medicion = { tipo: tipo, valor: valor };
-            if (nombreEmisora !== undefined) {
-                medicion.nombre_emisora = nombreEmisora;
+            if (identificadorPlaca !== undefined) {
+                medicion.identificador_placa = identificadorPlaca;
             }
 
             // Llamada a la Lógica de Negocio (única responsabilidad del servidor REST)

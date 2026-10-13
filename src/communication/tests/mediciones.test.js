@@ -72,11 +72,11 @@ describe('Servidor REST - /mediciones', () => {
     });
 
     test('POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)', async () => {
-        // los tres campos del contrato: tipo, valor y nombre_emisora
+        // los tres campos del contrato: tipo, valor e identificador_placa
         const body = JSON.stringify({
             tipo: 'temperatura',
             valor: 23.5,
-            nombre_emisora: 'GTI-3A-MJ'
+            identificador_placa: 'GTI-3A-MJ'
         });
         const res = await makeRequest('POST', '/mediciones', body);
         assert.strictEqual(res.statusCode, 201);

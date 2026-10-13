@@ -11,7 +11,7 @@ la base de datos.
 ### 1.1 External Transport Contract
 
 ```
-POST /mediciones  ->  cuerpo: ( tipo: Text, valor: R, nombre_emisora: Text? )
+POST /mediciones  ->  cuerpo: ( tipo: Text, valor: R, identificador_placa: Text? )
                   ->  201 (ok) / 400 (entrada invalida) / 500 (error interno)
 
 GET  /mediciones  ->  [] u objeto vacio si no hay, lista JSON de [ Medicion ]
@@ -26,7 +26,7 @@ Tipos abstractos de dominio utilizados (ver `business_logic_design.md`):
 
 ```text
 Medicion  = ( fecha_y_hora: Text, tipo: Text, valor: R )
-MedicionNueva = ( tipo: Text, valor: R, nombre_cliente: Text )
+MedicionNueva = ( tipo: Text, valor: R, identificador_placa: Text )
 ```
 
 ### 1.2 Class/Module Diagram
@@ -74,8 +74,8 @@ cuerpo: Text --> handlePostMediciones() --> codigo: Z
 ```
 
 - Valida los campos obligatorios y sus tipos (Text para `tipo` y
-  `nombre_emisora` opcional, número real finito para `valor`).
-- Construye `medicion = (tipo, valor, nombre_emisora?)` y delega en
+  `identificador_placa` opcional, número real finito para `valor`).
+- Construye `medicion = (tipo, valor, identificador_placa?)` y delega en
   `business_logic.guardarMedicion()`.
 - Ignora cualquier campo desconocido del cuerpo (los datos del beacon no
   llegan, pero la capa no falla si alguien los envía).
@@ -94,14 +94,14 @@ handleGetMediciones() --> [ Medicion ]
   campo); el dominio del tipo de medición responde al enum
   `TipoMedicion = { ozono, temperatura, ruido }` documentado en
   `business_logic_design.md` y lo aporta la aplicación móvil.
-- El campo `nombre_emisora` del POST es el **nombre del cliente**: la capa de
-  comunicación lo reenvía dentro del `medicion` que entrega a la lógica, y la
-  lógica lo persiste en la columna `nombre_cliente` de la base de datos (ver
-  `database_design.md`).
+- El campo `identificador_placa` del POST es el **identificador de la placa
+  emisora**: la capa de comunicación lo reenvía dentro del `medicion` que
+  entrega a la lógica, y la lógica lo persiste en la columna
+  `identificador_placa` de la base de datos (ver `database_design.md`).
 - **Los datos del beacon no llegan hasta aquí:** `rssi`, `txPower`, `major`,
   `minor` y `uuid` se quedan en la aplicación Android; la `uuid` solo se usa en
   la app para filtrar el iBeacon. El contrato del POST se limita a `tipo`,
-  `valor` y `nombre_emisora`, y ninguno de ellos se persiste como beacon.
+  `valor` y `identificador_placa`, y ninguno de ellos se persiste como beacon.
 
 ## 3. General Rules
 

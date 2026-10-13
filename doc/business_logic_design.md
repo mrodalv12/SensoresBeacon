@@ -15,7 +15,7 @@ contrato definido en `database_design.md`).
 ```text
 TipoMedicion = { ozono, temperatura, ruido }
 
-MedicionNueva = ( tipo: TipoMedicion, valor: R, nombre_cliente: Text )
+MedicionNueva = ( tipo: TipoMedicion, valor: R, identificador_placa: Text )
 
 Medicion = ( fecha_y_hora: Text, tipo: Text, valor: R )
 
@@ -33,7 +33,7 @@ Repositorio = ( guardar(), obtenerUltimas10() )   // interfaz de acceso a datos
 repositorio: Repositorio --> LogicaNegocio() -->
          |
          |
-medicion: MedicionNueva --> guardarMedicion() --> (ok: B, nombre_cliente: Text, fecha_y_hora: Text)
+medicion: MedicionNueva --> guardarMedicion() --> (ok: B, identificador_placa: Text, fecha_y_hora: Text)
          |
          |
          |        obtenerMedicion() <-- [ Medicion ]
@@ -46,7 +46,7 @@ medicion: MedicionNueva --> guardarMedicion() --> (ok: B, nombre_cliente: Text, 
          --------- Repositorio (interfaz) ----------------------
          |
          |
-datos: MedicionNueva --> guardar() --> (nombre_cliente: Text, fecha_y_hora: Text)
+datos: MedicionNueva --> guardar() --> (identificador_placa: Text, fecha_y_hora: Text)
          |
          |
          |        obtenerUltimas10() <-- [ Medicion ]
@@ -63,14 +63,14 @@ repositorio: Repositorio --> LogicaNegocio( ) --> nueva instancia
 - Guarda la referencia al repositorio con el que trabajará la lógica.
 
 ```text
-medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, nombre_cliente: Text, fecha_y_hora: Text )
+medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, identificador_placa: Text, fecha_y_hora: Text )
 ```
 
 - Normaliza la medición: `tipo` como texto (de `TipoMedicion`), `valor` como
-  `R`, y `nombre_cliente` como texto (el nombre de emisora = nombre del
-  cliente que envía la app).
+  `R`, y `identificador_placa` como texto (el identificador de la placa emisora
+  que envía la app).
 - Delega el alta en el repositorio (`guardar()`) y devuelve la clave compuesta
-  (`nombre_cliente`, `fecha_y_hora`).
+  (`identificador_placa`, `fecha_y_hora`).
 
 ```text
 obtenerMedicion() --> [ Medicion ]
@@ -86,7 +86,7 @@ definida en `database_design.md`:
 
 | Operación | Tabla de `database_design.md` | Columnas implicadas |
 |---|---|---|
-| `guardar()` | `Mediciones` | `tipo_de_medicion`, `nombre_cliente`, `valor` (INSERT) |
+| `guardar()` | `Mediciones` | `tipo_de_medicion`, `identificador_placa`, `valor` (INSERT) |
 | `obtenerUltimas10()` | `Mediciones` | `fecha_y_hora`, `tipo_de_medicion`, `valor` (SELECT, orden por `fecha_y_hora`) |
 
 ## 2. Design Clarifications
@@ -94,7 +94,7 @@ definida en `database_design.md`:
 - **Los datos del beacon no llegan a esta capa:** `rssi`, `txPower`, `major`,
   `minor` y `uuid` se quedan en la aplicación Android (la `uuid` solo se usa
   ahí para buscar el iBeacon) y no se envían en el `POST`. `guardarMedicion()`
-  recibe únicamente `MedicionNueva = (tipo, valor, nombre_cliente)`, es decir,
+  recibe únicamente `MedicionNueva = (tipo, valor, identificador_placa)`, es decir,
   solo tipos de dominio; ningún transporte ni cabecera.
 - **Varias implementaciones, un solo contrato:** existen variantes
   (`logicaNegocio.js`, `logicaNegocioConRepositorio.js`,

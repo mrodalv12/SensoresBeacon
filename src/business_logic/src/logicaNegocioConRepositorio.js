@@ -28,8 +28,8 @@ class LogicaNegocio {
 
     //--------------------
     // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
-    //   Normaliza tipo, valor y nombre y delega el alta en el repositorio.
-    //   No recibe datos del beacon.
+    //   Normaliza tipo, valor e identificador de placa y delega el alta en el
+    //   repositorio. No recibe datos del beacon.
     //--------------------
     guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
@@ -38,7 +38,7 @@ class LogicaNegocio {
         const datos = {
             tipo_de_medicion: typeof tipo === 'string' ? tipo : String(tipo || 'desconocido'),
             valor: Number(valor || 0),
-            nombre_emisora: medicion && (medicion.nombreEmisora || medicion.nombre_emisora) || ''
+            identificador_placa: medicion && (medicion.identificadorPlaca || medicion.identificador_placa) || ''
         };
 
         const resultado = this.repositorio.guardar(datos);

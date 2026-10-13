@@ -131,11 +131,11 @@ public class LogicaFakeIntegracionTest {
 
         String cuerpo = bruto.substring(bruto.indexOf("{\"tipo\""));
         JSONObject json = new JSONObject(cuerpo);
-        // solo tipo, valor y nombre_emisora: ningun campo del beacon.
+        // solo tipo, valor e identificador_placa: ningun campo del beacon.
         assertEquals(3, json.length());
         assertEquals("temperatura", json.getString("tipo"));
         assertEquals(2450.0, json.getDouble("valor"), 0.0001);
-        assertEquals("GTI-3A-MJ", json.getString("nombre_emisora"));
+        assertEquals("GTI-3A-MJ", json.getString("identificador_placa"));
     }
 
     // el codigo 200 del servidor se interpreta como peticion aceptada.

@@ -24,8 +24,8 @@ const logica = new LogicaNegocioSQLitePhpAsync(repo);
 
 class LogicaNegocioMediciones {
     //--------------------
-    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, nombre_cliente: Text, fecha_y_hora: Text )
-    //   Recibe la medicion del contrato POST (tipo, valor y nombre_emisora) y
+    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, identificador_placa: Text, fecha_y_hora: Text )
+    //   Recibe la medicion del contrato POST (tipo, valor e identificador_placa) y
     //   la pasa a la logica de negocio. Ningun dato del beacon viaja por aqui.
     //--------------------
     static async guardarMedicion(medicion) {

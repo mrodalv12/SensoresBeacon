@@ -26,13 +26,13 @@ describe('Lógica de Negocio - guardarMedicion', () => {
     });
 
     test('guardarMedicion acepta objeto medicion con tipo y valor', () => {
-        const medicion = { tipo: 'temperatura', valor: 23.5, nombreEmisora: 'GTI-3A-MJ' };
+        const medicion = { tipo: 'temperatura', valor: 23.5, identificadorPlaca: 'GTI-3A-MJ' };
         const resultado = guardarMedicion(medicion);
         
         assert.strictEqual(resultado.ok, true);
         assert.strictEqual(resultado.procesados.tipo, 'temperatura');
         assert.strictEqual(resultado.procesados.valor, 23.5);
-        assert.strictEqual(resultado.procesados.nombreEmisora, 'GTI-3A-MJ');
+        assert.strictEqual(resultado.procesados.identificadorPlaca, 'GTI-3A-MJ');
     });
 
     test('guardarMedicion maneja valores numéricos correctamente', () => {

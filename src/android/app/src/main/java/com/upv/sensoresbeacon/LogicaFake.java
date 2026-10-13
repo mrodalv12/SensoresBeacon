@@ -41,7 +41,7 @@ import org.json.JSONObject;
  * peticion POST contra el servidor REST (POST /mediciones), que sera quien
  * escriba los datos en la base de datos en el futuro.
  *
- * Por el POST solo viajan tipo, valor y nombre_emisora. Los datos del beacon
+ * Por el POST solo viajan tipo, valor e identificador_placa. Los datos del beacon
  * (uuid, txPower, major, minor) se quedan en la app: la uuid se usa unicamente
  * para buscar el iBeacon y los demas solo se muestran en pantalla.
  */
@@ -56,7 +56,7 @@ public class LogicaFake {
 
     private static final String C_TIPO = "tipo";
     private static final String C_VALOR = "valor";
-    private static final String C_NOMBRE_EMISORA = "nombre_emisora";
+    private static final String C_IDENTIFICADOR_PLACA = "identificador_placa";
 
     private Medicion medicion;
     private String urlServidor;
@@ -89,14 +89,14 @@ public class LogicaFake {
     }
 
     //--------------------
-    // medicion: Medicion, nombre_emisora: Text --> guardarMedicion() -->
+    // medicion: Medicion, identificador_placa: Text --> guardarMedicion() -->
     //
     // Realiza el POST /mediciones con los tres campos del contrato: tipo, valor
-    // y nombre_emisora. Los datos del beacon no viajan en la peticion.
+    // e identificador_placa. Los datos del beacon no viajan en la peticion.
     //--------------------
-    public void guardarMedicion(Medicion medicion, String nombre_emisora) {
+    public void guardarMedicion(Medicion medicion, String identificador_placa) {
         this.medicion = medicion == null ? new Medicion() : medicion;
-        String cuerpo = construirCuerpo(nombre_emisora);
+        String cuerpo = construirCuerpo(identificador_placa);
 
         peticionario = new PeticionarioREST(
                 PeticionarioREST.METODO_POST, urlServidor, cuerpo, transporte);
@@ -106,16 +106,16 @@ public class LogicaFake {
     }
 
     //--------------------
-    // nombre_emisora: Text --> construirCuerpo() --> cuerpo: Text
+    // identificador_placa: Text --> construirCuerpo() --> cuerpo: Text
     //
-    // Serializa en JSON la medicion (tipo y valor) con el nombre de la emisora.
+    // Serializa en JSON la medicion (tipo y valor) con el identificador de placa.
     //--------------------
-    public String construirCuerpo(String nombre_emisora) {
+    public String construirCuerpo(String identificador_placa) {
         JSONObject cuerpo = new JSONObject();
         try {
             cuerpo.put(C_TIPO, medicion.getTipoDeMedicion());
             cuerpo.put(C_VALOR, medicion.getValor());
-            cuerpo.put(C_NOMBRE_EMISORA, nombre_emisora == null ? "" : nombre_emisora);
+            cuerpo.put(C_IDENTIFICADOR_PLACA, identificador_placa == null ? "" : identificador_placa);
         } catch (JSONException e) {
             Log.e(ETIQUETA, "No se pudo construir el cuerpo JSON: " + e.getMessage());
             return "{}";

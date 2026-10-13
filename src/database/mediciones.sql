@@ -6,10 +6,10 @@
 --         Seccion 2 (Enumerations)            -> tipos con dominio finito
 --         Seccion 3 (Variable Naming)         -> identificadores en minuscula,
 --                                                tipos en PascalCase
--- Nota  : La tabla guarda unicamente tipo de medicion, nombre de cliente,
---         valor y fecha/hora. El "nombre de emisora" que envia la app en el
---         campo nombre_emisora es el nombre del cliente: aqui se almacena en
---         la columna nombre_cliente.
+-- Nota  : La tabla guarda unicamente tipo de medicion, identificador de placa,
+--         valor y fecha/hora. El identificador de la placa emisora que envia la
+--         app en el campo identificador_placa se almacena en la columna
+--         identificador_placa.
 -- ============================================================================
 
 CREATE TABLE Mediciones (
@@ -21,10 +21,10 @@ CREATE TABLE Mediciones (
     tipo_de_medicion TEXT     NOT NULL,
 
     -- Text -> TEXT NOT NULL (obligatorio).
-    -- Es el nombre de emisora que envia la app (nombre_emisora) = nombre del
-    -- cliente. Se almacena como nombre_cliente.
+    -- Es el identificador de la placa emisora que envia la app
+    -- (identificador_placa). Se almacena como identificador_placa.
 
-    nombre_cliente   TEXT     NOT NULL,
+    identificador_placa TEXT  NOT NULL,
 
     -- R (Real Numbers) -> REAL NOT NULL
     -- REAL es el unico tipo con afinidad REAL (punto flotante IEEE 754).
@@ -42,10 +42,10 @@ CREATE TABLE Mediciones (
 
     fecha_y_hora     DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f','now','localtime')),
 
-    -- Clave primaria compuesta: la identidad natural de la fila es la emisora
-    -- mas la marca de tiempo. Se prescinde de una columna id autonumerica.
+    -- Clave primaria compuesta: la identidad natural de la fila es la placa
+    -- emisora mas la marca de tiempo. Se prescinde de una columna id autonumerica.
 
-    PRIMARY KEY (nombre_cliente, fecha_y_hora)
+    PRIMARY KEY (identificador_placa, fecha_y_hora)
 );
 
 -- ----------------------------------------------------------------------------
@@ -55,6 +55,6 @@ CREATE TABLE Mediciones (
 -- Reconstruir la base desde cero:
 --     sqlite3 mediciones.db < mediciones.sql
 INSERT INTO Mediciones
-    (tipo_de_medicion, nombre_cliente, valor)
+    (tipo_de_medicion, identificador_placa, valor)
 VALUES
     ('ozono', 'GTI-3A-MJ', 812);

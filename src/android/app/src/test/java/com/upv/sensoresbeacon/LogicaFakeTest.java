@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Pruebas de la logica fake: debe lanzar una peticion POST a /mediciones con
- * tipo, valor y nombre_emisora. Los datos del beacon (uuid, txPower, major,
+ * tipo, valor e identificador_placa. Los datos del beacon (uuid, txPower, major,
  * minor y rssi) no se envian: se quedan en la app.
  */
 public class LogicaFakeTest {
@@ -85,7 +85,7 @@ public class LogicaFakeTest {
         assertFalse(cuerpo.has("major"));
         assertFalse(cuerpo.has("minor"));
         assertFalse(cuerpo.has("rssi"));
-        assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
+        assertEquals(EMISORA, cuerpo.getString("identificador_placa"));
     }
 
     // el cuerpo del POST contiene exactamente los tres campos del contrato.
@@ -97,7 +97,7 @@ public class LogicaFakeTest {
         assertEquals(3, cuerpo.length());
         assertTrue(cuerpo.has("tipo"));
         assertTrue(cuerpo.has("valor"));
-        assertTrue(cuerpo.has("nombre_emisora"));
+        assertTrue(cuerpo.has("identificador_placa"));
         assertTrue(cuerpo.get("valor") instanceof Number);
         assertTrue(cuerpo.get("tipo") instanceof String);
     }
@@ -158,13 +158,13 @@ public class LogicaFakeTest {
         assertEquals(MedicionesID.TIPO_DESCONOCIDO, cuerpo.getString("tipo"));
     }
 
-    // un nombre nulo se convierte en cadena vacia.
+    // un identificador de placa nulo se convierte en cadena vacia.
     @Test
-    public void nombreEmisoraYNulosSeNormalizanACadenaVacia() throws Exception {
+    public void identificadorPlacaYNulosSeNormalizanACadenaVacia() throws Exception {
         logica.guardarMedicion(new Medicion(1), null);
 
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
-        assertEquals("", cuerpo.getString("nombre_emisora"));
+        assertEquals("", cuerpo.getString("identificador_placa"));
     }
 
     // la logica guarda la ultima peticion realizada, para poder inspeccionarla.
@@ -201,7 +201,7 @@ public class LogicaFakeTest {
         JSONObject cuerpo = new JSONObject(transporte.getUltimaLlamada().cuerpo);
         assertEquals("ozono", cuerpo.getString("tipo"));
         assertEquals(612.0, cuerpo.getDouble("valor"), 0.0001);
-        assertEquals(EMISORA, cuerpo.getString("nombre_emisora"));
+        assertEquals(EMISORA, cuerpo.getString("identificador_placa"));
         assertFalse(cuerpo.has("uuid"));
         assertFalse(cuerpo.has("major"));
         assertFalse(cuerpo.has("minor"));

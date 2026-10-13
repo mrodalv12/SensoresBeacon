@@ -19,15 +19,14 @@ software:
 1. La **placa emisora** publica cada medición como un anuncio iBeacon.
 2. La **app Android** escanea los iBeacon, filtra por UUID, decodifica la trama
    y deduce el tipo de medición y el valor. Hace un `POST` al servidor REST con
-   **solo tres campos**: `tipo`, `valor` y `nombre_emisora`. Los datos del
+   **solo tres campos**: `tipo`, `valor` e `identificador_placa`. Los datos del
    beacon (`rssi`, `txPower`, `major`, `minor` y `uuid`) se quedan en la app: la
    UUID solo se usa allí para buscar el iBeacon.
 3. El **servidor REST** valida el JSON recibido y se lo pasa a la **lógica de
    negocio**.
 4. La **lógica de negocio** normaliza los datos y los persiste en una base de
-   datos **SQLite**: `tipo_de_medicion`, `nombre_cliente` (el `nombre_emisora`
-   de la app), `valor` y `fecha_y_hora`. Ningún dato del beacon
-   llega hasta aquí.
+   datos **SQLite**: `tipo_de_medicion`, `identificador_placa`, `valor` y
+   `fecha_y_hora`. Ningún dato del beacon llega hasta aquí.
 5. La **página web** consulta el servidor por `GET` y representa las últimas diez
    mediciones.
 
@@ -200,21 +199,22 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 {
   "tipo": "temperatura",
   "valor": 23.5,
-  "nombre_emisora": "GTI-3A-MJ"
+  "identificador_placa": "GTI-3A-MJ"
 }
 ```
 
 | Código | Significado |
 |---|---|
-| `201 Created` | Medición guardada. Responde `{ "status": "ok", "resultado": { "ok": true, "nombre_cliente": Text, "fecha_y_hora": Text } }` |
+| `201 Created` | Medición guardada. Responde `{ "status": "ok", "resultado": { "ok": true, "identificador_placa": Text, "fecha_y_hora": Text } }` |
 | `400 Bad Request` | Campo obligatorio ausente, tipo incorrecto o JSON malformado |
 | `500 Internal Server Error` | Fallo al guardar en la base de datos |
 
-`tipo` y `valor` son obligatorios; `nombre_emisora` es opcional y se guarda en
-la base de datos como `nombre_cliente`. El `POST` **no** lleva `rssi`,
-`txPower`, `major`, `minor` ni `uuid`: esos datos se quedan en la app Android
-(la UUID solo se usa allí para buscar el iBeacon). La tabla `Mediciones` guarda
-únicamente `tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
+`tipo` y `valor` son obligatorios; `identificador_placa` es opcional y se
+guarda en la base de datos en la columna `identificador_placa`. El `POST` **no**
+lleva `rssi`, `txPower`, `major`, `minor` ni `uuid`: esos datos se quedan en la
+app Android (la UUID solo se usa allí para buscar el iBeacon). La tabla
+`Mediciones` guarda únicamente `tipo_de_medicion`, `identificador_placa`,
+`valor` y `fecha_y_hora`.
 
 **`GET /mediciones`** — devuelve las últimas 10 mediciones.
 
@@ -239,20 +239,19 @@ documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 | Columna | Tipo SQLite | Nulable | Origen |
 |---|---|---|---|
 | `tipo_de_medicion` | `TEXT NOT NULL` | no | `tipo` del POST |
-| `nombre_cliente` | `TEXT NOT NULL` | no | `nombre_emisora` del POST |
+| `identificador_placa` | `TEXT NOT NULL` | no | `identificador_placa` del POST |
 | `valor` | `REAL NOT NULL` | no | `valor` del POST |
 | `fecha_y_hora` | `DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f','now','localtime'))` | no | generado por SQLite en hora **local**, con milisegundos |
 
-> **Clave primaria compuesta `(nombre_cliente, fecha_y_hora)`.** La tabla no
+> **Clave primaria compuesta `(identificador_placa, fecha_y_hora)`.** La tabla no
 > tiene columna `id`: la identidad de cada medición es la emisora más su marca
 > de tiempo. La `fecha_y_hora` lleva **milisegundos** para que dos mediciones
 > de la misma emisora en el mismo segundo no colisionen en la clave primaria.
 
-> **Nombre de emisora = nombre del cliente.** La app envía el nombre de la
-> emisora en el campo `nombre_emisora` de la petición; en la base de datos ese
-> dato es el **nombre del cliente** y se almacena en la columna
-> `nombre_cliente`. La tabla solo guarda esos cuatro datos: tipo de medición,
-> nombre del cliente, valor y fecha/hora.
+> **Identificador de placa.** La app envía el identificador de la placa emisora
+> en el campo `identificador_placa` de la petición; en la base de datos se
+> almacena en la columna `identificador_placa`. La tabla solo guarda esos cuatro
+> datos: tipo de medición, identificador de placa, valor y fecha/hora.
 
 El script incluye además una fila de ejemplo.
 
@@ -354,7 +353,7 @@ curl http://localhost:8080/mediciones
 
 curl -X POST http://localhost:8080/mediciones \
   -H 'Content-Type: application/json' \
-  -d '{"tipo":"ozono","valor":812,"nombre_emisora":"GTI-3A-MJ"}'
+  -d '{"tipo":"ozono","valor":812,"identificador_placa":"GTI-3A-MJ"}'
 ```
 
 La segunda orden debe responder `201 Created` con `{"status":"ok",...}`, y la
@@ -397,8 +396,8 @@ las últimas 10 mediciones.
 2. Seleccionar la placa **Adafruit Bluefruit LE** y el puerto USB correspondiente.
 3. Instalar las bibliotecas `BluefruitLE` y `Adafruit_TinyUSB`.
 4. Verificar en `Publicador.h` el nombre de la emisora (`"GTI-3A-MJ"`, el mismo
-   que envía la app en `nombre_emisora` y que en la base de datos se guarda como
-   `nombre_cliente`, el nombre del cliente) y el `beaconUUID`.
+   que envía la app en `identificador_placa` y que en la base de datos se guarda
+   en la columna `identificador_placa`) y el `beaconUUID`.
 5. Subir el programa con el botón de upload.
 
 Al arrancar, el `loop()` publica Ozono y temperatura cada 2 segundos con valores
@@ -473,7 +472,7 @@ curl -s http://localhost:8080/mediciones
 curl -s http://localhost:8000/frontend_business_logic/api/mediciones.php
 
 # 4. base de datos de nuevo: debe haber una fila más
-sqlite3 src/database/mediciones.db "SELECT tipo_de_medicion, nombre_cliente, valor, fecha_y_hora FROM Mediciones ORDER BY fecha_y_hora DESC LIMIT 3;"
+sqlite3 src/database/mediciones.db "SELECT tipo_de_medicion, identificador_placa, valor, fecha_y_hora FROM Mediciones ORDER BY fecha_y_hora DESC LIMIT 3;"
 ```
 
 Con la placa emitiendo y la app en marcha, el contador de filas debe aumentar
@@ -540,7 +539,7 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 | Prueba | Comprueba |
 |---|---|
 | `POST /mediciones - válida` | Responde `201` solo con `tipo` y `valor` (sin datos del beacon) |
-| `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "nombre_cliente": Text, "fecha_y_hora": Text } }` |
+| `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "identificador_placa": Text, "fecha_y_hora": Text } }` |
 | `POST /mediciones - campos faltantes retorna 400` | Responde `400` si falta `valor` |
 | `POST /mediciones - JSON inválido retorna 400` | Responde `400` |
 | `GET /mediciones - retorna lista JSON` | Responde `200` con un array |
@@ -617,7 +616,7 @@ Informe HTML: `src/android/app/build/reports/tests/testDebugUnitTest/index.html`
 | `LogicaFakeTest` | 14 | Cuerpo JSON del `POST`: los tres campos del contrato, ausencia de datos del beacon (`uuid`, `txPower`, `major`, `minor`, `rssi`), tipos, valores extremos (`65535`, `-72.5`), `null` |
 | `MedicionTest` | 16 | `asignarTipo()` con los códigos 11/12/13 y desconocidos, `Medicion.desdeTrama()` |
 | `PeticionarioRESTTest` | 11 | Método, URL y cuerpo, códigos 2xx/3xx frente a 4xx/5xx, `TransporteHttp` inyectado |
-| `LogicaFakeIntegracionTest` | 3 | **Integración real**: levanta un `ServerSocket` en un puerto efímero y comprueba que el `POST` llega con método, ruta, `Content-Type` y un JSON de solo tres campos (`tipo`, `valor`, `nombre_emisora`); y que un servidor ilegible devuelve código `-1` sin excepción |
+| `LogicaFakeIntegracionTest` | 3 | **Integración real**: levanta un `ServerSocket` en un puerto efímero y comprueba que el `POST` llega con método, ruta, `Content-Type` y un JSON de solo tres campos (`tipo`, `valor`, `identificador_placa`); y que un servidor ilegible devuelve código `-1` sin excepción |
 
 Detalle de una sola clase:
 

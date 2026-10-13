@@ -17,17 +17,17 @@ es compuesta y no existe una columna `id` autonumerica.
 TABLE: Mediciones
 
 DESCRIPTION: Almacena las mediciones registradas por la aplicacion movil: tipo
-             de medicion, nombre del cliente (emisora), valor numerico y la
+             de medicion, identificador de la placa emisora, valor numerico y la
              fecha y hora de registro.
 
 COLUMNS:
 
-+ tipo_de_medicion | TEXT     | NOT NULL
-+ nombre_cliente   | TEXT     | NOT NULL
-+ valor            | REAL     | NOT NULL
-+ fecha_y_hora     | DATETIME | NOT NULL | strftime('%Y-%m-%d %H:%M:%f','now','localtime')
++ tipo_de_medicion   | TEXT     | NOT NULL
++ identificador_placa| TEXT     | NOT NULL
++ valor              | REAL     | NOT NULL
++ fecha_y_hora       | DATETIME | NOT NULL | strftime('%Y-%m-%d %H:%M:%f','now','localtime')
 
-PRIMARY KEY: (nombre_cliente, fecha_y_hora)
+PRIMARY KEY: (identificador_placa, fecha_y_hora)
 
 FOREIGN KEYS:
 
@@ -35,19 +35,19 @@ FOREIGN KEYS:
 
 CONSTRAINTS:
 
-+ NOT NULL en tipo_de_medicion, nombre_cliente, valor y fecha_y_hora
-+ Clave primaria compuesta (nombre_cliente, fecha_y_hora): una emisora no puede
-  tener dos mediciones con la misma marca de tiempo (con milisegundos)
++ NOT NULL en tipo_de_medicion, identificador_placa, valor y fecha_y_hora
++ Clave primaria compuesta (identificador_placa, fecha_y_hora): una placa no
+  puede tener dos mediciones con la misma marca de tiempo (con milisegundos)
 + fecha_y_hora generado por strftime('%Y-%m-%d %H:%M:%f','now','localtime') si
   no se indica
 ====================================================================================
 
 ### Notas sobre el diseño
 
-- **Clave primaria compuesta `(nombre_cliente, fecha_y_hora)`:** la identidad
-  natural de cada medicion es la emisora mas la marca de tiempo; no hay columna
-  `id` autonumerica. Las lecturas se ordenan por `fecha_y_hora` en
-  `obtenerUltimas10()`.
+- **Clave primaria compuesta `(identificador_placa, fecha_y_hora)`:** la
+  identidad natural de cada medicion es la placa emisora mas la marca de
+  tiempo; no hay columna `id` autonumerica. Las lecturas se ordenan por
+  `fecha_y_hora` en `obtenerUltimas10()`.
 - **`fecha_y_hora` con milisegundos:** SQLite no tiene tipo temporal nativo y
   `strftime('%Y-%m-%d %H:%M:%f','now','localtime')` produce texto
   `'YYYY-MM-DD HH:MM:SS.SSS'` en hora **local** del sistema. La precision de
@@ -56,9 +56,8 @@ CONSTRAINTS:
   UTC y desfasa la hora mostrada.
 - **`tipo_de_medicion`** responde al enum de la app móvil
   `TipoMedicion = { ozono, temperatura, ruido }` (ver `business_logic_design.md`).
-- **`nombre_cliente`** guarda el *nombre de emisora* (`nombre_emisora`) que
-  envía la app: en la base de datos se llama `nombre_cliente` y es igual al
-  nombre del cliente.
+- **`identificador_placa`** guarda el identificador de la placa emisora que
+  envía la app en el campo `identificador_placa`.
 
 ## 2. Design Clarifications
 

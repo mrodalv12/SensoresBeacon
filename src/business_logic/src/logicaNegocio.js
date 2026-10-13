@@ -34,7 +34,7 @@ function guardarMedicion(medicion) {
     const datosProcesados = {
         tipo: typeof tipo === 'string' ? tipo : String(tipo || ''),
         valor: typeof valor === 'number' ? valor : Number(valor || 0),
-        nombreEmisora: (medicion && (medicion.nombreEmisora || medicion.nombre_emisora)) || ''
+        identificadorPlaca: (medicion && (medicion.identificadorPlaca || medicion.identificador_placa)) || ''
     };
 
     // En esta capa NO hay acceso directo a BD. Solo procesa y prepara para enviar.

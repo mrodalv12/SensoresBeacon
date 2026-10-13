@@ -19,7 +19,7 @@ TipoMedicion = { ozono(11), temperatura(12), ruido(13), desconocido }
 
 Medicion      = ( tipoDeMedicion: Text, valor: R )
 
-MedicionNueva = ( tipo: Text, valor: R, nombre_emisora: Text )
+MedicionNueva = ( tipo: Text, valor: R, identificador_placa: Text )
 
 TramaIBeacon  = ( uuid: [ Byte ]_16, major: Z, minor: Z, txPower: Z )
 
@@ -58,9 +58,9 @@ medicion: Medicion, nombre: Text  --> enviarMedicion() -->
         | urlServidor: Text
         | transporte: TransporteHttp
         |
-medicion: Medicion, nombre_emisora: Text --> guardarMedicion() -->
+medicion: Medicion, identificador_placa: Text --> guardarMedicion() -->
         |
-nombre_emisora: Text                     --> construirCuerpo() --> cuerpo: Text
+identificador_placa: Text                --> construirCuerpo() --> cuerpo: Text
         |
 usuario: lo intercambiable arriba
         ------------------------------------------------------------------
@@ -134,17 +134,17 @@ texto: Text --> MainActivity.uuidComoHexadecimal() --> hexadecimal: Text   (--x)
   emulador) y el transporte a usar (real o doble de prueba).
 
 ```text
-medicion: Medicion, nombre_emisora: Text --> LogicaFake.guardarMedicion() -->
+medicion: Medicion, identificador_placa: Text --> LogicaFake.guardarMedicion() -->
 ```
 
 - Serializa el cuerpo y realiza `POST /mediciones` con
   `PeticionarioREST`, delegando el transporte real en `TransporteHttp`.
 
 ```text
-nombre_emisora: Text --> LogicaFake.construirCuerpo() --> cuerpo: Text
+identificador_placa: Text --> LogicaFake.construirCuerpo() --> cuerpo: Text
 ```
 
-- Construye el JSON `{ tipo, valor, nombre_emisora }`. Ningún dato del beacon
+- Construye el JSON `{ tipo, valor, identificador_placa }`. Ningún dato del beacon
   (`uuid`, `txPower`, `major`, `minor`) entra en el cuerpo.
 
 ```text
@@ -205,7 +205,7 @@ texto: Text --> Utilidades.bytesDesdeTextoAscii() --> bytes: [Z]   (--x)
 
 ```text
 POST http://10.0.2.2:8080/mediciones
-     cuerpo: ( tipo: Text, valor: R, nombre_emisora: Text )
+     cuerpo: ( tipo: Text, valor: R, identificador_placa: Text )
   -> 201 (ok) / 400 (entrada invalida) / 500 (error interno)
 ```
 

@@ -19,10 +19,10 @@ describe('Lógica de Negocio - Integración con BD (PHP)', () => {
     test('guardarMedicion y obtenerMedicion funcionan con BD', async () => {
         const logica = new LogicaNegocioSQLitePhp(repo);
         const res = await logica.guardarMedicion(
-            { tipo: 'distancia', valor: 2.5, nombre_emisora: 'TEST-PHP-123' }
+            { tipo: 'distancia', valor: 2.5, identificador_placa: 'TEST-PHP-123' }
         );
         assert.strictEqual(res.ok, true);
-        assert.strictEqual(res.nombre_cliente, 'TEST-PHP-123');
+        assert.strictEqual(res.identificador_placa, 'TEST-PHP-123');
         assert.ok(res.fecha_y_hora);
 
         const lista = await logica.obtenerMedicion();
