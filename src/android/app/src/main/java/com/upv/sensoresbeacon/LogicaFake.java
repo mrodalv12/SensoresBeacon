@@ -52,7 +52,7 @@ public class LogicaFake {
     // IP del ordenador que ejecuta el REST en la red local. 10.0.2.2 solo vale
     // en el emulador Android. Si el router cambia la IP, actualizar esta
     // constante (o usar un nombre estable, p. ej. un tailnet de Tailscale).
-    public static final String URL_POR_DEFECTO = "http://192.168.0.135:8080" + RUTA_MEDICIONES;
+    public static final String URL_POR_DEFECTO = "http://10.52.185.210:8080" + RUTA_MEDICIONES;
 
     private static final String C_TIPO = "tipo";
     private static final String C_VALOR = "valor";
