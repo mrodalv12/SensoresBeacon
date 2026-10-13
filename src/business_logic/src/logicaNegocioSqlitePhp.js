@@ -25,9 +25,9 @@ class LogicaNegocioSQLitePhp {
     }
 
     //--------------------
-    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
-    //   Normaliza la medicion y la guarda en el repositorio; devuelve el id.
-    //   Solo recibe el dominio (tipo, valor, nombre): ningun dato del beacon.
+    // medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, nombre_cliente: Text, fecha_y_hora: Text )
+    //   Normaliza la medicion y la guarda en el repositorio; devuelve la clave
+    //   compuesta. Solo recibe el dominio (tipo, valor, nombre): ningun dato del beacon.
     //--------------------
     async guardarMedicion(medicion) {
         const tipo = medicion && (medicion.tipo !== undefined ? medicion.tipo : medicion.tipoDeMedicion);
@@ -40,7 +40,11 @@ class LogicaNegocioSQLitePhp {
         };
 
         const resultado = await this.repositorio.guardar(datos);
-        return { ok: true, id: resultado && resultado.id };
+        return {
+            ok: true,
+            nombre_cliente: resultado && resultado.nombre_cliente,
+            fecha_y_hora: resultado && resultado.fecha_y_hora
+        };
     }
 
     //--------------------

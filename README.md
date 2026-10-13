@@ -26,7 +26,7 @@ software:
    negocio**.
 4. La **lógica de negocio** normaliza los datos y los persiste en una base de
    datos **SQLite**: `tipo_de_medicion`, `nombre_cliente` (el `nombre_emisora`
-   de la app), `valor`, `fecha_y_hora` y un `id` único. Ningún dato del beacon
+   de la app), `valor` y `fecha_y_hora`. Ningún dato del beacon
    llega hasta aquí.
 5. La **página web** consulta el servidor por `GET` y representa las últimas diez
    mediciones.
@@ -206,7 +206,7 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 
 | Código | Significado |
 |---|---|
-| `201 Created` | Medición guardada. Responde `{ "status": "ok", "resultado": { "ok": true, "id": N } }` |
+| `201 Created` | Medición guardada. Responde `{ "status": "ok", "resultado": { "ok": true, "nombre_cliente": Text, "fecha_y_hora": Text } }` |
 | `400 Bad Request` | Campo obligatorio ausente, tipo incorrecto o JSON malformado |
 | `500 Internal Server Error` | Fallo al guardar en la base de datos |
 
@@ -214,7 +214,7 @@ Servidor en `http://localhost:8080` (configurable con `PORT` y `HOST`).
 la base de datos como `nombre_cliente`. El `POST` **no** lleva `rssi`,
 `txPower`, `major`, `minor` ni `uuid`: esos datos se quedan en la app Android
 (la UUID solo se usa allí para buscar el iBeacon). La tabla `Mediciones` guarda
-únicamente `id`, `tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
+únicamente `tipo_de_medicion`, `nombre_cliente`, `valor` y `fecha_y_hora`.
 
 **`GET /mediciones`** — devuelve las últimas 10 mediciones.
 
@@ -238,11 +238,15 @@ documento de reglas de diseño (`N`, `Z`, `R`, `Text`):
 
 | Columna | Tipo SQLite | Nulable | Origen |
 |---|---|---|---|
-| `id` | `INTEGER PRIMARY KEY AUTOINCREMENT` | no | generado por SQLite |
 | `tipo_de_medicion` | `TEXT NOT NULL` | no | `tipo` del POST |
 | `nombre_cliente` | `TEXT NOT NULL` | no | `nombre_emisora` del POST |
 | `valor` | `REAL NOT NULL` | no | `valor` del POST |
-| `fecha_y_hora` | `DATETIME DEFAULT (datetime('now','localtime'))` | sí | generado por SQLite en hora **local** |
+| `fecha_y_hora` | `DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f','now','localtime'))` | no | generado por SQLite en hora **local**, con milisegundos |
+
+> **Clave primaria compuesta `(nombre_cliente, fecha_y_hora)`.** La tabla no
+> tiene columna `id`: la identidad de cada medición es la emisora más su marca
+> de tiempo. La `fecha_y_hora` lleva **milisegundos** para que dos mediciones
+> de la misma emisora en el mismo segundo no colisionen en la clave primaria.
 
 > **Nombre de emisora = nombre del cliente.** La app envía el nombre de la
 > emisora en el campo `nombre_emisora` de la petición; en la base de datos ese
@@ -469,7 +473,7 @@ curl -s http://localhost:8080/mediciones
 curl -s http://localhost:8000/frontend_business_logic/api/mediciones.php
 
 # 4. base de datos de nuevo: debe haber una fila más
-sqlite3 src/database/mediciones.db "SELECT id, tipo_de_medicion, valor, fecha_y_hora FROM Mediciones ORDER BY id DESC LIMIT 3;"
+sqlite3 src/database/mediciones.db "SELECT tipo_de_medicion, nombre_cliente, valor, fecha_y_hora FROM Mediciones ORDER BY fecha_y_hora DESC LIMIT 3;"
 ```
 
 Con la placa emitiendo y la app en marcha, el contador de filas debe aumentar
@@ -536,7 +540,7 @@ efímero y hace peticiones HTTP de verdad (`http.request`), sin mocks:
 | Prueba | Comprueba |
 |---|---|
 | `POST /mediciones - válida` | Responde `201` solo con `tipo` y `valor` (sin datos del beacon) |
-| `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "id": N } }` |
+| `POST /mediciones - valida y pasa a lógica de negocio (con todos los campos)` | Responde `201` y `{ "status": "ok", "resultado": { "ok": true, "nombre_cliente": Text, "fecha_y_hora": Text } }` |
 | `POST /mediciones - campos faltantes retorna 400` | Responde `400` si falta `valor` |
 | `POST /mediciones - JSON inválido retorna 400` | Responde `400` |
 | `GET /mediciones - retorna lista JSON` | Responde `200` con un array |

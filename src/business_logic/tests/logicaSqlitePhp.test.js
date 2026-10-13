@@ -10,7 +10,8 @@ describe('Lógica de Negocio - Integración con BD (PHP)', () => {
             { tipo: 'distancia', valor: 2.5, nombre_emisora: 'TEST-PHP-123' }
         );
         assert.strictEqual(res.ok, true);
-        assert.ok(res.id);
+        assert.strictEqual(res.nombre_cliente, 'TEST-PHP-123');
+        assert.ok(res.fecha_y_hora);
 
         const lista = await logica.obtenerMedicion();
         assert.ok(Array.isArray(lista));

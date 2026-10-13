@@ -33,7 +33,7 @@ Repositorio = ( guardar(), obtenerUltimas10() )   // interfaz de acceso a datos
 repositorio: Repositorio --> LogicaNegocio() -->
          |
          |
-medicion: MedicionNueva --> guardarMedicion() --> (ok: B, id: N)
+medicion: MedicionNueva --> guardarMedicion() --> (ok: B, nombre_cliente: Text, fecha_y_hora: Text)
          |
          |
          |        obtenerMedicion() <-- [ Medicion ]
@@ -46,7 +46,7 @@ medicion: MedicionNueva --> guardarMedicion() --> (ok: B, id: N)
          --------- Repositorio (interfaz) ----------------------
          |
          |
-datos: MedicionNueva --> guardar() --> id: N
+datos: MedicionNueva --> guardar() --> (nombre_cliente: Text, fecha_y_hora: Text)
          |
          |
          |        obtenerUltimas10() <-- [ Medicion ]
@@ -63,13 +63,14 @@ repositorio: Repositorio --> LogicaNegocio( ) --> nueva instancia
 - Guarda la referencia al repositorio con el que trabajará la lógica.
 
 ```text
-medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, id: N )
+medicion: MedicionNueva --> guardarMedicion() --> ( ok: B, nombre_cliente: Text, fecha_y_hora: Text )
 ```
 
 - Normaliza la medición: `tipo` como texto (de `TipoMedicion`), `valor` como
   `R`, y `nombre_cliente` como texto (el nombre de emisora = nombre del
   cliente que envía la app).
-- Delega el alta en el repositorio (`guardar()`) y devuelve el `id` asignado.
+- Delega el alta en el repositorio (`guardar()`) y devuelve la clave compuesta
+  (`nombre_cliente`, `fecha_y_hora`).
 
 ```text
 obtenerMedicion() --> [ Medicion ]
@@ -86,7 +87,7 @@ definida en `database_design.md`:
 | Operación | Tabla de `database_design.md` | Columnas implicadas |
 |---|---|---|
 | `guardar()` | `Mediciones` | `tipo_de_medicion`, `nombre_cliente`, `valor` (INSERT) |
-| `obtenerUltimas10()` | `Mediciones` | `fecha_y_hora`, `tipo_de_medicion`, `valor` (SELECT, orden por `id`) |
+| `obtenerUltimas10()` | `Mediciones` | `fecha_y_hora`, `tipo_de_medicion`, `valor` (SELECT, orden por `fecha_y_hora`) |
 
 ## 2. Design Clarifications
 

@@ -14,46 +14,45 @@
 
 CREATE TABLE Mediciones (
 
-    -- N (Natural Number) -> INTEGER PRIMARY KEY AUTOINCREMENT
-    -- SQLite solo admite AUTOINCREMENT si la PK entera es alias de rowid,
-    -- por eso el tipo es INTEGER y no INT / BIGINT.
-    
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-
     -- Text -> TEXT NOT NULL
     -- SQLite no diferencia TEXT de VARCHAR: ambos tienen afinidad TEXT.
     -- NOT NULL representa el "obligatorio" de la especificacion.
-    
-    tipo_de_medicion TEXT    NOT NULL,
+
+    tipo_de_medicion TEXT     NOT NULL,
 
     -- Text -> TEXT NOT NULL (obligatorio).
     -- Es el nombre de emisora que envia la app (nombre_emisora) = nombre del
     -- cliente. Se almacena como nombre_cliente.
-    
-    nombre_cliente   TEXT    NOT NULL,
+
+    nombre_cliente   TEXT     NOT NULL,
 
     -- R (Real Numbers) -> REAL NOT NULL
     -- REAL es el unico tipo con afinidad REAL (punto flotante IEEE 754).
     -- No usar NUMERIC: su afinidad convertiria enteros a real y ocultaria
     -- el error, en lugar de forzar al dato a ser numerico real.
-    
-    valor            REAL    NOT NULL,
+
+    valor            REAL     NOT NULL,
 
     -- La Seccion 1 del PDF no define un tipo fecha/hora y SQLite no tiene
-    -- tipo temporal nativo. datetime('now','localtime') produce
-    -- 'YYYY-MM-DD HH:MM:SS' en hora LOCAL del sistema; declararlo DATETIME le
-    -- da afinidad NUMERIC y, al no ser un numero bien formado, el valor queda
-    -- almacenado como texto. No usar CURRENT_TIMESTAMP: devuelve UTC y
-    -- desfasa la hora (p. ej. 2 h en verano en Espana).
-    
-    fecha_y_hora     DATETIME DEFAULT (datetime('now','localtime'))
+    -- tipo temporal nativo. strftime('%Y-%m-%d %H:%M:%f','now','localtime')
+    -- produce 'YYYY-MM-DD HH:MM:SS.SSS' (con milisegundos) en hora LOCAL del
+    -- sistema. La precision de milisegundos evita que dos mediciones de la
+    -- misma emisora hechas en el mismo segundo colisionen en la clave primaria.
+    -- No usar CURRENT_TIMESTAMP: devuelve UTC y desfasa la hora.
+
+    fecha_y_hora     DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f','now','localtime')),
+
+    -- Clave primaria compuesta: la identidad natural de la fila es la emisora
+    -- mas la marca de tiempo. Se prescinde de una columna id autonumerica.
+
+    PRIMARY KEY (nombre_cliente, fecha_y_hora)
 );
 
 -- ----------------------------------------------------------------------------
 -- Datos de ejemplo
 -- ----------------------------------------------------------------------------
--- id y fecha_y_hora se omiten: los genera SQLite (AUTOINCREMENT y
--- datetime('now','localtime')). Reconstruir la base desde cero:
+-- fecha_y_hora se omite: la genera SQLite (strftime) en hora local.
+-- Reconstruir la base desde cero:
 --     sqlite3 mediciones.db < mediciones.sql
 INSERT INTO Mediciones
     (tipo_de_medicion, nombre_cliente, valor)

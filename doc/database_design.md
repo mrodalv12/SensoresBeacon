@@ -10,7 +10,7 @@ móvil a través del servidor REST y de la lógica de negocio. Motor: SQLite 3
 
 Se usan los tipos SQLite acordes a los abstractos del
 `Software_Engineering_Spec`: `INTEGER` (**N**), `REAL` (**R**), `TEXT`
-(**Text**) y `DATETIME` (texto `'YYYY-MM-DD HH:MM:SS'`).
+(**Text**) y `DATETIME` (texto `'YYYY-MM-DD HH:MM:SS.SSS'`).
 
 ====================================================================================
 TABLE: Mediciones
@@ -21,13 +21,12 @@ DESCRIPTION: Almacena las mediciones registradas por la aplicacion movil: tipo
 
 COLUMNS:
 
-+ id               | INTEGER  | NOT NULL | Auto-Increment
 + tipo_de_medicion | TEXT     | NOT NULL
 + nombre_cliente   | TEXT     | NOT NULL
 + valor            | REAL     | NOT NULL
-+ fecha_y_hora     | DATETIME | NULL     | datetime('now','localtime')
++ fecha_y_hora     | DATETIME | NOT NULL | strftime('%Y-%m-%d %H:%M:%f','now','localtime')
 
-PRIMARY KEY: id
+PRIMARY KEY: (nombre_cliente, fecha_y_hora)
 
 FOREIGN KEYS:
 
@@ -35,24 +34,30 @@ FOREIGN KEYS:
 
 CONSTRAINTS:
 
-+ NOT NULL en tipo_de_medicion, nombre_cliente y valor
-+ id AUTOINCREMENT (generado por SQLite)
-+ fecha_y_hora generado por datetime('now','localtime') si no se indica
++ NOT NULL en tipo_de_medicion, nombre_cliente, valor y fecha_y_hora
++ Clave primaria compuesta (nombre_cliente, fecha_y_hora): una emisora no puede
+  tener dos mediciones con la misma marca de tiempo (con milisegundos)
++ fecha_y_hora generado por strftime('%Y-%m-%d %H:%M:%f','now','localtime') si
+  no se indica
 ====================================================================================
 
 ### Notas sobre el diseño
 
-- **`id`** es la clave primaria generada por SQLite; con ella se ordenan las
-  lecturas en `obtenerUltimas10()`.
+- **Clave primaria compuesta `(nombre_cliente, fecha_y_hora)`:** la identidad
+  natural de cada medicion es la emisora mas la marca de tiempo; no hay columna
+  `id` autonumerica. Las lecturas se ordenan por `fecha_y_hora` en
+  `obtenerUltimas10()`.
+- **`fecha_y_hora` con milisegundos:** SQLite no tiene tipo temporal nativo y
+  `strftime('%Y-%m-%d %H:%M:%f','now','localtime')` produce texto
+  `'YYYY-MM-DD HH:MM:SS.SSS'` en hora **local** del sistema. La precision de
+  milisegundos evita que dos mediciones de la misma emisora en el mismo segundo
+  colisionen en la clave primaria. No se usa `CURRENT_TIMESTAMP` porque devuelve
+  UTC y desfasa la hora mostrada.
 - **`tipo_de_medicion`** responde al enum de la app móvil
   `TipoMedicion = { ozono, temperatura, ruido }` (ver `business_logic_design.md`).
 - **`nombre_cliente`** guarda el *nombre de emisora* (`nombre_emisora`) que
   envía la app: en la base de datos se llama `nombre_cliente` y es igual al
   nombre del cliente.
-- **`fecha_y_hora`** se autogenera: SQLite no tiene tipo temporal nativo y
-  `datetime('now','localtime')` produce texto `'YYYY-MM-DD HH:MM:SS'` en hora
-  **local** del sistema. No se usa `CURRENT_TIMESTAMP` porque devuelve UTC y
-  desfasa la hora mostrada.
 
 ## 2. Design Clarifications
 

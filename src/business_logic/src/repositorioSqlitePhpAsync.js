@@ -51,11 +51,12 @@ $db = new PDO("sqlite:" . getenv("DB_PATH"));
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 if (($cmd["accion"] ?? "") === "guardar") {
     $d = $cmd["datos"] ?? [];
-    $st = $db->prepare("INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor, fecha_y_hora) VALUES (:tipo, :nombre, :valor, datetime('now','localtime'))");
+    $st = $db->prepare("INSERT INTO Mediciones (tipo_de_medicion, nombre_cliente, valor, fecha_y_hora) VALUES (:tipo, :nombre, :valor, strftime('%Y-%m-%d %H:%M:%f','now','localtime'))");
     $st->execute([":tipo" => $d["tipo_de_medicion"] ?? "", ":nombre" => $d["nombre_cliente"] ?? "", ":valor" => $d["valor"] ?? 0]);
-    echo json_encode(["id" => (int)$db->lastInsertId()]);
+    $fecha = $db->query("SELECT fecha_y_hora FROM Mediciones WHERE rowid = last_insert_rowid()")->fetchColumn();
+    echo json_encode(["nombre_cliente" => $d["nombre_cliente"] ?? "", "fecha_y_hora" => $fecha]);
 } else {
-    $rows = $db->query("SELECT fecha_y_hora, tipo_de_medicion, valor FROM Mediciones ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $rows = $db->query("SELECT fecha_y_hora, tipo_de_medicion, valor FROM Mediciones ORDER BY fecha_y_hora ASC")->fetchAll(PDO::FETCH_ASSOC);
     $out = [];
     foreach ($rows as $r) {
         $out[] = ["fecha_y_hora" => $r["fecha_y_hora"], "tipo" => $r["tipo_de_medicion"], "valor" => (float)$r["valor"]];
@@ -85,10 +86,11 @@ function ejecutarPhp(entrada) {
 }
 
 //--------------------
-// datos: MedicionNueva --> guardar() --> Promise<{ id: N }>
+// datos: MedicionNueva --> guardar() --> Promise<{ nombre_cliente: Text, fecha_y_hora: Text }>
 //   Inserta la medicion en SQLite con un proceso PHP hijo y devuelve una
-//   promesa con el id. Solo guarda tipo, nombre de cliente (nombre_emisora =
-//   nombre_cliente), valor y fecha_y_hora.
+//   promesa con la clave compuesta (emisora + fecha/hora con milisegundos).
+//   Solo guarda tipo, nombre de cliente (nombre_emisora = nombre_cliente),
+//   valor y fecha_y_hora.
 //--------------------
 function guardar(datos) {
     const tipo = datos.tipo_de_medicion || datos.tipo || '';
