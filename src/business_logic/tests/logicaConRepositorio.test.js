@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaConRepositorio.test.js
+//Descripcion: Pruebas de la logica de negocio con un repositorio en memoria inyectado:
+//              guarda, lee las ultimas y verifica que no procesa datos del beacon.
+//Copyright:
+//Fecha de creacion: 2026-10-07
+//Fecha de modificacion: 2026-10-13
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: pruebas de la logica con repositorio
+//==============================================================================================
+
 const { test, describe, beforeEach } = require('node:test');
 const assert = require('node:assert');
 const { LogicaNegocio } = require('../src/logicaNegocioConRepositorio');

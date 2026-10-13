@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaSqlitePhp.test.js
+//Descripcion: Prueba de integracion de la logica de negocio contra la base de datos SQLite
+//              via el puente PHP (PDO + sqlite3): guarda una fila real y la recupera.
+//Copyright:
+//Fecha de creacion: 2026-10-13
+//Fecha de modificacion: 2026-10-13
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: prueba de integracion con la base de datos
+//==============================================================================================
+
 const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const { LogicaNegocioSQLitePhp } = require('../src/logicaNegocioSqlitePhp');

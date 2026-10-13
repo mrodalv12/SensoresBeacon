@@ -1,3 +1,15 @@
+//==============================================================================================
+//Nombre: logicaNegocio.test.js
+//Descripcion: Pruebas unitarias de la logica de negocio sin base de datos
+//              (guardarMedicion normaliza la medicion y obtenerMedicion devuelve la lista).
+//Copyright:
+//Fecha de creacion: 2026-10-07
+//Fecha de modificacion: 2026-10-13
+//Autores: Jordi Bataller y Maria Jose Rodriguez
+//Autor: Maria Jose Rodriguez
+//Aportacion: pruebas de la logica de negocio
+//==============================================================================================
+
 const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const { guardarMedicion, obtenerMedicion } = require('../src/logicaNegocio');
